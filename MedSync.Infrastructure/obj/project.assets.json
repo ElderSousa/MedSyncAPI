@@ -33,11 +33,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\elder\\OneDrive\\Documentos\\Projetos\\MedSync\\MedSync\\MedSync\\MedSync.Application.csproj",
-      "projectName": "MedSync.Application",
-      "projectPath": "C:\\Users\\elder\\OneDrive\\Documentos\\Projetos\\MedSync\\MedSync\\MedSync\\MedSync.Application.csproj",
+      "projectUniqueName": "C:\\Users\\elder\\OneDrive\\Documentos\\Projetos\\MedSync\\MedSync\\MedSync.Infrastructure\\MedSync.Infrastructure.csproj",
+      "projectName": "MedSync.Infrastructure",
+      "projectPath": "C:\\Users\\elder\\OneDrive\\Documentos\\Projetos\\MedSync\\MedSync\\MedSync.Infrastructure\\MedSync.Infrastructure.csproj",
       "packagesPath": "C:\\Users\\elder\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\elder\\OneDrive\\Documentos\\Projetos\\MedSync\\MedSync\\MedSync\\obj\\",
+      "outputPath": "C:\\Users\\elder\\OneDrive\\Documentos\\Projetos\\MedSync\\MedSync\\MedSync.Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
