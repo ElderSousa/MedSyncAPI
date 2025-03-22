@@ -3,6 +3,7 @@ using MedSync.Application.Mappings;
 using MedSync.Application.Services;
 using MedSync.Domain.Interfaces;
 using MedSync.Infrastructure.Repositories;
+using MedSync.Infrastructure.Repositories.Scripts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,18 +14,12 @@ namespace MedSync.CrossCutting.IoC;
 
 public static class DependencyInjectionAPI
 {
-    public static IServiceCollection AddInfrastructureAPI(this IServiceCollection services,
-        IConfiguration configuration)
+    public static IServiceCollection AddInfrastructureAPI(this IServiceCollection services)
     {
-       /* services.AddDbContext<ApplicationDbContext>(options =>
-           options.UseMySql(configuration.GetConnectionString("DefaultConnection"),
-                 new MySqlServerVersion(new Version(8, 0, 29))));
-       */
-
-        services.AddScoped<ICategoriaRepository, CategoriaRepository>();
-        services.AddScoped<IProdutoRepository, ProdutoRepository>();
-        services.AddScoped<IProdutoService, ProdutoService>();
-        services.AddScoped<ICategoriaService, CategoriaService>();
+     
+        services.AddScoped<IPessoaRepository, PessoaRepository>();
+        services.AddScoped<IPessoaService, PessoaService>();
+       
 
         services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
 

@@ -1,0 +1,41 @@
+
+services:
+  api:
+    container_name: medsync_api
+    build:
+      context: .
+      dockerfile: MedSync.API/Dockerfile
+    environment:
+      - MYSQL_SERVER_MEDSYNC=127.0.0.1
+      - MYSQL_DB_MEDSYNC=medsync
+      - MYSQL_PORT_MEDSYNC=3306
+      - MYSQL_USER_MEDSYNC=root
+      - MYSQL_PASS_MEDSYNC=root
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+    networks:
+      - medsync_network
+
+  db:
+    container_name: medsync_db
+    image: mysql:8.0
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=medsync
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+    ports:
+      - "3307:3306"
+    networks:
+      - medsync_network
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+networks:
+  medsync_network:
+
+volumes:
+  mysql_data:
