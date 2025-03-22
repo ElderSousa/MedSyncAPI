@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Data.Common;
+﻿using System.Data.Common;
 using MedSync.Domain.Entities;
 using MedSync.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -24,10 +23,24 @@ namespace MedSync.Infrastructure.Repositories.Scripts
             }
         }
 
-        public bool Existe(Guid id, string CPF)
+        public bool Existe(Guid id)
         {
             var sql = PessoaScripts.Existe;
-            var parametros = new {Id = id, CPF = CPF}; 
+            var parametros = new {Id = id}; 
+            try
+            {
+                return JaExiste(sql, parametros);
+            }
+            catch (DbException)
+            {
+                throw;
+            }
+        }
+        
+        public bool CPFExiste(string? CPF)
+        {
+            var sql = PessoaScripts.Existe;
+            var parametros = new {CPF = CPF}; 
             try
             {
                 return JaExiste(sql, parametros);

@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
-using Catalogo.Application.DTOs;
-using Catalogo.Domain.Entities;
+using MedSync.Application.Requests;
+using MedSync.Application.Responses;
+using MedSync.Domain.Entities;
 
-namespace Catalogo.Application.Mappings;
+namespace MedSync.Application.Mappings;
 
 public class DomainToDTOMappingProfile : Profile
 {
     public DomainToDTOMappingProfile()
     {
-        CreateMap<Categoria, CategoriaDTO>().ReverseMap();
-        CreateMap<Produto, ProdutoDTO>().ReverseMap();
+        CreateMap<Pessoa, PessoaRequest>().ReverseMap();
+        CreateMap<Pessoa, PessoaResponse>().ReverseMap();
     }
 }

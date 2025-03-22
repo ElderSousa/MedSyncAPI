@@ -58,7 +58,17 @@ public static class PessoaScripts
                 pessoas
             WHERE
                 Id = @Id
-                OR CPF = @CPF
+                
+        ";
+    
+    internal static readonly string CPFExiste =
+        @"
+            SELECT
+                COUNT(*)
+            FROM
+                pessoas
+            WHERE
+                CPF = @CPF
                 
         ";
 }

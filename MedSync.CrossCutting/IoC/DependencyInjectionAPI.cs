@@ -1,15 +1,15 @@
-﻿using Catalogo.Application.Interfaces;
-using Catalogo.Application.Mappings;
-using Catalogo.Application.Services;
-using Catalogo.Domain.Interfaces;
-using Catalogo.Infrastructure.Repositories;
+﻿using MedSync.Application.Interfaces;
+using MedSync.Application.Mappings;
+using MedSync.Application.Services;
+using MedSync.Domain.Interfaces;
+using MedSync.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MySql.Data.MySqlClient;
 
-namespace Catalogo.CrossCutting.IoC;
+namespace MedSync.CrossCutting.IoC;
 
 public static class DependencyInjectionAPI
 {
