@@ -1,10 +1,12 @@
 ﻿using System.Data.Common;
 using MedSync.Domain.Entities;
 using MedSync.Domain.Interfaces;
+using MedSync.Infrastructure.Repositories.Scripts;
 using Microsoft.AspNetCore.Http;
-using MySqlConnector;
+using MySql.Data.MySqlClient;
 
-namespace MedSync.Infrastructure.Repositories.Scripts
+
+namespace MedSync.Infrastructure.Repositories
 {
     public class PessoaRepository : BaseRepository, IPessoaRepository
     {
@@ -40,7 +42,7 @@ namespace MedSync.Infrastructure.Repositories.Scripts
         public bool CPFExiste(string? CPF)
         {
             var sql = PessoaScripts.Existe;
-            var parametros = new {CPF = CPF}; 
+            var parametros = new {CPF}; 
             try
             {
                 return JaExiste(sql, parametros);

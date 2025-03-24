@@ -1,6 +1,6 @@
-﻿namespace MedSync.Application.DTOs;
+﻿namespace MedSync.Domain.Model;
 
-public class BaseModel
+public abstract class BaseModel
 {
     public Guid Id { get; set; }
     public Guid? CriadoPor { get; set; }

@@ -1,0 +1,21 @@
+services:
+  medsync.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+
+      - POSTGRES_SERVER_MEDSYNC=localhost
+      - POSTGRES_DB_MEDSYNC=medsync
+      - POSTGRES_PORT_MEDSYNC=5432
+      - POSTGRES_USER_MEDSYNC=postgres
+      - POSTGRES_PASSWORD=root 
+
+    ports:
+      - "8080"
+      - "8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

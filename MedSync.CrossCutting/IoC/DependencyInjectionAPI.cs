@@ -3,7 +3,6 @@ using MedSync.Application.Mappings;
 using MedSync.Application.Services;
 using MedSync.Domain.Interfaces;
 using MedSync.Infrastructure.Repositories;
-using MedSync.Infrastructure.Repositories.Scripts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,14 +15,13 @@ public static class DependencyInjectionAPI
 {
     public static IServiceCollection AddInfrastructureAPI(this IServiceCollection services)
     {
-     
+
+        services.InjectDataBase();
+
         services.AddScoped<IPessoaRepository, PessoaRepository>();
         services.AddScoped<IPessoaService, PessoaService>();
        
-
         services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
-
-        services.InjectDataBase();
 
         services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -33,11 +31,11 @@ public static class DependencyInjectionAPI
     private static IServiceCollection InjectDataBase(this IServiceCollection services)
     {
         #region MySQL
-        var hostName = Environment.GetEnvironmentVariable("MYSQL_SERVER_MEDSYNC") ?? "";
-        var dataBaseName = Environment.GetEnvironmentVariable("MYSQL_DB_MEDSYNC") ?? "";
-        var port = Environment.GetEnvironmentVariable("MYSQL_PORT_MEDSYNC") ?? "";
-        var user = Environment.GetEnvironmentVariable("MYSQL_USER_MEDSYNC") ?? "";
-        var pass = Environment.GetEnvironmentVariable("MYSQL_PASS_MEDSYNC") ?? "";
+        var hostName = Environment.GetEnvironmentVariable("POSTGRES_SERVER_MEDSYNC") ?? "";
+        var dataBaseName = Environment.GetEnvironmentVariable("POSTGRES_DB_MEDSYNC") ?? "";
+        var port = Environment.GetEnvironmentVariable("POSTGRES_PORT_MEDSYNC") ?? "";
+        var user = Environment.GetEnvironmentVariable("POSTGRES_USER_MEDSYNC") ?? "";
+        var pass = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ?? "";
 
         services.AddScoped(x => new MySqlConnection($"Server={hostName};Port={port};Database={dataBaseName};Uid={user};Pwd={pass};"));
 

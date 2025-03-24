@@ -1,10 +1,8 @@
-﻿using MedSync.Application.DTOs;
-
-namespace MedSync.Application.Requests
+﻿namespace MedSync.Application.Requests
 {
     public class PessoaRequest
     {
-        public class AdicionarPessoaRequest : BaseModel
+        public class AdicionarPessoaRequest
         {
             public string? Nome { get; set; }
             public string? CPF { get; set; }

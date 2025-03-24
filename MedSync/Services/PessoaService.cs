@@ -1,7 +1,6 @@
 ﻿using System.Data.Common;
 using AutoMapper;
 using MedSync.Application.Interfaces;
-using MedSync.Application.Requests;
 using MedSync.Application.Responses;
 using MedSync.Application.Validation;
 using MedSync.Domain.Entities;
@@ -24,8 +23,8 @@ public class PessoaService : BaseService, IPessoaService
     {
         try
         {
-            pessoaRequest.AdicionarBaseModel(null, DataHoraAtual(), true);
             var pessoa = mapper.Map<Pessoa>(pessoaRequest);
+            pessoa.AdicionarBaseModel(null, DataHoraAtual(), true);
 
             _response = ExecultarValidacaoResponse(new PessoaValidation(_pessoaRepository, true), pessoa);
             if (_response.Error) 
@@ -37,11 +36,11 @@ public class PessoaService : BaseService, IPessoaService
         }
         catch (DbException ex)
         {
-            ReturnResponse(ex.Message, true);
+            return ReturnResponse(ex.Message, true);
         }
         catch (AutoMapperMappingException ex)
         {
-            ReturnResponse(ex.Message, true);
+            return ReturnResponse(ex.Message, true);
         }
 
         return ReturnResponseSuccess();

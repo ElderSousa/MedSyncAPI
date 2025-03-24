@@ -7,7 +7,7 @@ namespace MedSync.Application.Services
 {
     public class BaseService
     {
-        public IMapper mapper;
+        protected IMapper mapper;
         private HttpContext? _context;
         public BaseService(IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {

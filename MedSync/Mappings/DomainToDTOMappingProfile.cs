@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using MedSync.Application.Requests;
-using MedSync.Application.Responses;
 using MedSync.Domain.Entities;
+using static MedSync.Application.Requests.PessoaRequest;
+using static MedSync.Application.Responses.PessoaResponse;
 
 namespace MedSync.Application.Mappings;
 
@@ -9,7 +9,7 @@ public class DomainToDTOMappingProfile : Profile
 {
     public DomainToDTOMappingProfile()
     {
-        CreateMap<Pessoa, PessoaRequest>().ReverseMap();
-        CreateMap<Pessoa, PessoaResponse>().ReverseMap();
+        CreateMap<Pessoa, AdicionarPessoaRequest>().ReverseMap();
+        CreateMap<Pessoa, AdicionarPessoaResponse>().ReverseMap();
     }
 }

@@ -1,4 +1,4 @@
-﻿using MedSync.Application.DTOs;
+﻿using MedSync.Domain.Model;
 
 namespace MedSync.Application.Responses
 {

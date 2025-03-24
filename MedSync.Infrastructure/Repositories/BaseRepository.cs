@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
-using MySqlConnector;
+using MySql.Data.MySqlClient;
 using Dapper;
 
 namespace MedSync.Infrastructure.Repositories;
 
 public class BaseRepository : IDisposable
 {
-    public readonly MySqlConnection mySqlConnection;
+    protected readonly MySqlConnection mySqlConnection;
     private HttpContext? _context;
     public BaseRepository(MySqlConnection mySql, IHttpContextAccessor httpContextAccessor)
     {

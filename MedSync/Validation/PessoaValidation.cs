@@ -24,6 +24,9 @@ public class PessoaValidation : AbstractValidator<Pessoa>
         RuleFor(p => p.DataNascimento)
             .NotEmpty().WithMessage(MessagesValidation.CampoObrigatorio);
 
+        RuleFor(p => p.Email)
+            .EmailAddress().WithMessage(MessagesValidation.EmailInvalido);
+
         When(p => cadastrar, () =>
         {
             RuleFor(p => p.CriadoEm)
