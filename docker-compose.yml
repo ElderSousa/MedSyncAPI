@@ -1,6 +1,6 @@
 services:
   medsync.api:
-    image: ${DOCKER_REGISTRY-}medsyncapi
+    image: medsyncapi
     build:
       context: .
       dockerfile: MedSync.API/Dockerfile

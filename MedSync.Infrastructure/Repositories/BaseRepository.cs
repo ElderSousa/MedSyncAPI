@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using MySql.Data.MySqlClient;
 using Dapper;
+using MySqlConnector;
 
 namespace MedSync.Infrastructure.Repositories;
 
@@ -60,7 +60,7 @@ public class BaseRepository : IDisposable
             using var connection = mySqlConnection;
             return connection.QueryFirstOrDefault<int?>(sql, parametros) > 0;
         }
-        catch
+        catch(Exception ex)
         {
             throw;
         }

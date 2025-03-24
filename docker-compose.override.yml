@@ -5,11 +5,11 @@ services:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
 
-      - POSTGRES_SERVER_MEDSYNC=localhost
-      - POSTGRES_DB_MEDSYNC=medsync
-      - POSTGRES_PORT_MEDSYNC=5432
-      - POSTGRES_USER_MEDSYNC=postgres
-      - POSTGRES_PASSWORD=root 
+      - MYSQL_SERVER_MEDSYNC=192.168.1.6
+      - MYSQL_DB_MEDSYNC=medsync
+      - MYSQL_PORT_MEDSYNC=3306
+      - MYSQL_USER_MEDSYNC=root
+      - MYSQL_PASSWORD=123456 
 
     ports:
       - "8080"

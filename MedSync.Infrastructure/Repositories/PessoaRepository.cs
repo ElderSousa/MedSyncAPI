@@ -3,7 +3,7 @@ using MedSync.Domain.Entities;
 using MedSync.Domain.Interfaces;
 using MedSync.Infrastructure.Repositories.Scripts;
 using Microsoft.AspNetCore.Http;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 
 
 namespace MedSync.Infrastructure.Repositories

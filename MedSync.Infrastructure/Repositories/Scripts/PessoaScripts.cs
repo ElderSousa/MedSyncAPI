@@ -36,7 +36,7 @@ public static class PessoaScripts
                 CriadoPor,
                 ModificadoEm,
                 ModificadoPor
-            )VALUE(
+            )VALUES(
                 @Id,
                 @Nome,
                 @CPF,
