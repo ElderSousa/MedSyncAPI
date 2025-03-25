@@ -1,12 +1,19 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using MySqlConnector;
+﻿using MedSync.Infrastructure.DbContextRepository;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using MySql.Data.MySqlClient;
 
 namespace MedSync.CrossCutting.Data;
 
 public static class DataBaseInjection
 {
-    public static IServiceCollection InjectDataBase(this IServiceCollection services)
+    public static IServiceCollection InjectDataBase(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddDbContext<ApplicationDbContext>(options =>
+           options.UseMySql(configuration.GetConnectionString("DefaultConnection"),
+                 new MySqlServerVersion(new Version(8, 0, 29))));
+
         #region MYSQL
         var hostName = Environment.GetEnvironmentVariable("MYSQL_SERVER_MEDSYNC") ?? "";
         var dataBaseName = Environment.GetEnvironmentVariable("MYSQL_DB_MEDSYNC") ?? "";

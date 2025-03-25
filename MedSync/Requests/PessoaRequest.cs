@@ -9,7 +9,8 @@
             public string? RG { get; set; }
             public string? Email { get; set; }
             public char Sexo { get; set; }
-            public DateOnly? DataNascimento { get; set; }
+            public DateTime? DataNascimento { get; set; }
+
         }
     }
 }

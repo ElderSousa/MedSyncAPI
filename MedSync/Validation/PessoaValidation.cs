@@ -14,9 +14,14 @@ public class PessoaValidation : AbstractValidator<Pessoa>
 
         RuleFor(p => p.CPF)
             .NotEmpty().WithMessage(MessagesValidation.CampoObrigatorio)
-            .Must(IsValidCpf).WithMessage(MessagesValidation.CPFInvalido)
-            .Must(pessoaRepository.CPFExiste).WithMessage(MessagesValidation.CPFCadastrado);
+            .Must(IsValidCpf).WithMessage(MessagesValidation.CPFInvalido);
 
+        When(p => string.IsNullOrWhiteSpace(p.CPF), () =>
+        {
+            RuleFor(p => p.CPF)
+                .Must(pessoaRepository.CPFExiste).WithMessage(MessagesValidation.CPFCadastrado);
+        });
+            
         RuleFor(p => p.Nome)
             .NotEmpty().WithMessage(MessagesValidation.CampoObrigatorio)
             .MinimumLength(3).WithMessage(MessagesValidation.NomeInvalido);

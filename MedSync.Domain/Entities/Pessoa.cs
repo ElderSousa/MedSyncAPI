@@ -1,6 +1,4 @@
-﻿using MedSync.Domain.Model;
-
-namespace MedSync.Domain.Entities;
+﻿namespace MedSync.Domain.Entities;
 
 public class Pessoa : BaseModel
 {
@@ -9,5 +7,5 @@ public class Pessoa : BaseModel
     public string? RG { get; set; }
     public string? Email { get; set; }
     public char Sexo { get; set; }
-    public DateOnly? DataNascimento { get; set; }
+    public DateTime? DataNascimento { get; set; }
 }

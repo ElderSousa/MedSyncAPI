@@ -1,17 +1,21 @@
 ﻿using Microsoft.AspNetCore.Http;
+using MySql.Data.MySqlClient;
 using Dapper;
-using MySqlConnector;
+using MedSync.Infrastructure.DbContextRepository;
+
 
 namespace MedSync.Infrastructure.Repositories;
 
 public class BaseRepository : IDisposable
 {
+    protected readonly ApplicationDbContext applicationDbContext;
     protected readonly MySqlConnection mySqlConnection;
     private HttpContext? _context;
-    public BaseRepository(MySqlConnection mySql, IHttpContextAccessor httpContextAccessor)
+    public BaseRepository(MySqlConnection mySql, IHttpContextAccessor httpContextAccessor, ApplicationDbContext applicationDb)
     {
         mySqlConnection = mySql;  
         _context = httpContextAccessor.HttpContext;
+        applicationDbContext = applicationDb;
     }
 
     protected async Task<bool> GenericExecuteAsync(string sql, object parametros)
@@ -34,7 +38,7 @@ public class BaseRepository : IDisposable
             using var connection = mySqlConnection;
             return await connection.QueryFirstOrDefaultAsync<T>(sql, parametros);
         }
-        catch
+        catch(Exception ex)
         {
             throw;
         }
@@ -60,7 +64,7 @@ public class BaseRepository : IDisposable
             using var connection = mySqlConnection;
             return connection.QueryFirstOrDefault<int?>(sql, parametros) > 0;
         }
-        catch(Exception ex)
+        catch
         {
             throw;
         }

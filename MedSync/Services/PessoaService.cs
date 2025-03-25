@@ -7,6 +7,7 @@ using MedSync.Domain.Entities;
 using MedSync.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 using static MedSync.Application.Requests.PessoaRequest;
+using static MedSync.Application.Responses.PessoaResponse;
 
 namespace MedSync.Application.Services;
 
@@ -44,5 +45,66 @@ public class PessoaService : BaseService, IPessoaService
         }
 
         return ReturnResponseSuccess();
+    }
+
+    public async Task<PessoaResponse?> GetIdAsync(Guid id)
+    {
+        try
+        {
+            var pessoa = await _pessoaRepository.GetIdAsync(id);
+
+            return mapper.Map<PessoaResponse>(pessoa);
+           
+        }
+        catch (DbException ex)
+        {
+            throw;
+        }
+        catch (AutoMapperMappingException ex)
+        {
+            throw;
+        }
+    }
+
+    public async Task<PessoaResponse?> GetCPFAsync(string cpf)
+    {
+        try
+        {
+            var pessoa = await _pessoaRepository.GetCPFAsync(cpf);
+            return mapper.Map<PessoaResponse>(pessoa);
+
+        }
+        catch (DbException ex)
+        {
+            Notificar(ex.Message);
+            return new PessoaResponse();
+        }
+        catch (AutoMapperMappingException ex)
+        {
+            Notificar(ex.Message);
+            return new PessoaResponse();
+        }
+    }
+
+    public async Task<Response> UpdateAsync(Pessoa pessoa)
+    {
+        try
+        {
+
+        }
+        catch (DbException ex)
+        {
+            return ReturnResponse(ex.Message, true);
+        }
+        catch (AutoMapperMappingException ex)
+        {
+            return ReturnResponse(ex.Message, true);
+        }
+    }
+    
+
+    public Task<Response> DeleteAsync(Guid id)
+    {
+        throw new NotImplementedException();
     }
 }

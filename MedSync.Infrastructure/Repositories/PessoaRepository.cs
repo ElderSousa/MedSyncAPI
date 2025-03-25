@@ -1,16 +1,18 @@
 ﻿using System.Data.Common;
 using MedSync.Domain.Entities;
 using MedSync.Domain.Interfaces;
+using MedSync.Infrastructure.DbContextRepository;
 using MedSync.Infrastructure.Repositories.Scripts;
 using Microsoft.AspNetCore.Http;
-using MySqlConnector;
+using MySql.Data.MySqlClient;
+
 
 
 namespace MedSync.Infrastructure.Repositories
 {
     public class PessoaRepository : BaseRepository, IPessoaRepository
     {
-        public PessoaRepository(MySqlConnection mySqlConnection, IHttpContextAccessor httpContextAccessor) : base(mySqlConnection, httpContextAccessor) { }
+        public PessoaRepository(MySqlConnection mySqlConnection, IHttpContextAccessor httpContextAccessor, ApplicationDbContext applicationDb) : base(mySqlConnection, httpContextAccessor, applicationDb) { }
 
         public async Task<bool> CreateAsync(Pessoa pessoa)
         {
@@ -18,6 +20,61 @@ namespace MedSync.Infrastructure.Repositories
             try
             {
                 return await GenericExecuteAsync(sql, pessoa);
+            }
+            catch (DbException)
+            {
+                throw;
+            }
+        }
+
+        public async Task<Pessoa?> GetIdAsync(Guid id)
+        {
+            var sql = $"{PessoaScripts.SelectBase}{PessoaScripts.WhereId}";
+            var parametro = new { Id = id };
+            try
+            {
+                return await GenericGetOne<Pessoa>(sql, parametro);
+            }
+            catch (DbException ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<Pessoa?> GetCPFAsync(string Cpf)
+        {
+            var sql = $"{PessoaScripts.SelectBase}{PessoaScripts.WhereCPF}";
+            var parametro = new { CPF = Cpf };
+            try
+            {
+                return await GenericGetOne<Pessoa>(sql, parametro);
+            }
+            catch (DbException)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> UpdateAsync(Pessoa pessoa)
+        {
+            var sql = PessoaScripts.Update;
+            try
+            {
+                return await GenericExecuteAsync(sql, pessoa);
+            }
+            catch (DbException)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteAsync(Guid id)
+        {
+            var sql = PessoaScripts.Delete;
+            var parametros = new { Id = id, ModificadoEm = DataHoraAtual() };
+            try
+            {
+                return await GenericExecuteAsync(sql, parametros);
             }
             catch (DbException)
             {
@@ -41,7 +98,7 @@ namespace MedSync.Infrastructure.Repositories
         
         public bool CPFExiste(string? CPF)
         {
-            var sql = PessoaScripts.Existe;
+            var sql = PessoaScripts.CPFExiste;
             var parametros = new {CPF}; 
             try
             {

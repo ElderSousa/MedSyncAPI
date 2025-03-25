@@ -55,6 +55,10 @@ namespace MedSync.Application.Services
             return ReturnResponse(validator.ToString(), true);
         }
 
+        protected static string Notificar(string mensagem) => mensagem;
+
+        protected static string Notificar(Exception exception) => ObterErro(exception);
+
         protected static DateTime DataHoraAtual() => DateTime.UtcNow.AddHours(-3);
 
         private static string ObterErro(Exception exception) => exception.InnerException is not null ? exception.InnerException.Message : exception.Message;

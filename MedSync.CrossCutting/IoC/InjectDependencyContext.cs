@@ -1,6 +1,8 @@
-﻿using MedSync.Application.Mappings;
+﻿using System.Configuration;
+using MedSync.Application.Mappings;
 using MedSync.CrossCutting.Data;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -8,9 +10,9 @@ namespace MedSync.CrossCutting.IoC
 {
     public static class InjectDependencyContext
     {
-        public static IServiceCollection InjectDependency(this IServiceCollection services)
+        public static IServiceCollection InjectDependency(this IServiceCollection services, IConfiguration configuration)
         {
-            services.InjectDataBase();
+            services.InjectDataBase(configuration);
             services.InjectRepository();
             services.InjectService();
             services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
