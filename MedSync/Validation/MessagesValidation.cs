@@ -14,4 +14,6 @@ public static class MessagesValidation
         "O campo {PropertyName} deve ter no mínimo 3 caracteres.";
     public static string EmailInvalido =
         "Email inválido.";
+    public static string NaoEncontrado =
+        "{PropertyName} não foi encontrado.";
 }

@@ -16,12 +16,6 @@ public class PessoaValidation : AbstractValidator<Pessoa>
             .NotEmpty().WithMessage(MessagesValidation.CampoObrigatorio)
             .Must(IsValidCpf).WithMessage(MessagesValidation.CPFInvalido);
 
-        When(p => string.IsNullOrWhiteSpace(p.CPF), () =>
-        {
-            RuleFor(p => p.CPF)
-                .Must(pessoaRepository.CPFExiste).WithMessage(MessagesValidation.CPFCadastrado);
-        });
-            
         RuleFor(p => p.Nome)
             .NotEmpty().WithMessage(MessagesValidation.CampoObrigatorio)
             .MinimumLength(3).WithMessage(MessagesValidation.NomeInvalido);
@@ -36,8 +30,20 @@ public class PessoaValidation : AbstractValidator<Pessoa>
         {
             RuleFor(p => p.CriadoEm)
                 .NotEmpty().WithMessage(MessagesValidation.CampoObrigatorio);
+
+            RuleFor(p => pessoaRepository.CPFExiste(p.CPF)).Equal(false)
+                .WithMessage(MessagesValidation.CPFCadastrado);
         });
-        
+
+        When(p => !cadastrar, () =>
+        {
+            RuleFor(p => p.Id)
+                .Must(pessoaRepository.Existe).WithMessage(MessagesValidation.NaoEncontrado);
+
+            RuleFor(p => p.ModificadoEm)
+                .NotEmpty().WithMessage(MessagesValidation.CampoObrigatorio);
+        });
+
     }
 
     #region MÉTODOSPRIVADOS

@@ -1,7 +1,6 @@
 ﻿using System.Data.Common;
 using MedSync.Domain.Entities;
 using MedSync.Domain.Interfaces;
-using MedSync.Infrastructure.DbContextRepository;
 using MedSync.Infrastructure.Repositories.Scripts;
 using Microsoft.AspNetCore.Http;
 using MySql.Data.MySqlClient;
@@ -12,7 +11,7 @@ namespace MedSync.Infrastructure.Repositories
 {
     public class PessoaRepository : BaseRepository, IPessoaRepository
     {
-        public PessoaRepository(MySqlConnection mySqlConnection, IHttpContextAccessor httpContextAccessor, ApplicationDbContext applicationDb) : base(mySqlConnection, httpContextAccessor, applicationDb) { }
+        public PessoaRepository(MySqlConnection mySqlConnection, IHttpContextAccessor httpContextAccessor) : base(mySqlConnection, httpContextAccessor) { }
 
         public async Task<bool> CreateAsync(Pessoa pessoa)
         {
@@ -35,7 +34,7 @@ namespace MedSync.Infrastructure.Repositories
             {
                 return await GenericGetOne<Pessoa>(sql, parametro);
             }
-            catch (DbException ex)
+            catch (DbException)
             {
                 throw;
             }

@@ -1,9 +1,7 @@
-﻿using AutoMapper;
-using MedSync.Application.Interfaces;
+﻿using MedSync.Application.Interfaces;
 using MedSync.Application.Responses;
 using Microsoft.AspNetCore.Mvc;
 using static MedSync.Application.Requests.PessoaRequest;
-using static MedSync.Application.Responses.PessoaResponse;
 
 namespace MedSync.API.Controllers
 {
@@ -27,8 +25,8 @@ namespace MedSync.API.Controllers
             return _response.Error ? BadRequest(_response) : Ok(_response);
         }
 
-        [ProducesResponseType(typeof(AdicionarPessoaResponse), 200)]
-        [ProducesResponseType(typeof(AdicionarPessoaResponse), 400)]
+        [ProducesResponseType(typeof(PessoaResponse), 200)]
+        [ProducesResponseType(typeof(PessoaResponse), 400)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetIdAsync(Guid id)
         {
@@ -36,8 +34,8 @@ namespace MedSync.API.Controllers
             return pessoa is null ? BadRequest(StatusCodes.Status204NoContent) : Ok(pessoa);
         }
 
-        [ProducesResponseType(typeof(AdicionarPessoaResponse), 200)]
-        [ProducesResponseType(typeof(AdicionarPessoaResponse), 400)]
+        [ProducesResponseType(typeof(PessoaResponse), 200)]
+        [ProducesResponseType(typeof(PessoaResponse), 400)]
         [HttpGet("cpf/{cpf}")]
         public async Task<IActionResult> GetCPFAsync(string cpf)
         {
@@ -51,6 +49,24 @@ namespace MedSync.API.Controllers
                 return BadRequest(ex.Message);
             }
             
+        }
+
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [HttpPut]
+        public async Task<IActionResult> UpdateAsync(AtualizarPessoaRequest pessoa)
+        {
+            _response = await _pessoaService.UpdateAsync(pessoa);
+            return _response.Error ? BadRequest(_response) : Ok(_response);
+        }
+
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(Guid id)
+        {
+            _response = await _pessoaService.DeleteAsync(id);
+            return _response.Error ? BadRequest(_response) : Ok(_response);
         }
     }
 }

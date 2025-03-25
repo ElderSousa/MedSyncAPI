@@ -60,6 +60,7 @@ public static class PessoaScripts
                 pessoas
             WHERE
                 Id = @Id
+                AND ExcluidoEm IS NULL
                 
         ";
     
@@ -71,6 +72,7 @@ public static class PessoaScripts
                 pessoas
             WHERE
                 CPF = @CPF
+                AND ExcluidoEm IS NULL
                 
         ";
     

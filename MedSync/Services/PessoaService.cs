@@ -7,7 +7,6 @@ using MedSync.Domain.Entities;
 using MedSync.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 using static MedSync.Application.Requests.PessoaRequest;
-using static MedSync.Application.Responses.PessoaResponse;
 
 namespace MedSync.Application.Services;
 
@@ -56,11 +55,11 @@ public class PessoaService : BaseService, IPessoaService
             return mapper.Map<PessoaResponse>(pessoa);
            
         }
-        catch (DbException ex)
+        catch (DbException)
         {
             throw;
         }
-        catch (AutoMapperMappingException ex)
+        catch (AutoMapperMappingException)
         {
             throw;
         }
@@ -86,25 +85,44 @@ public class PessoaService : BaseService, IPessoaService
         }
     }
 
-    public async Task<Response> UpdateAsync(Pessoa pessoa)
+    public async Task<Response> UpdateAsync(AtualizarPessoaRequest pessoaRequest)
     {
         try
         {
+            var pessoaResponse = mapper.Map<Pessoa>(pessoaRequest);
+            pessoaResponse.AdicionarBaseModel(null, DataHoraAtual(), false);
 
+            _response = ExecultarValidacaoResponse(new PessoaValidation(_pessoaRepository, false), pessoaResponse);
+            if (_response.Error) return _response;
+
+            if (!await _pessoaRepository.UpdateAsync(pessoaResponse))
+                return ReturnResponse("Atualização não obteve sucesso.", true);
         }
-        catch (DbException ex)
+        catch (DbException)
         {
-            return ReturnResponse(ex.Message, true);
+            throw;
         }
-        catch (AutoMapperMappingException ex)
+        catch (AutoMapperMappingException)
         {
-            return ReturnResponse(ex.Message, true);
+            throw;
         }
+
+        return ReturnResponseSuccess();
     }
     
 
-    public Task<Response> DeleteAsync(Guid id)
+    public async Task<Response> DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            if (!await _pessoaRepository.DeleteAsync(id))
+                return ReturnResponse("Exclusão não realizada.", true);
+
+            return ReturnResponseSuccess();
+        }
+        catch (DbException)
+        {
+            throw;
+        }
     }
 }

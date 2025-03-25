@@ -7,7 +7,7 @@ public class PessoaResponse
     public string? CPF { get; set; }
     public string? RG { get; set; }
     public string? Email { get; set; }
-    public char Sexo { get; set; }
+    public char? Sexo { get; set; }
     public DateTime DataNascimento { get; set; }
     public Guid? CriadoPor { get; private set; }
     public DateTime? CriadoEm { get; private set; }
