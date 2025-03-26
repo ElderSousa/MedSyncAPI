@@ -11,4 +11,5 @@ public interface IPessoaRepository
     Task<bool> DeleteAsync(Guid id);
     bool Existe(Guid id);
     bool CPFExiste(string? CPF);
+
 }

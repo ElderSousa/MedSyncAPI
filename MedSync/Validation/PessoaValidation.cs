@@ -31,7 +31,7 @@ public class PessoaValidation : AbstractValidator<Pessoa>
             RuleFor(p => p.CriadoEm)
                 .NotEmpty().WithMessage(MessagesValidation.CampoObrigatorio);
 
-            RuleFor(p => pessoaRepository.CPFExiste(p.CPF)).Equal(false)
+           RuleFor(p => pessoaRepository.CPFExiste(p.CPF)).Equal(false)
                 .WithMessage(MessagesValidation.CPFCadastrado);
         });
 

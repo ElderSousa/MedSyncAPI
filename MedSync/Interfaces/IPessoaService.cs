@@ -1,5 +1,4 @@
 ﻿using MedSync.Application.Responses;
-using MedSync.Domain.Entities;
 using static MedSync.Application.Requests.PessoaRequest;
 
 namespace MedSync.Application.Interfaces;
