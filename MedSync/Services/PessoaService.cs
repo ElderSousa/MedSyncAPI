@@ -1,11 +1,11 @@
-﻿using System.Data.Common;
-using AutoMapper;
+﻿using AutoMapper;
 using MedSync.Application.Interfaces;
 using MedSync.Application.Responses;
 using MedSync.Application.Validation;
 using MedSync.Domain.Entities;
 using MedSync.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using static MedSync.Application.Requests.PessoaRequest;
 
 namespace MedSync.Application.Services;
@@ -14,7 +14,10 @@ public class PessoaService : BaseService, IPessoaService
 {
     private Response _response = new();
     private readonly IPessoaRepository _pessoaRepository;
-    public PessoaService(IPessoaRepository pessoaRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor)
+    public PessoaService(IPessoaRepository pessoaRepository,
+        IMapper mapper,
+        IHttpContextAccessor httpContextAccessor,
+        ILogger<PessoaService> logger) : base(mapper, httpContextAccessor, logger)
     {
         _pessoaRepository = pessoaRepository;
     }
@@ -34,14 +37,12 @@ public class PessoaService : BaseService, IPessoaService
                 return ReturnResponse("Pessao não adicionada ", true);
 
         }
-        catch (DbException ex)
+        catch (Exception ex)
         {
-            return ReturnResponse(ex.Message, true);
+            _logger.LogError(ex, "CreateAsync");
+            throw;
         }
-        catch (AutoMapperMappingException ex)
-        {
-            return ReturnResponse(ex.Message, true);
-        }
+     
 
         return ReturnResponseSuccess();
     }
@@ -55,12 +56,9 @@ public class PessoaService : BaseService, IPessoaService
             return mapper.Map<PessoaResponse>(pessoa);
            
         }
-        catch (DbException)
+        catch (Exception ex)
         {
-            throw;
-        }
-        catch (AutoMapperMappingException)
-        {
+            _logger.LogError(ex, "GetIdAsync");
             throw;
         }
     }
@@ -73,15 +71,10 @@ public class PessoaService : BaseService, IPessoaService
             return mapper.Map<PessoaResponse>(pessoa);
 
         }
-        catch (DbException ex)
+        catch (Exception ex)
         {
-            Notificar(ex.Message);
-            return new PessoaResponse();
-        }
-        catch (AutoMapperMappingException ex)
-        {
-            Notificar(ex.Message);
-            return new PessoaResponse();
+            _logger.LogError(ex, "GetIdAsync");
+            throw;
         }
     }
 
@@ -98,12 +91,9 @@ public class PessoaService : BaseService, IPessoaService
             if (!await _pessoaRepository.UpdateAsync(pessoaResponse))
                 return ReturnResponse("Atualização não obteve sucesso.", true);
         }
-        catch (DbException)
+        catch (Exception ex)
         {
-            throw;
-        }
-        catch (AutoMapperMappingException)
-        {
+            _logger.LogError(ex, "GetIdAsync");
             throw;
         }
 
@@ -120,8 +110,9 @@ public class PessoaService : BaseService, IPessoaService
 
             return ReturnResponseSuccess();
         }
-        catch (DbException)
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "GetIdAsync");
             throw;
         }
     }

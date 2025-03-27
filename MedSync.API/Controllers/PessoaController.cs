@@ -1,5 +1,4 @@
-﻿using System.Data.Common;
-using MedSync.Application.Interfaces;
+﻿using MedSync.Application.Interfaces;
 using MedSync.Application.Responses;
 using Microsoft.AspNetCore.Mvc;
 using static MedSync.Application.Requests.PessoaRequest;
@@ -40,16 +39,8 @@ namespace MedSync.API.Controllers
         [HttpGet("cpf/{cpf}")]
         public async Task<IActionResult> GetCPFAsync(string cpf)
         {
-            try
-            {
-                var pessoa = await _pessoaService.GetCPFAsync(cpf);
-                return pessoa is null ? NoContent() : Ok(pessoa);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            
+            var pessoa = await _pessoaService.GetCPFAsync(cpf);
+            return pessoa is null ? NoContent() : Ok(pessoa);
         }
 
         [ProducesResponseType(typeof(Response), 200)]
@@ -57,16 +48,8 @@ namespace MedSync.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateAsync(AtualizarPessoaRequest pessoa)
         {
-            try
-            {
-                _response = await _pessoaService.UpdateAsync(pessoa);
-                return _response.Error ? BadRequest(_response) : Ok(_response);
-            }
-            catch (DbException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-           
+            _response = await _pessoaService.UpdateAsync(pessoa);
+            return _response.Error ? BadRequest(_response) : Ok(_response);
         }
 
         [ProducesResponseType(typeof(Response), 200)]

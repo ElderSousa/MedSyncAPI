@@ -2,6 +2,7 @@
 using FluentValidation;
 using MedSync.Application.Responses;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace MedSync.Application.Services
 {
@@ -9,10 +10,12 @@ namespace MedSync.Application.Services
     {
         protected IMapper mapper;
         private HttpContext? _context;
-        public BaseService(IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        protected ILogger _logger;
+        public BaseService(IMapper mapper, IHttpContextAccessor httpContextAccessor, ILogger logger)
         {
             this.mapper = mapper;
             _context = httpContextAccessor.HttpContext;
+            _logger = logger;
         }
 
         protected static Response ReturnResponse(string status, bool error)
@@ -62,5 +65,6 @@ namespace MedSync.Application.Services
         protected static DateTime DataHoraAtual() => DateTime.UtcNow.AddHours(-3);
 
         private static string ObterErro(Exception exception) => exception.InnerException is not null ? exception.InnerException.Message : exception.Message;
+
     }
 }
