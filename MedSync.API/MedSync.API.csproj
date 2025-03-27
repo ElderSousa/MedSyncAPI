@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Users\Pc\source\repos\MedSync.CrossCutting\MedSync.CrossCutting.csproj" />
+    <ProjectReference Include="..\MedSync.CroosCutting\MedSync.CrossCutting.csproj" />
   </ItemGroup>
 
 </Project>
