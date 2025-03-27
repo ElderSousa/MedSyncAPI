@@ -11,9 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedSync.API", "MedSync.API\
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedSync.CrossCutting", "..\Users\Pc\source\repos\MedSync.CrossCutting\MedSync.CrossCutting.csproj", "{BC2CB1D7-C539-410E-85F5-4F4F74180132}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedSync.Infrastructure", "MedSync.Infrastructure\MedSync.Infrastructure.csproj", "{E25D84C6-083B-4CD6-BC5C-069DC92FE9D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedSync.Infrastructure", "..\Users\Pc\source\repos\MedSync.Infrastructure\MedSync.Infrastructure.csproj", "{C28A36AC-30C1-46B1-BA4A-A8D1238F2F74}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedSync.CrossCutting", "MedSync.CroosCutting\MedSync.CrossCutting.csproj", "{B0A2A5F5-E9BC-47E3-AD39-7650376373CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,14 +37,14 @@ Global
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BC2CB1D7-C539-410E-85F5-4F4F74180132}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC2CB1D7-C539-410E-85F5-4F4F74180132}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC2CB1D7-C539-410E-85F5-4F4F74180132}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC2CB1D7-C539-410E-85F5-4F4F74180132}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C28A36AC-30C1-46B1-BA4A-A8D1238F2F74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C28A36AC-30C1-46B1-BA4A-A8D1238F2F74}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C28A36AC-30C1-46B1-BA4A-A8D1238F2F74}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C28A36AC-30C1-46B1-BA4A-A8D1238F2F74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E25D84C6-083B-4CD6-BC5C-069DC92FE9D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E25D84C6-083B-4CD6-BC5C-069DC92FE9D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E25D84C6-083B-4CD6-BC5C-069DC92FE9D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E25D84C6-083B-4CD6-BC5C-069DC92FE9D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0A2A5F5-E9BC-47E3-AD39-7650376373CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0A2A5F5-E9BC-47E3-AD39-7650376373CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0A2A5F5-E9BC-47E3-AD39-7650376373CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0A2A5F5-E9BC-47E3-AD39-7650376373CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
