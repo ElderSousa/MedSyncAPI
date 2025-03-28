@@ -10,12 +10,12 @@ namespace MedSync.Application.Services
     {
         protected IMapper mapper;
         private HttpContext? _context;
-        protected ILogger _logger;
+        protected ILogger logger;
         public BaseService(IMapper mapper, IHttpContextAccessor httpContextAccessor, ILogger logger)
         {
             this.mapper = mapper;
             _context = httpContextAccessor.HttpContext;
-            _logger = logger;
+            this.logger = logger;
         }
 
         protected static Response ReturnResponse(string status, bool error)

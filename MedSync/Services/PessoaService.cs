@@ -39,7 +39,7 @@ public class PessoaService : BaseService, IPessoaService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "CreateAsync");
+            logger.LogError(ex, "CreateAsync");
             throw;
         }
      
@@ -58,7 +58,7 @@ public class PessoaService : BaseService, IPessoaService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "GetIdAsync");
+            logger.LogError(ex, "GetIdAsync");
             throw;
         }
     }
@@ -73,7 +73,7 @@ public class PessoaService : BaseService, IPessoaService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "GetIdAsync");
+            logger.LogError(ex, "GetIdAsync");
             throw;
         }
     }
@@ -93,7 +93,7 @@ public class PessoaService : BaseService, IPessoaService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "GetIdAsync");
+            logger.LogError(ex, "GetIdAsync");
             throw;
         }
 
@@ -107,13 +107,13 @@ public class PessoaService : BaseService, IPessoaService
         {
             if (!await _pessoaRepository.DeleteAsync(id))
                 return ReturnResponse("Exclusão não realizada.", true);
-
-            return ReturnResponseSuccess();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "GetIdAsync");
+            logger.LogError(ex, "GetIdAsync");
             throw;
         }
+
+        return ReturnResponseSuccess();
     }
 }

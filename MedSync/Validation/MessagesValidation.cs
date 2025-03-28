@@ -15,5 +15,8 @@ public static class MessagesValidation
     public static string EmailInvalido =
         "Email inválido.";
     public static string NaoEncontrado =
-        "{PropertyName} não foi encontrado.";
+        "{PropertyName} não foi encontrado."; 
+    public static string CEPInvalido =
+        "CEP inválido. Formato esperado: 12345-678 ou 12345678.";
+
 }
