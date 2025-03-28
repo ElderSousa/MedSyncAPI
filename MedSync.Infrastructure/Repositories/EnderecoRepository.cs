@@ -14,28 +14,16 @@ public class EnderecoRepository : BaseRepository, IEnderecoRepository
     public async Task<bool> CreateAsync(Endereco endereco)
     {
         var sql = EnderecoScritps.Insert;
-        try
-        {
-            return await GenericExecuteAsync(sql, endereco);
-        }
-        catch (DbException)
-        {
-            throw;
-        }
+
+        return await GenericExecuteAsync(sql, endereco);
     }
 
     public async Task<Endereco?> GetIdAsync(Guid id)
     {
         var sql = $"{EnderecoScritps.SelectBase}{EnderecoScritps.WhereId}";
         var parametro = new { Id = id };
-        try
-        {
-            return await GenericGetOne<Endereco>(sql, parametro);
-        }
-        catch (DbException)
-        {
-            throw;
-        }
+
+        return await GenericGetOne<Endereco>(sql, parametro);
     }
 
     public async Task<Endereco?> GetCEPAsync(string cep)
@@ -44,47 +32,27 @@ public class EnderecoRepository : BaseRepository, IEnderecoRepository
         var parametro = new { CEP = cep };
 
         return await GenericGetOne<Endereco>(sql, parametro);
-
-
     }
 
     public async Task<bool> UpdateAsync(Endereco endereco)
     {
         var sql = EnderecoScritps.Update;
-        try
-        {
-            return await GenericExecuteAsync(sql, endereco);
-        }
-        catch (DbException)
-        {
-            throw;
-        }
+
+        return await GenericExecuteAsync(sql, endereco);
     }
     public async Task<bool> DeleteAsync(Guid id)
     {
         var sql = EnderecoScritps.Delete;
-        var parametro = new { Id = id };
-        try
-        {
-            return await GenericExecuteAsync(sql, parametro);
-        }
-        catch (DbException)
-        {
-            throw;
-        }
+        var parametro = new { Id = id, ModificadoEm = DataHoraAtual() };
+
+        return await GenericExecuteAsync(sql, parametro);
     }
 
     public bool Existe(Guid id)
     {
         var sql = EnderecoScritps.Existe;
         var parametros = new { Id = id };
-        try
-        {
-            return JaExiste(sql, parametros);
-        }
-        catch (DbException)
-        {
-            throw;
-        }
+
+        return JaExiste(sql, parametros);
     }
 }

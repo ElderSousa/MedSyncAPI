@@ -18,5 +18,7 @@ public static class MessagesValidation
         "{PropertyName} não foi encontrado."; 
     public static string CEPInvalido =
         "CEP inválido. Formato esperado: 12345-678 ou 12345678.";
+    public static string NumeroInvalido =
+        "Número inválido. Formato esperado: xx-xxxxx-xxxx.";
 
 }

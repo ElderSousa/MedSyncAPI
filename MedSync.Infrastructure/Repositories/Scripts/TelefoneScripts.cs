@@ -1,58 +1,43 @@
 ﻿namespace MedSync.Infrastructure.Repositories.Scripts;
 
-public class EnderecoScritps
+public class TelefoneScripts
 {
     internal static readonly string SelectBase =
         @"
-            SELECT
-               Id, 
-               PacienteId,
-               MedicoId,
-               Logradouro,
-               Numero,
-               Complemento,
-               Bairro,
-               Cidade,
-               Estado,
-               CEP,
-               CriadoEm,
-               CriadoPor,
-               ModificadoEm,
-               ModificadoPor
+            SELECT 
+                Id,
+                PacienteId,
+                MedicoId,
+                Numero,
+                Tipo,
+                CriadoEm,
+                CriadoPor,
+                ModificadoEm,
+                ModificadoPor
             FROM
-                enderecos
+                telefones
             WHERE
-                ExcluidoEm IS NULL      
+                ExcluidoEm IS NULL    
         ";
 
     internal static readonly string Insert =
         @"
-            INSERT INTO enderecos(
-                Id, 
+            INSERT INTO telefones(
+                Id,
                 PacienteId,
                 MedicoId,
-                Logradouro,
                 Numero,
-                Complemento,
-                Bairro,
-                Cidade,
-                Estado,
-                CEP,
+                Tipo,
                 CriadoEm,
                 CriadoPor,
                 ModificadoEm,
                 ModificadoPor
             )VALUES(
-                @Id, 
+                @Id,
                 @PacienteId,
                 @MedicoId,
-                @Logradouro,
                 @Numero,
-                @Complemento,
-                @Bairro,
-                @Cidade,
-                @Estado,
-                @CEP,
+                @Tipo,
                 @CriadoEm,
                 @CriadoPor,
                 @ModificadoEm,
@@ -65,49 +50,39 @@ public class EnderecoScritps
             AND Id = @Id
         ";
 
-    internal static readonly string WhereCEP =
+    internal static readonly string WhereNumero =
         @"
-            AND CEP = @CEP
+            AND Numero = @Numero
         ";
 
     internal static readonly string Update =
         @"
-            UPDATE enderecos SET
-                Logradouro = @Logradouro,
+            UPDATE telefones SET
                 Numero = @Numero,
-                Complemento = @Complemento,
-                Bairro = @Bairro,
-                Cidade = @Cidade,
-                Estado = @Estado,
-                CEP = @CEP,
+                Tipo = @Tipo,
                 ModificadoEm = @ModificadoEm,
                 ModificadoPor = @ModificadoPor
-
             WHERE
                 Id = @Id
                 AND ExcluidoEm IS NULL
         ";
-
     internal static readonly string Delete =
         @"
-            UPDATE enderecos SET
-               
+            UPDATE telefones SET
                 ModificadoEm = @ModificadoEm,
-                ExcluidoEm  = @ModificadoEm
-            WHERE 
-                Id = @Id
-                AND ExcluidoEm IS NULL
-        ";
-
-    internal static readonly string Existe =
-        @"
-            SELECT
-                COUNT(*)
-            FROM
-                enderecos
+                ExcluidoEm = @ModificadoEm
             WHERE
                 Id = @Id
                 AND ExcluidoEm IS NULL
-                
+        ";
+    internal static readonly string Existe =
+        @"
+            SELECT 
+                COUNT(*)
+            FROM 
+                telefones
+            WHERE
+                Id = @Id
+                AND ExcluidoEm IS NULL
         ";
 }
