@@ -1,4 +1,5 @@
-﻿using MedSync.Domain.Entities;
+﻿using Dapper;
+using MedSync.Domain.Entities;
 using MedSync.Domain.Interfaces;
 using MedSync.Infrastructure.Repositories.Scripts;
 using Microsoft.AspNetCore.Http;
@@ -22,7 +23,7 @@ public class MedicoRepository : BaseRepository, IMedicoRepository
     {
         var sql = MedicoScripts.SelectBase;
 
-        return await GenericGetList<Medico>(sql, null);
+        return await GetList(sql, null);
     }
 
     public async Task<Medico?> GetIdAsync(Guid id)
@@ -30,7 +31,7 @@ public class MedicoRepository : BaseRepository, IMedicoRepository
         var sql = $"{MedicoScripts.SelectBase}{MedicoScripts.WhereId}";
         var parametro = new {Id = id};
 
-        return await GenericGetOne<Medico>(sql, parametro);
+        return (await GetList(sql, parametro)).FirstOrDefault();
     }
 
     public async Task<Medico?> GetCRMAsync(string crm)
@@ -38,7 +39,7 @@ public class MedicoRepository : BaseRepository, IMedicoRepository
         var sql = $"{MedicoScripts.SelectBase}{MedicoScripts.WhereCRM}";
         var parametro = new { CRM = crm };
 
-        return await GenericGetOne<Medico>(sql, parametro);
+        return (await GetList(sql, parametro)).FirstOrDefault();
     }
 
     public async Task<bool> UpdateAsync(Medico medico)
@@ -71,4 +72,40 @@ public class MedicoRepository : BaseRepository, IMedicoRepository
 
         return JaExiste(sql, parametro);
     }
+
+    #region MÉTODOSPRIVADOS
+    private async Task<IEnumerable<Medico>> GetList(string sql, object? parametros)
+    {
+        var medicoDictionary = new Dictionary<Guid, Medico>();
+        try
+        {
+            using var connection = mySqlConnection;
+            return (await connection.QueryAsync<Medico, Pessoa, Telefone, Medico>(
+                sql,
+                (medico, pessoa, telefone) =>
+                {
+                    if (!medicoDictionary.TryGetValue(medico.Id, out var medicoEntry))
+                    {
+                        medicoEntry = medico;
+                        medicoEntry.Pessoa = pessoa;
+                        medicoEntry.Telefones = new();
+                        medicoDictionary.Add(medicoEntry.Id, medicoEntry);
+                    }
+
+                    if (telefone != null && !medicoEntry.Telefones.Any(t => t.Id == telefone.Id))
+                        medicoEntry.Telefones.Add(telefone);
+
+                    return medicoEntry;
+                },
+                parametros,
+                splitOn: "Id"
+                )).Distinct();
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+    #endregion
 }

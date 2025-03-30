@@ -17,6 +17,7 @@ public class MedicoResquest
 
     public class AtualizarMedicoRequest
     {
+        public Guid Id { get; set; }
         public Guid PessoaId { get; set; }
         public string? CRM { get; set; }
         public Especialidade Especialidade { get; set; }

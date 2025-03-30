@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using FluentValidation;
 using MedSync.Domain.Entities;
+using MedSync.Domain.Enum;
 using MedSync.Domain.Interfaces;
 
 namespace MedSync.Application.Validation;
@@ -11,13 +12,11 @@ public class MedicoValidation : AbstractValidator<Medico>
     {
         RuleFor(m => m.Id)
             .NotEmpty()
-            .WithMessage(MessagesValidation.CampoObrigatorio); 
-        
-        RuleFor(m => m.Especialidade)
-            .NotNull()
-            .IsInEnum()
             .WithMessage(MessagesValidation.CampoObrigatorio);
 
+        RuleFor(m => m.Especialidade)
+            .IsInEnum().WithMessage(MessagesValidation.CampoObrigatorio);
+           
         RuleFor(m => m.CRM)
             .NotEmpty()
             .WithMessage(MessagesValidation.CampoObrigatorio)
@@ -40,7 +39,7 @@ public class MedicoValidation : AbstractValidator<Medico>
                 .Must(medicoRepository.Existe)
                 .WithMessage(MessagesValidation.NaoEncontrado);
         
-            RuleFor(m => m.CriadoEm)
+            RuleFor(m => m.ModificadoEm)
                 .NotEmpty()
                 .WithMessage(MessagesValidation.CampoObrigatorio);
         });

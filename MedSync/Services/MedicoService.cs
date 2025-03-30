@@ -117,13 +117,13 @@ namespace MedSync.Application.Services
                 if (_response.Error)
                     throw new ArgumentException(_response.Status);
 
+                if (!await _medicoRepository.UpdateAsync(medico))
+                    throw new InvalidOperationException("Falha na atualização de médico em nossa base de dados.");
+
                 await _pessoaService.UpdateAsync(medicoRequest.Pessoa);
 
                 foreach (var telefone in medicoRequest.Telefones)
                     await _telefoneService.UpdateAsync(telefone);
-
-                if (!await _medicoRepository.UpdateAsync(medico))
-                    throw new InvalidOperationException("Falha na atualização de médico em nossa base de dados.");
             }
             catch (Exception ex)
             {

@@ -26,6 +26,9 @@ public class PessoaValidation : AbstractValidator<Pessoa>
         RuleFor(p => p.Email)
             .EmailAddress().WithMessage(MessagesValidation.EmailInvalido);
 
+        RuleFor(p => p.Sexo)
+             .MaximumLength(1).WithMessage(MessagesValidation.CaractereInvalido);
+
         When(p => cadastrar, () =>
         {
             RuleFor(p => p.CriadoEm)

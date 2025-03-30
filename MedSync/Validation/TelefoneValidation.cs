@@ -13,9 +13,7 @@ public class TelefoneValidation : AbstractValidator<Telefone>
             .WithMessage(MessagesValidation.CampoObrigatorio); 
 
         RuleFor(t => t.Tipo)
-            .NotNull()
-            .IsInEnum()
-            .WithMessage(MessagesValidation.CampoObrigatorio);
+            .IsInEnum().WithMessage(MessagesValidation.CampoObrigatorio);
 
         RuleFor(t => t.Numero)
             .NotEmpty()
