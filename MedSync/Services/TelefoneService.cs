@@ -29,10 +29,11 @@ public class TelefoneService : BaseService, ITelefoneService
             telefone.AdicionarBaseModel(null, DataHoraAtual(), true);
 
             _response = ExecultarValidacaoResponse(new TelefoneValidation(_telefoneRepository, true), telefone);
-            if (_response.Error) return _response;
+            if (_response.Error) 
+                throw new ArgumentException(_response.Status);
 
             if (!await _telefoneRepository.CreateAsync(telefone))
-                ReturnResponse("Telefone não adicionado em nossa base de dados.", true);
+                throw new InvalidOperationException("Telefone não adicionado em nossa base de dados.");
         }
         catch (Exception ex)
         {
@@ -77,10 +78,11 @@ public class TelefoneService : BaseService, ITelefoneService
             telefone.AdicionarBaseModel(null, DataHoraAtual(), false);
 
             _response = ExecultarValidacaoResponse(new TelefoneValidation(_telefoneRepository, false), telefone);
-            if (_response.Error) return _response;
+            if (_response.Error)
+                throw new ArgumentException(_response.Status);
 
-            if (!await _telefoneRepository.UpdateAsync(telefone)) 
-                return ReturnResponse("Telefone não atualizado.", true);
+            if (!await _telefoneRepository.UpdateAsync(telefone))
+                throw new InvalidOperationException("Telefone não atualizado em nossa base de dados.");
         }
         catch (Exception ex)
         {
@@ -95,7 +97,7 @@ public class TelefoneService : BaseService, ITelefoneService
         try
         {
             if (await _telefoneRepository.DeleteAsync(id))
-                return ReturnResponse("Telefone não excluído da nossa base de dados.", true);
+                throw new InvalidOperationException("Telefone não excluído da nossa base de dados.");
         }
         catch (Exception ex)
         {

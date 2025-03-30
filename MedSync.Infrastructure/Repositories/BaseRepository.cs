@@ -40,7 +40,7 @@ public class BaseRepository : IDisposable
         }
     }
 
-    protected async Task<IEnumerable<T>> GenericGetList<T>(string sql, object parametros)
+    protected async Task<IEnumerable<T>> GenericGetList<T>(string sql, object? parametros)
     {
         try
         {

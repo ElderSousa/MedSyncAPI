@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using AutoMapper;
 using FluentValidation;
 using MedSync.Application.Responses;
 using Microsoft.AspNetCore.Http;
@@ -56,6 +57,20 @@ namespace MedSync.Application.Services
             var validator = validacao.Validate(entidade);
             if (validator.IsValid) return ReturnResponseSuccess();
             return ReturnResponse(validator.ToString(), true);
+        }
+
+        protected Guid ObterUsuarioLogadoId()
+        {
+            try
+            {
+                var identity = _context?.User.Identity as ClaimsIdentity;
+                var usuarioId = identity?.FindFirst("UserId")?.Value;
+                return usuarioId != null ? Guid.Parse(usuarioId) : Guid.Empty;
+            }
+            catch (Exception)
+            {
+                return Guid.Empty;
+            }
         }
 
         protected static string Notificar(string mensagem) => mensagem;

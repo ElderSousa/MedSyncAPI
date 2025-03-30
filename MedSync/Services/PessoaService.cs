@@ -27,14 +27,14 @@ public class PessoaService : BaseService, IPessoaService
         try
         {
             var pessoa = mapper.Map<Pessoa>(pessoaRequest);
-            pessoa.AdicionarBaseModel(null, DataHoraAtual(), true);
+            pessoa.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
 
             _response = ExecultarValidacaoResponse(new PessoaValidation(_pessoaRepository, true), pessoa);
             if (_response.Error) 
-                return _response;
+                throw new ArgumentException(_response.Status);
 
             if (!await _pessoaRepository.CreateAsync(pessoa)) 
-                return ReturnResponse("Pessao não adicionada ", true);
+                throw new InvalidOperationException("Falha ao criar pessoa.");
 
         }
         catch (Exception ex)
@@ -51,10 +51,7 @@ public class PessoaService : BaseService, IPessoaService
     {
         try
         {
-            var pessoa = await _pessoaRepository.GetIdAsync(id);
-
-            return mapper.Map<PessoaResponse>(pessoa);
-           
+            return mapper.Map<PessoaResponse>(await _pessoaRepository.GetIdAsync(id));  
         }
         catch (Exception ex)
         {
@@ -67,9 +64,7 @@ public class PessoaService : BaseService, IPessoaService
     {
         try
         {
-            var pessoa = await _pessoaRepository.GetCPFAsync(cpf);
-            return mapper.Map<PessoaResponse>(pessoa);
-
+            return mapper.Map<PessoaResponse>(await _pessoaRepository.GetCPFAsync(cpf));
         }
         catch (Exception ex)
         {
@@ -86,10 +81,11 @@ public class PessoaService : BaseService, IPessoaService
             pessoaResponse.AdicionarBaseModel(null, DataHoraAtual(), false);
 
             _response = ExecultarValidacaoResponse(new PessoaValidation(_pessoaRepository, false), pessoaResponse);
-            if (_response.Error) return _response;
+            if (_response.Error)
+                throw new ArgumentException(_response.Status);
 
             if (!await _pessoaRepository.UpdateAsync(pessoaResponse))
-                return ReturnResponse("Atualização não obteve sucesso.", true);
+                throw new InvalidOperationException("Falha na atualização em nossa base de dados.");
         }
         catch (Exception ex)
         {

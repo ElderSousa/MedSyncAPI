@@ -19,6 +19,10 @@ public static class MessagesValidation
     public static string CEPInvalido =
         "CEP inválido. Formato esperado: 12345-678 ou 12345678.";
     public static string NumeroInvalido =
-        "Número inválido. Formato esperado: xx-xxxxx-xxxx.";
+        "Número inválido. Formato esperado: xx-xxxxx-xxxx."; 
+   public static string CRMInvalido =
+        "CRM inválido. O formato esperado é '123456/SP' ou apenas números como 1234 ou 123456."; 
+    public static string CRMExiste =
+        "CRM encontra-se cadastrado em nossa base de dados.";
 
 }

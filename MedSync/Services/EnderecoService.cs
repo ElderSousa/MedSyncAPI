@@ -27,10 +27,11 @@ namespace MedSync.Application.Services
                 endereco.AdicionarBaseModel(null, DataHoraAtual(), true);
 
                 _response = ExecultarValidacaoResponse(new EnderecoValidation(_enderecoRepository, true), endereco);
-                if (_response.Error) return _response;
+                if (_response.Error) 
+                    throw new ArgumentException(_response.Status);
 
                 if (!await _enderecoRepository.CreateAsync(endereco))
-                    return ReturnResponse("Endereço não adicionado a nossa base de dados.", true);
+                    throw new InvalidOperationException("Endereço não adicionado a nossa base de dados.");
 
             }
             catch (Exception ex)
@@ -77,10 +78,11 @@ namespace MedSync.Application.Services
                 endereco.AdicionarBaseModel(null, DataHoraAtual(), false);
 
                 _response = ExecultarValidacaoResponse(new EnderecoValidation(_enderecoRepository, false), endereco);
-                if (_response.Error) return _response;
-                
+                if (_response.Error) 
+                    throw new ArgumentException(_response.Status);
+
                 if (!await _enderecoRepository.UpdateAsync(endereco))
-                    ReturnResponse("Endereço não atualizado.", true);
+                    throw new InvalidOperationException("Endereço não atualizado em nossa base de dados.");
 
             }
             catch (Exception ex)
@@ -97,7 +99,7 @@ namespace MedSync.Application.Services
             try
             {
                 if (!await _enderecoRepository.DeleteAsync(id))
-                    return ReturnResponse("Endereço não excluído da nossa base de dados.", false);
+                    throw new ArgumentException("Endereço não excluído da nossa base de dados.");
                 return ReturnResponseSuccess();
             }
             catch (Exception ex)
