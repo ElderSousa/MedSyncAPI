@@ -27,6 +27,8 @@ public static class MessagesValidation
     public static string CRMExiste =
         "CRM encontra-se cadastrado em nossa base de dados.";
     public static string CaractereInvalido =
-        "O campo {PropertyName} deve possui somente um caracter."; 
+        "O campo {PropertyName} deve possui somente um caracter.";
+    public static string AgendamentoPeriodo =
+        "Não há disponibilidade de agendamento para o horário informado.";
 
 }

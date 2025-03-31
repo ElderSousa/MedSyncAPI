@@ -6,7 +6,7 @@ public class MedicoResponse
 {
     public Guid Id { get; private set; }
     public string? CRM { get; set; }
-    public Especialidade Especialidade { get; set; }
+    public MedicoEspecialidade Especialidade { get; set; }
     public Guid? CriadoPor { get; private set; }
     public DateTime? CriadoEm { get; private set; }
     public Guid? ModificadoPor { get; private set; }

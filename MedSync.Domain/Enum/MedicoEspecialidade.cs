@@ -1,6 +1,6 @@
 ﻿namespace MedSync.Domain.Enum;
 
-public enum Especialidade
+public enum MedicoEspecialidade
 {
     Clinico = 0,
     Cadiologista = 1,

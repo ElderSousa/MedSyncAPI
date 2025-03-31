@@ -23,7 +23,7 @@ public class MedicoRepository : BaseRepository, IMedicoRepository
     {
         var sql = MedicoScripts.SelectBase;
 
-        return await GetList(sql, null);
+        return await GetListAsync(sql, null);
     }
 
     public async Task<Medico?> GetIdAsync(Guid id)
@@ -31,7 +31,7 @@ public class MedicoRepository : BaseRepository, IMedicoRepository
         var sql = $"{MedicoScripts.SelectBase}{MedicoScripts.WhereId}";
         var parametro = new {Id = id};
 
-        return (await GetList(sql, parametro)).FirstOrDefault();
+        return (await GetListAsync(sql, parametro)).FirstOrDefault();
     }
 
     public async Task<Medico?> GetCRMAsync(string crm)
@@ -39,7 +39,7 @@ public class MedicoRepository : BaseRepository, IMedicoRepository
         var sql = $"{MedicoScripts.SelectBase}{MedicoScripts.WhereCRM}";
         var parametro = new { CRM = crm };
 
-        return (await GetList(sql, parametro)).FirstOrDefault();
+        return (await GetListAsync(sql, parametro)).FirstOrDefault();
     }
 
     public async Task<bool> UpdateAsync(Medico medico)
@@ -74,7 +74,7 @@ public class MedicoRepository : BaseRepository, IMedicoRepository
     }
 
     #region MÉTODOSPRIVADOS
-    private async Task<IEnumerable<Medico>> GetList(string sql, object? parametros)
+    private async Task<IEnumerable<Medico>> GetListAsync(string sql, object? parametros)
     {
         var medicoDictionary = new Dictionary<Guid, Medico>();
         try

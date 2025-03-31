@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MedSync.Application.Responses;
 using MedSync.Domain.Entities;
+using static MedSync.Application.Requests.AgendamentoRequest;
 using static MedSync.Application.Requests.EnderecoRequest;
 using static MedSync.Application.Requests.MedicoResquest;
 using static MedSync.Application.Requests.PacienteRequest;
@@ -31,5 +32,10 @@ public class DomainToDTOMappingProfile : Profile
             .ForMember(dest => dest.Telefones, opt => opt.MapFrom(src => src.Telefones)).ReverseMap();
         CreateMap<Paciente, AtualizarPacienteRequest>().ReverseMap();
         CreateMap<Paciente, AdicionarPacienteRequest>().ReverseMap();
+        CreateMap<Agendamento, AgendamentoResponse>()
+            .ForMember(dest => dest.Paciente.Telefones, opt => opt.MapFrom(src => src.Paciente.Telefones))
+            .ForMember(dest => dest.Medico.Telefones, opt => opt.MapFrom(src => src.Medico.Telefones)).ReverseMap();
+        CreateMap<Agendamento, AdicionarAgendamentoRequest>().ReverseMap();
+        CreateMap<Agendamento, AtualizarAgendamentoResquet>().ReverseMap();
     }
 }
