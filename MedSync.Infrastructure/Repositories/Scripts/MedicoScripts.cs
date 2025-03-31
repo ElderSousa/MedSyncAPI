@@ -81,7 +81,7 @@ public class MedicoScripts
     internal static readonly string Delete =
         @"
             UPDATE medicos SET
-                ModificadoEm = @ModificadoEm
+                ModificadoEm = @ModificadoEm,
                 ExcluidoEm = @ModificadoEm
             WHERE 
                 Id = @Id

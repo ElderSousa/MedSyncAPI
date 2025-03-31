@@ -52,9 +52,9 @@ public class MedicoRepository : BaseRepository, IMedicoRepository
     public async Task<bool> DeleteAsync(Guid id)
     {
         var sql = MedicoScripts.Delete;
-        var paramtros = new {Id = id};
+        var parametros = new {Id = id, ModificadoEm = DataHoraAtual() };
 
-        return await GenericExecuteAsync(sql, id);
+        return await GenericExecuteAsync(sql, parametros);
     }
 
     public bool CRMExiste(string? crm)

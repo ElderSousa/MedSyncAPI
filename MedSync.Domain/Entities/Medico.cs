@@ -4,7 +4,7 @@ namespace MedSync.Domain.Entities
 {
     public class Medico : BaseModel
     {
-        public Guid PessoaId { get; set; }
+        public Guid? PessoaId { get; set; }
         public string? CRM { get; set; }
         public Especialidade Especialidade { get; set; }
 

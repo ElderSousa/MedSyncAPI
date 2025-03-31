@@ -9,9 +9,9 @@ namespace MedSync.Application.Services
 {
     public class BaseService
     {
-        protected IMapper mapper;
+        protected readonly IMapper mapper;
         private HttpContext? _context;
-        protected ILogger logger;
+        protected readonly ILogger logger;
         public BaseService(IMapper mapper, IHttpContextAccessor httpContextAccessor, ILogger logger)
         {
             this.mapper = mapper;

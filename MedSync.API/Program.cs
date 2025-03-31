@@ -1,4 +1,5 @@
 
+using System.Text.Json.Serialization;
 using MedSync.CrossCutting.Data;
 using MedSync.CrossCutting.IoC;
 using MedSync.CrossCutting.Middlewares;
@@ -6,7 +7,12 @@ using MedSync.CrossCutting.Middlewares;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
 builder.Services.InjectDependency();
 builder.Services.InjectDataBase();
 

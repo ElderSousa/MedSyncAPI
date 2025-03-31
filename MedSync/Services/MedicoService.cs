@@ -13,9 +13,9 @@ namespace MedSync.Application.Services
     public class MedicoService : BaseService, IMedicoService
     {
         private Response _response = new();
-        private IMedicoRepository _medicoRepository;
-        private IPessoaService _pessoaService;
-        private ITelefoneService _telefoneService;
+        private readonly IMedicoRepository _medicoRepository;
+        private readonly IPessoaService _pessoaService;
+        private readonly ITelefoneService _telefoneService;
         public MedicoService(IMedicoRepository medicoRepository,
             IPessoaService pessoaService,
             ITelefoneService telefoneService,
