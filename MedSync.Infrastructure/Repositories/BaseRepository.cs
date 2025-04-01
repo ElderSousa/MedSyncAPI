@@ -16,9 +16,10 @@ public class BaseRepository : IDisposable
     {
         try
         {
-            using var connection = CreateConnection();
-            await connection.OpenAsync();
-            return await connection.ExecuteAsync(sql, parametros) > 0;
+            if (mySqlConnection.State != System.Data.ConnectionState.Open)
+                await mySqlConnection.OpenAsync();
+
+            return await mySqlConnection.ExecuteAsync(sql, parametros) > 0;
         }
         catch
         {
@@ -30,9 +31,10 @@ public class BaseRepository : IDisposable
     {
         try
         {
-            using var connection = CreateConnection();
-            await connection.OpenAsync();
-            return await connection.QueryFirstOrDefaultAsync<T>(sql, parametros);
+            if (mySqlConnection.State != System.Data.ConnectionState.Open)
+                await mySqlConnection.OpenAsync();
+
+            return await mySqlConnection.QueryFirstOrDefaultAsync<T>(sql, parametros);
         }
         catch
         {
@@ -44,9 +46,10 @@ public class BaseRepository : IDisposable
     {
         try
         {
-            using var connection = CreateConnection();
-            await connection.OpenAsync();
-            return await connection.QueryAsync<T>(sql, parametros);
+            if (mySqlConnection.State != System.Data.ConnectionState.Open)
+                await mySqlConnection.OpenAsync();
+
+            return await mySqlConnection.QueryAsync<T>(sql, parametros);
         }
         catch
         {
@@ -58,9 +61,10 @@ public class BaseRepository : IDisposable
     {
         try
         {
-            using var connection = CreateConnection();
-            connection.Open();
-            return connection.QueryFirstOrDefault<int?>(sql, parametros) > 0;
+            if (mySqlConnection.State != System.Data.ConnectionState.Open)
+                mySqlConnection.Open();
+
+            return mySqlConnection.QueryFirstOrDefault<int?>(sql, parametros) > 0;
         }
         catch
         {
@@ -71,5 +75,11 @@ public class BaseRepository : IDisposable
     protected MySqlConnection CreateConnection() => new MySqlConnection(mySqlConnection.ConnectionString);
     
     protected static DateTime DataHoraAtual() => DateTime.UtcNow.AddHours(-3);
-    public void Dispose() => mySqlConnection.Dispose();
+    public void Dispose()
+    {
+        if (mySqlConnection.State == System.Data.ConnectionState.Open)
+            mySqlConnection.Close();
+
+        mySqlConnection.Dispose();
+    }
 }

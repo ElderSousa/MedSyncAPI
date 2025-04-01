@@ -126,6 +126,7 @@ public class AgendamentoScritps
                 AgendadoPara = @AgendadoPara,
                 Status = @Status,
                 Observacao = @Observacao,
+                TipoAgendamento = @TipoAgendamento,
                 ModificadoEm = @ModificadoEm
             WHERE
                 Id = @Id
