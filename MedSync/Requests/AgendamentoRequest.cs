@@ -15,9 +15,6 @@ public class AgendamentoRequest
         public AgendamentoTipo TipoAgendamento { get; set; }
         public AgendamentoStatus Status { get; set; }
 
-
-        public AdicionarPacienteRequest Paciente { get; set; } = new();
-        public AdicionarMedicoRequest Medico { get; set; } = new();
     }
 
     public class AtualizarAgendamentoResquet
@@ -30,8 +27,5 @@ public class AgendamentoRequest
         public AgendamentoTipo TipoAgendamento { get; set; }
         public AgendamentoStatus Status { get; set; }
 
-
-        public AtualizarPacienteRequest Paciente { get; set; } = new();
-        public AtualizarMedicoRequest Medico { get; set; } = new();
     }
 }

@@ -40,8 +40,11 @@ public class AgendamentoService : BaseService, IAgendamentoSevice
             if (_response.Error)
                 throw new ArgumentException(_response.Status);
 
-            agendamento.Paciente = mapper.Map<Paciente>(await _pacienteService.GetIdAsync(agendamentoRequest.PacienteId));
-            agendamento.Medico = mapper.Map<Medico>(await _medicoService.GetIdAsync(agendamentoRequest.MedicoId));
+            agendamento.Paciente = mapper.Map<Paciente>(await _pacienteService.GetIdAsync(agendamentoRequest.PacienteId)) ??
+                throw new KeyNotFoundException("Paciente não encontrado em nossa base de dados.");
+
+            agendamento.Medico = mapper.Map<Medico>(await _medicoService.GetIdAsync(agendamentoRequest.MedicoId)) ??
+                 throw new KeyNotFoundException("Medico não encontrado em nossa base de dados.");
 
             if (!await _agendamentoRepository.CreateAsync(agendamento))
                 throw new InvalidOperationException("Falha ao criar agendamento.");
@@ -118,9 +121,6 @@ public class AgendamentoService : BaseService, IAgendamentoSevice
             _response = ExecultarValidacaoResponse(new AgendamentoValidation(_agendamentoRepository, false), agendamento);
             if (_response.Error)
                 throw new ArgumentException(_response.Status);
-
-            await _pacienteService.UpdateAsync(agendamentoResquest.Paciente);
-            await _medicoService.UpdateAsync(agendamentoResquest.Medico);
 
             if (!await _agendamentoRepository.UpdateAsync(agendamento))
                 throw new InvalidOperationException("Falha ao atualiza agendamento.");

@@ -63,9 +63,9 @@ public class PacienteRepository : BaseRepository, IPacienteRepository
         var pacienteDictionary = new Dictionary<Guid, Paciente>();
         try
         {
-            using var connection = mySqlConnection;
-
-            return (await connection.QueryAsync<Paciente, Pessoa, Endereco, Telefone, Paciente>(
+            using (var connection = mySqlConnection)
+            {
+                return (await mySqlConnection.QueryAsync<Paciente, Pessoa, Endereco, Telefone, Paciente>(
                 sql,
                 (paciente, pessoa, endereco, telefone) =>
                 {
@@ -84,7 +84,9 @@ public class PacienteRepository : BaseRepository, IPacienteRepository
                 },
                 parametros,
                 splitOn: "Id"
-                )).Distinct();
+                )).Distinct(); 
+            }
+            
         }
         catch (Exception)
         {

@@ -33,8 +33,13 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<Paciente, AtualizarPacienteRequest>().ReverseMap();
         CreateMap<Paciente, AdicionarPacienteRequest>().ReverseMap();
         CreateMap<Agendamento, AgendamentoResponse>()
-            .ForMember(dest => dest.Paciente.Telefones, opt => opt.MapFrom(src => src.Paciente.Telefones))
-            .ForMember(dest => dest.Medico.Telefones, opt => opt.MapFrom(src => src.Medico.Telefones)).ReverseMap();
+            .ForPath(dest => dest.Paciente.Telefones, opt => opt.MapFrom(src => src.Paciente.Telefones))
+            .ForPath(dest => dest.Medico.Telefones, opt => opt.MapFrom(src => src.Medico.Telefones))
+            .ForPath(dest => dest.Medico.Pessoa, opt => opt.MapFrom(src => src.Medico.Pessoa))
+            .ForPath(dest => dest.Paciente.Pessoa, opt => opt.MapFrom(src => src.Paciente.Pessoa))
+            .ForPath(dest => dest.Paciente.Endereco, opt => opt.MapFrom(src => src.Paciente.Endereco))
+            .ForPath(dest => dest.Paciente, opt => opt.MapFrom(src => src.Paciente))
+            .ForPath(dest => dest.Medico, opt => opt.MapFrom(src => src.Medico)).ReverseMap();
         CreateMap<Agendamento, AdicionarAgendamentoRequest>().ReverseMap();
         CreateMap<Agendamento, AtualizarAgendamentoResquet>().ReverseMap();
     }

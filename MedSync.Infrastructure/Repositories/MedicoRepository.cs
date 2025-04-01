@@ -79,27 +79,29 @@ public class MedicoRepository : BaseRepository, IMedicoRepository
         var medicoDictionary = new Dictionary<Guid, Medico>();
         try
         {
-            using var connection = mySqlConnection;
-            return (await connection.QueryAsync<Medico, Pessoa, Telefone, Medico>(
-                sql,
-                (medico, pessoa, telefone) =>
-                {
-                    if (!medicoDictionary.TryGetValue(medico.Id, out var medicoEntry))
-                    {
-                        medicoEntry = medico;
-                        medicoEntry.Pessoa = pessoa;
-                        medicoEntry.Telefones = new();
-                        medicoDictionary.Add(medicoEntry.Id, medicoEntry);
-                    }
+            using (var connection = mySqlConnection)
+            {
+                return (await connection.QueryAsync<Medico, Pessoa, Telefone, Medico>(
+               sql,
+               (medico, pessoa, telefone) =>
+               {
+                   if (!medicoDictionary.TryGetValue(medico.Id, out var medicoEntry))
+                   {
+                       medicoEntry = medico;
+                       medicoEntry.Pessoa = pessoa;
+                       medicoEntry.Telefones = new();
+                       medicoDictionary.Add(medicoEntry.Id, medicoEntry);
+                   }
 
-                    if (telefone != null && !medicoEntry.Telefones.Any(t => t.Id == telefone.Id))
-                        medicoEntry.Telefones.Add(telefone);
+                   if (telefone != null && !medicoEntry.Telefones.Any(t => t.Id == telefone.Id))
+                       medicoEntry.Telefones.Add(telefone);
 
-                    return medicoEntry;
-                },
-                parametros,
-                splitOn: "Id"
-                )).Distinct();
+                   return medicoEntry;
+               },
+               parametros,
+               splitOn: "Id"
+               )).Distinct();
+            }
         }
         catch (Exception)
         {

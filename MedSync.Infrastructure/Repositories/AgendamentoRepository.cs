@@ -57,10 +57,10 @@ public class AgendamentoRepository : BaseRepository, IAgendamentoRepository
         return await GenericExecuteAsync(sql, agendamento);
     }
 
-    public bool AgendamentoPeriodoExiste(DateTime dataHora)
+    public bool AgendamentoPeriodoExiste(DateTime agendadoPara)
     {
         var sql = AgendamentoScritps.AgendadoParaExiste;
-        var parametro = new { DataHora = dataHora };
+        var parametro = new { AgendadoPara = agendadoPara };
 
         return JaExiste(sql, parametro);
     }
@@ -90,45 +90,43 @@ public class AgendamentoRepository : BaseRepository, IAgendamentoRepository
         {
             var agendamentoDictionary = new Dictionary<Guid, Agendamento>();
 
-            using var connection = mySqlConnection;
-            return (await connection.QueryAsync<Agendamento, Paciente, Medico, Pessoa, Telefone, Endereco, Agendamento>(
-                sql,
-                (agendamento, paciente, medico, pessoa, telefone, endereco) =>
-                {
-                    if (!agendamentoDictionary.TryGetValue(agendamento.Id, out var agendamentoEntry))
-                    {
-                        agendamentoEntry = agendamento;
-                        agendamentoEntry.Paciente = paciente;
-                        agendamentoEntry.Medico = medico;
+            using (var connection = mySqlConnection)
+            {
+                return (await connection.QueryAsync<Agendamento, Paciente, Medico, Pessoa, Pessoa, Telefone, Endereco, Agendamento>(
+               sql,
+               (agendamento, paciente, medico, pessoaPaciente, pessoaMedico, telefone, endereco) =>
+               {
+                   if (!agendamentoDictionary.TryGetValue(agendamento.Id, out var agendamentoEntry))
+                   {
+                       agendamentoEntry = agendamento;
+                       agendamentoEntry.Paciente = paciente;
+                       agendamentoEntry.Paciente.Pessoa = pessoaPaciente;
+                       agendamentoEntry.Medico = medico;
+                       agendamentoEntry.Medico.Pessoa = pessoaMedico;
 
-                        if (agendamentoEntry.Paciente.PessoaId == pessoa.Id)
-                            agendamentoEntry.Paciente.Pessoa = pessoa;
+                       agendamentoEntry.Paciente.Telefones = new();
+                       agendamentoEntry.Medico.Telefones = new();
 
-                        if (agendamentoEntry.Medico.PessoaId == pessoa.Id)
-                            agendamentoEntry.Medico.Pessoa = pessoa;
+                       agendamentoDictionary.Add(agendamentoEntry.Id, agendamentoEntry);
+                   }
 
-                        agendamentoEntry.Paciente.Telefones = new();
-                        agendamentoEntry.Medico.Telefones = new();
+                   if (telefone != null && telefone.MedicoId != null && !agendamentoEntry.Medico.Telefones.Any(t => t.Id == telefone.Id))
+                       agendamentoEntry.Medico.Telefones.Add(telefone);
+                   else
+                       agendamentoEntry.Paciente.Telefones.Add(telefone!);
 
-                        agendamentoDictionary.Add(agendamentoEntry.Id, agendamentoEntry);
-                    }
+                   agendamentoEntry.Paciente.Endereco = endereco;
 
-                    if (telefone != null && !agendamentoEntry.Medico.Telefones.Any(t => t.Id == telefone.Id && t.MedicoId == telefone.MedicoId))
-                        agendamentoEntry.Medico.Telefones.Add(telefone);
-                    else
-                        agendamentoEntry.Paciente.Telefones.Add(telefone!);
-
-                    agendamentoEntry.Paciente.Endereco = endereco;
-
-                    return agendamentoEntry;
-                },
-                parametros,
-                splitOn: "Id"
-                )).Distinct();
+                   return agendamentoEntry;
+               },
+               parametros,
+               splitOn: "Id"
+               )).Distinct();
+            }
+           
         }
         catch (Exception)
         {
-
             throw;
         }
     }
