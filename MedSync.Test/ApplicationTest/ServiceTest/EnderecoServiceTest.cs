@@ -79,6 +79,41 @@ public class EnderecoServiceTest
     }
 
     [Fact]
+    public async Task CreateAsync_DeveLancarArgumentException_QuandoDadosSaoInvalidos()
+    {
+        // Arrange
+        var enderecoRequest = new AdicionarEnderecoRequest
+        {
+            PacienteId = Guid.NewGuid(),
+            Logradouro = "",  // inválido
+            Numero = 0,       // inválido
+            Bairro = "",
+            Cidade = "",
+            Estado = "",
+            CEP = "123"       // inválido
+        };
+
+        var endereco = new Endereco
+        {
+            PacienteId = enderecoRequest.PacienteId,
+            Logradouro = enderecoRequest.Logradouro,
+            Numero = enderecoRequest.Numero,
+            Bairro = enderecoRequest.Bairro,
+            Cidade = enderecoRequest.Cidade,
+            Estado = enderecoRequest.Estado,
+            CEP = enderecoRequest.CEP
+        };
+
+        _mockMapper.Setup(m => m.Map<Endereco>(It.IsAny<AdicionarEnderecoRequest>()))
+            .Returns(endereco);
+
+        // Act & Assert
+        var ex = await Assert.ThrowsAsync<ArgumentException>(() => _enderecoService.CreateAsync(enderecoRequest));
+        Assert.Contains("O campo", ex.Message);
+    }
+
+
+    [Fact]
     public async Task GetIdAsync_DeveRetornarEnderecoResponse_QuandoIdExistir()
     {
         // Arrange
