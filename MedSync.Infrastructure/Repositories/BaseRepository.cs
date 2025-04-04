@@ -16,9 +16,7 @@ public class BaseRepository : IDisposable
     {
         try
         {
-            if (mySqlConnection.State != System.Data.ConnectionState.Open)
-                await mySqlConnection.OpenAsync();
-
+            CreateConnection(mySqlConnection);
             return await mySqlConnection.ExecuteAsync(sql, parametros) > 0;
         }
         catch
@@ -31,9 +29,7 @@ public class BaseRepository : IDisposable
     {
         try
         {
-            if (mySqlConnection.State != System.Data.ConnectionState.Open)
-                await mySqlConnection.OpenAsync();
-
+            CreateConnection(mySqlConnection);
             return await mySqlConnection.QueryFirstOrDefaultAsync<T>(sql, parametros);
         }
         catch
@@ -46,9 +42,7 @@ public class BaseRepository : IDisposable
     {
         try
         {
-            if (mySqlConnection.State != System.Data.ConnectionState.Open)
-                await mySqlConnection.OpenAsync();
-
+            CreateConnection(mySqlConnection);
             return await mySqlConnection.QueryAsync<T>(sql, parametros);
         }
         catch
@@ -61,9 +55,7 @@ public class BaseRepository : IDisposable
     {
         try
         {
-            if (mySqlConnection.State != System.Data.ConnectionState.Open)
-                mySqlConnection.Open();
-
+            CreateConnection(mySqlConnection);
             return mySqlConnection.QueryFirstOrDefault<int?>(sql, parametros) > 0;
         }
         catch
@@ -72,7 +64,11 @@ public class BaseRepository : IDisposable
         }
     }
 
-    protected MySqlConnection CreateConnection() => new MySqlConnection(mySqlConnection.ConnectionString);
+    protected static void CreateConnection(MySqlConnection mySqlConnection) 
+    {
+        if (mySqlConnection.State != System.Data.ConnectionState.Open)
+            mySqlConnection.Open();
+    }
     
     protected static DateTime DataHoraAtual() => DateTime.UtcNow.AddHours(-3);
     public void Dispose()

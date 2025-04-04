@@ -79,29 +79,28 @@ public class MedicoRepository : BaseRepository, IMedicoRepository
         var medicoDictionary = new Dictionary<Guid, Medico>();
         try
         {
-            if (mySqlConnection.State != System.Data.ConnectionState.Open)
-                await mySqlConnection.OpenAsync();
+            CreateConnection(mySqlConnection);
 
             return (await mySqlConnection.QueryAsync<Medico, Pessoa, Telefone, Medico>(
-           sql,
-           (medico, pessoa, telefone) =>
-           {
-               if (!medicoDictionary.TryGetValue(medico.Id, out var medicoEntry))
+               sql,
+               (medico, pessoa, telefone) =>
                {
-                   medicoEntry = medico;
-                   medicoEntry.Pessoa = pessoa;
-                   medicoEntry.Telefones = new();
-                   medicoDictionary.Add(medicoEntry.Id, medicoEntry);
-               }
+                   if (!medicoDictionary.TryGetValue(medico.Id, out var medicoEntry))
+                   {
+                       medicoEntry = medico;
+                       medicoEntry.Pessoa = pessoa;
+                       medicoEntry.Telefones = new();
+                       medicoDictionary.Add(medicoEntry.Id, medicoEntry);
+                   }
 
-               if (telefone != null && !medicoEntry.Telefones.Any(t => t.Id == telefone.Id))
-                   medicoEntry.Telefones.Add(telefone);
+                   if (telefone != null && !medicoEntry.Telefones.Any(t => t.Id == telefone.Id))
+                       medicoEntry.Telefones.Add(telefone);
 
-               return medicoEntry;
-           },
-           parametros,
-           splitOn: "Id"
-           )).Distinct();
+                   return medicoEntry;
+               },
+               parametros,
+               splitOn: "Id"
+               )).Distinct();
 
         }
         catch (Exception)

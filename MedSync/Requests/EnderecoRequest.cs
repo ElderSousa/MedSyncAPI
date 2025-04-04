@@ -1,8 +1,10 @@
-﻿namespace MedSync.Application.Requests;
+﻿using System.Reflection.Metadata.Ecma335;
+
+namespace MedSync.Application.Requests;
 
 public class EnderecoRequest
 {
-    public class AdicionarEnderecoRequest
+    public class AdicionarEnderecoRequest : EnderecoRequest
     {
         public Guid? PacienteId { get; set; }
         public Guid? MedicoId { get; set; }
@@ -11,11 +13,10 @@ public class EnderecoRequest
         public string? Complemento { get; set; }
         public string? Bairro { get; set; }
         public string? Cidade { get; set; }
-        public string? Estado { get; set; }
         public string? CEP { get; set; }
     }
 
-    public class AtualizarEnderecoRequest
+    public class AtualizarEnderecoRequest : EnderecoRequest
     {
         public Guid Id { get; set; }
         public Guid? PacienteId { get; set; }
@@ -25,7 +26,14 @@ public class EnderecoRequest
         public string? Complemento { get; set; }
         public string? Bairro { get; set; }
         public string? Cidade { get; set; }
-        public string? Estado { get; set; }
         public string? CEP { get; set; }
+    }
+
+    private string? _estado { get; set; }
+
+    public string Estado
+    {
+        get => _estado!.ToUpper();
+        set => _estado = value;
     }
 }

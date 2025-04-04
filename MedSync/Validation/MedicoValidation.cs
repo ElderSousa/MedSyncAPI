@@ -15,12 +15,14 @@ public class MedicoValidation : AbstractValidator<Medico>
             .WithMessage(MessagesValidation.CampoObrigatorio);
 
         RuleFor(m => m.Especialidade)
-            .IsInEnum().WithMessage(MessagesValidation.CampoObrigatorio);
+            .IsInEnum()
+            .WithMessage(MessagesValidation.CampoObrigatorio);
            
         RuleFor(m => m.CRM)
             .NotEmpty()
             .WithMessage(MessagesValidation.CampoObrigatorio)
-            .Matches(@"^\d{4,6}(\/[A-Z]{2})?$", RegexOptions.IgnoreCase).WithMessage(MessagesValidation.CRMInvalido); 
+            .Matches(@"^\d{4,6}(\/[A-Z]{2})?$", RegexOptions.IgnoreCase)
+            .WithMessage(MessagesValidation.CRMInvalido); 
 
         When(m => cadastrar, () =>
         {

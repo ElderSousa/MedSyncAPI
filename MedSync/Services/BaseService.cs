@@ -30,17 +30,6 @@ namespace MedSync.Application.Services
             return response;
         }
 
-        protected static Response RetunrResponse(Exception exception)
-        {
-            Response response = new()
-            {
-                Status = ObterErro(exception),
-                Error = true
-            };
-
-            return response;
-        }
-
         protected static Response ReturnResponseSuccess()
         {
             Response response = new()
@@ -72,10 +61,6 @@ namespace MedSync.Application.Services
                 return Guid.Empty;
             }
         }
-
-        protected static string Notificar(string mensagem) => mensagem;
-
-        protected static string Notificar(Exception exception) => ObterErro(exception);
 
         protected static DateTime DataHoraAtual() => DateTime.UtcNow.AddHours(-3);
 

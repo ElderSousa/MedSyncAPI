@@ -63,8 +63,7 @@ public class PacienteRepository : BaseRepository, IPacienteRepository
         var pacienteDictionary = new Dictionary<Guid, Paciente>();
         try
         {
-            if (mySqlConnection.State != System.Data.ConnectionState.Open)
-                await mySqlConnection.OpenAsync();
+            CreateConnection(mySqlConnection);
 
             return (await mySqlConnection.QueryAsync<Paciente, Pessoa, Endereco, Telefone, Paciente>(
                 sql,
@@ -85,9 +84,7 @@ public class PacienteRepository : BaseRepository, IPacienteRepository
                 },
                 parametros,
                 splitOn: "Id"
-                )).Distinct(); 
-            
-            
+                )).Distinct();          
         }
         catch (Exception)
         {

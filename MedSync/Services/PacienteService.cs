@@ -23,7 +23,7 @@ public class PacienteService : BaseService, IPacienteService
         ITelefoneService telefoneService,
         IMapper mapper,
         IHttpContextAccessor httpContextAccessor,
-        ILogger<EnderecoService> logger) : base(mapper, httpContextAccessor, logger)
+        ILogger<PacienteService> logger) : base(mapper, httpContextAccessor, logger)
     {
         _pacienteRepository = pacienteRepository;
         _pessoaService = pessoaService;
@@ -43,10 +43,13 @@ public class PacienteService : BaseService, IPacienteService
                 throw new ArgumentException(_response.Status);
 
             var pessoa = await _pessoaService.GetCPFAsync(pacienteRequest.Pessoa.CPF!);
-            if (pessoa == null)
+            if (pessoa == null || pessoa.Id == Guid.Empty)
+            {
                 await _pessoaService.CreateAsync(pacienteRequest.Pessoa);
-            paciente.PessoaId = pessoa!.Id;
-
+                pessoa = await _pessoaService.GetCPFAsync(pacienteRequest.Pessoa.CPF!);
+                paciente.PessoaId = pessoa!.Id;
+            }
+           
             if (!await _pacienteRepository.CreateAsync(paciente))
                 throw new InvalidOperationException("Falha ao adicionar paciente em nossa base de dados.");
 

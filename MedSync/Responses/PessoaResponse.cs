@@ -2,7 +2,7 @@
 
 public class PessoaResponse
 {
-    public Guid Id { get; private set; }
+    public Guid Id { get; set; }
     public string? Nome { get; set; }
     public string? CPF { get; set; }
     public string? RG { get; set; }

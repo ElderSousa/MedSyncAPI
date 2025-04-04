@@ -1,6 +1,6 @@
 ﻿public abstract class BaseModel
 {
-    public Guid Id { get; private set; }
+    public Guid Id { get; set; }
     public Guid? CriadoPor { get; private set; }
     public DateTime? CriadoEm { get; private set; }
     public Guid? ModificadoPor { get; private set; }

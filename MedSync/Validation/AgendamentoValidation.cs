@@ -28,8 +28,8 @@ public class AgendamentoValidation : AbstractValidator<Agendamento>
             .NotEmpty()
             .WithMessage(MessagesValidation.CampoObrigatorio);
 
-        RuleFor(a => a)
-            .Must(a => !agendamentoRepository.AgendamentoPeriodoExiste(a.AgendadoPara.AddMinutes(20)))
+        RuleFor(a => !(agendamentoRepository.AgendamentoPeriodoExiste(a.AgendadoPara.AddMinutes(20))))
+            .Equal(false)
             .WithMessage(MessagesValidation.AgendamentoPeriodo);
 
         When(a => cadastrar, () =>
