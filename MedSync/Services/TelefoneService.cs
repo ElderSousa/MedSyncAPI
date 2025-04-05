@@ -96,7 +96,7 @@ public class TelefoneService : BaseService, ITelefoneService
     {
         try
         {
-            if (await _telefoneRepository.DeleteAsync(id))
+            if (!await _telefoneRepository.DeleteAsync(id))
                 throw new InvalidOperationException("Telefone não excluído da nossa base de dados.");
         }
         catch (Exception ex)

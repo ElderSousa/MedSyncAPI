@@ -73,7 +73,7 @@ public class EnderecoServiceTest
         //Assert
         Assert.NotNull(response);
         Assert.True(response.Status == "Sucesso");
-        Assert.False(response.Error == true);
+        Assert.False(response.Error == false);
         _mockMapper.Verify(m => m.Map<Endereco>(It.IsAny<AdicionarEnderecoRequest>()), Times.Once);
         _mockEnderecoRepository.Verify(e => e.CreateAsync(It.IsAny<Endereco>()), Times.Once);
     }
@@ -214,7 +214,6 @@ public class EnderecoServiceTest
 
         _mockMapper.Setup(m => m.Map<Endereco>(enderecoRequest)).Returns(endereco);
 
-        // Aqui está o mock necessário para passar na validação:
         _mockEnderecoRepository.Setup(r => r.Existe(enderecoId)).Returns(true);
 
         _mockEnderecoRepository.Setup(r => r.UpdateAsync(It.IsAny<Endereco>())).ReturnsAsync(true);
@@ -258,7 +257,6 @@ public class EnderecoServiceTest
         _mockMapper.Setup(m => m.Map<Endereco>(It.IsAny<AtualizarEnderecoRequest>()))
             .Returns(endereco);
 
-        // Aqui simulamos que o endereço não existe
         _mockEnderecoRepository.Setup(r => r.Existe(It.IsAny<Guid>())).Returns(false);
 
         // Act & Assert
@@ -305,7 +303,7 @@ public class EnderecoServiceTest
 
         _mockEnderecoRepository
             .Setup(r => r.DeleteAsync(enderecoId))
-            .ReturnsAsync(false); // Força falha
+            .ReturnsAsync(false); 
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<ArgumentException>(() => _enderecoService.DeleteAsync(enderecoId));
