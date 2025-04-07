@@ -6,7 +6,6 @@ using MedSync.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NuGet.Frameworks;
 using static MedSync.Application.Requests.TelefoneRequest;
 
 namespace MedSync.Test.ApplicationTest.ServiceTest;

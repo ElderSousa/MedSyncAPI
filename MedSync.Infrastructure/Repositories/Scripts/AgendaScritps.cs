@@ -1,6 +1,6 @@
 ﻿namespace MedSync.Infrastructure.Repositories.Scripts;
 
-public class AgendamentoScritps
+public class AgendaScritps
 {
     internal static readonly string SelectBase =
         @"
@@ -75,7 +75,7 @@ public class AgendamentoScritps
                 e.ModificadoEm,
                 e.ModificadoPor
             FROM
-                agendamentos a INNER JOIN
+                agendas a INNER JOIN
                 pacientes pa ON pa.Id = a.PacienteId 
 	                    AND pa.ExcluidoEm IS NULL INNER JOIN
                 medicos m ON m.Id = a.MedicoId
@@ -95,7 +95,7 @@ public class AgendamentoScritps
 
     internal static readonly string Insert =
         @"
-            INSERT INTO agendamentos(
+            INSERT INTO agendas(
                 Id,
                 PacienteId,
                 MedicoId,
@@ -122,7 +122,7 @@ public class AgendamentoScritps
 
     internal static readonly string Update =
         @"
-            UPDATE agendamentos SET
+            UPDATE agendas SET
                 AgendadoPara = @AgendadoPara,
                 Status = @Status,
                 Observacao = @Observacao,
@@ -135,7 +135,7 @@ public class AgendamentoScritps
 
     internal static readonly string Delete =
         @"
-            UPDATE agendamentos SET
+            UPDATE agendas SET
                 ModificadoEm = @ModificadoEm,
                 ExcluidoEm = @ModificadoEm
             WHERE 
@@ -148,7 +148,7 @@ public class AgendamentoScritps
             SELECT
                 COUNT(*)
             FROM 
-                agendamentos
+                agendas
             WHERE 
                 Id = @Id
                 AND ExcluidoEm IS NULL
@@ -159,7 +159,7 @@ public class AgendamentoScritps
             SELECT
                 COUNT(*)
             FROM 
-                agendamentos
+                agendas
             WHERE 
                 AgendadoPara = @AgendadoPara
                 AND ExcluidoEm IS NULL

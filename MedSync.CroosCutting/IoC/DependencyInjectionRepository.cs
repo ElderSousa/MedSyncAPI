@@ -13,7 +13,7 @@ public static class DependencyInjectionRepository
         services.AddScoped<ITelefoneRepository, TelefoneRepository>();
         services.AddScoped<IMedicoRepository, MedicoRepository>();
         services.AddScoped<IPacienteRepository, PacienteRepository>();
-        services.AddScoped<IAgendamentoRepository, AgendamentoRepository>();
+        services.AddScoped<IAgendaRepository, AgendaRepository>();
 
         return services;
     }

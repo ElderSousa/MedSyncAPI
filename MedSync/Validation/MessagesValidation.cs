@@ -32,5 +32,7 @@ public static class MessagesValidation
         "Não há disponibilidade de agendamento para o horário informado.";
     public static string SigaInvalida =
        "O campo {PropertyName} deve ter 2 caracteres.";
+    public static string agendamentoInvalido =
+        "O agendamento deve ser feito com 20 minutos de diferença do agendamento anterior.";
 
 }

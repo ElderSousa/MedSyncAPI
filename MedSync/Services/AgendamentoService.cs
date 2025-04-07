@@ -1,6 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Runtime.InteropServices;
+using AutoMapper;
 using MedSync.Application.Interfaces;
-using MedSync.Application.Requests;
 using MedSync.Application.Responses;
 using MedSync.Application.Validation;
 using MedSync.Domain.Entities;
@@ -11,43 +11,38 @@ using static MedSync.Application.Requests.AgendamentoRequest;
 
 namespace MedSync.Application.Services;
 
-public class AgendamentoService : BaseService, IAgendamentoSevice
+public class AgendamentoService : BaseService, IAgendamentoService
 {
     private Response _response = new();
-    private readonly IAgendamentoRepository _agendamentoRepository;
-    private readonly IPacienteService _pacienteService;
-    private readonly IMedicoService _medicoService;
+    private IAgendamentoRepository _agendamentoRepository;
+    private IAgendaRepository _agendaRepository;
+    private IMedicoRepository _medicoRepository;
+
     public AgendamentoService(IAgendamentoRepository agendamentoRepository,
-        IPacienteService pacienteService,
-        IMedicoService medicoService,
+        IAgendaRepository agendaRepository,
+        IMedicoRepository medicoRepository,
         IMapper mapper,
         IHttpContextAccessor httpContextAccessor,
-        ILogger<AgendamentoService>logger) : base(mapper, httpContextAccessor, logger)
+        ILogger<AgendamentoService> logger) : base(mapper, httpContextAccessor, logger)
     {
         _agendamentoRepository = agendamentoRepository;
-        _pacienteService = pacienteService;
-        _medicoService = medicoService;
+        _agendaRepository = agendaRepository;
+        _medicoRepository = medicoRepository;
     }
 
-    public async Task<Response> CreateAsync(AdicionarAgendamentoRequest agendamentoRequest)
+    public async Task<Response> CreateAsync(AdicionaAgendamentoRequest agendamentoResquest)
     {
         try
         {
-            var agendamento = mapper.Map<Agendamento>(agendamentoRequest);
+            var agendamento = mapper.Map<Agendamento>(agendamentoResquest);
             agendamento.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
 
-            _response = ExecultarValidacaoResponse(new AgendamentoValidation(_agendamentoRepository, true), agendamento);
+            _response = ExecultarValidacaoResponse(new AgendamentoValidation(_agendamentoRepository, _agendaRepository, _medicoRepository, true), agendamento);
             if (_response.Error)
                 throw new ArgumentException(_response.Status);
 
-            agendamento.Paciente = mapper.Map<Paciente>(await _pacienteService.GetIdAsync(agendamentoRequest.PacienteId)) ??
-                throw new KeyNotFoundException("Paciente não encontrado em nossa base de dados.");
-
-            agendamento.Medico = mapper.Map<Medico>(await _medicoService.GetIdAsync(agendamentoRequest.MedicoId)) ??
-                 throw new KeyNotFoundException("Medico não encontrado em nossa base de dados.");
-
-            if (!await _agendamentoRepository.CreateAsync(agendamento))
-                throw new InvalidOperationException("Falha ao criar agendamento.");
+            if (!await _agendamentoRepository.UpdateAsync(agendamento))
+                throw new InvalidOperationException("Falha ao criar agenda.");
 
         }
         catch (Exception ex)
@@ -55,7 +50,6 @@ public class AgendamentoService : BaseService, IAgendamentoSevice
             logger.LogError(ex, ex.Message, "CreateAsync");
             throw;
         }
-
         return ReturnResponseSuccess();
     }
 
@@ -80,20 +74,7 @@ public class AgendamentoService : BaseService, IAgendamentoSevice
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, ex.Message, "CreateAsync");
-            throw;
-        }
-    }
-
-    public async Task<IEnumerable<AgendamentoResponse?>> GetPacienteIdAsync(Guid pacienteId)
-    {
-        try
-        {
-            return mapper.Map<IEnumerable<AgendamentoResponse>>(await _agendamentoRepository.GetPacienteIdAsync(pacienteId));
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "GetPacienteIdAsync");
+            logger.LogError(ex, ex.Message, "GetIdAsync");
             throw;
         }
     }
@@ -111,43 +92,54 @@ public class AgendamentoService : BaseService, IAgendamentoSevice
         }
     }
 
-    public async Task<Response> UpdateAsync(AtualizarAgendamentoResquet agendamentoResquest)
+    public async Task<IEnumerable<AgendamentoResponse?>> GetAgendaIdAsync(Guid agendaId)
     {
         try
         {
-            var agendamento = mapper.Map<Agendamento>(agendamentoResquest);
+            return mapper.Map<IEnumerable<AgendamentoResponse>>(await _agendamentoRepository.GetAgendaIdAsync(agendaId));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, ex.Message, "");
+            throw;
+        }
+    }
+
+    public async Task<Response> UpdateAsync(AtualizarAgendamentoRequest agendamentoRequest)
+    {
+        try
+        {
+            var agendamento = mapper.Map<Agendamento>(agendamentoRequest);
             agendamento.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), false);
 
-            _response = ExecultarValidacaoResponse(new AgendamentoValidation(_agendamentoRepository, false), agendamento);
+            _response = ExecultarValidacaoResponse(new AgendamentoValidation(_agendamentoRepository, _agendaRepository, _medicoRepository, false), agendamento);
             if (_response.Error)
                 throw new ArgumentException(_response.Status);
 
             if (!await _agendamentoRepository.UpdateAsync(agendamento))
-                throw new InvalidOperationException("Falha ao atualiza agendamento.");
-
+                throw new InvalidOperationException("Falha ao atualizar agendamento.");
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, ex.Message, "CreateAsync");
+            logger.LogError(ex, ex.Message, "");
             throw;
         }
 
         return ReturnResponseSuccess();
     }
-
     public async Task<Response> DeleteAsync(Guid id)
     {
         try
         {
             if (!await _agendamentoRepository.DeleteAsync(id))
-                throw new InvalidOperationException("Falha ao deletar agendamento de nossa base de dados.");
-
-            return ReturnResponseSuccess();
+                throw new InvalidOperationException("Falha ao excluir o agendamento.");
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, ex.Message, "DeleteAsync");
+            logger.LogError(ex, ex.Message, "");
             throw;
         }
+
+        return ReturnResponseSuccess();
     }
 }

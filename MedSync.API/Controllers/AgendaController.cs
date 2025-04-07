@@ -1,28 +1,27 @@
 ﻿using MedSync.Application.Interfaces;
 using MedSync.Application.Responses;
 using Microsoft.AspNetCore.Mvc;
-using static MedSync.Application.Requests.AgendamentoRequest;
+using static MedSync.Application.Requests.AgendaRequest;
 
 namespace MedSync.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AgendamentoController : ControllerBase
+    public class AgendaController : ControllerBase
     {
         private Response _response = new();
-        private readonly IAgendamentoService _agendamentoService;
-
-        public AgendamentoController(IAgendamentoService agendamentoService)
+        private readonly IAgendaSevice _agendaSevice;
+        public AgendaController(IAgendaSevice agendamentosSevice)
         {
-            _agendamentoService = agendamentoService;
+            _agendaSevice = agendamentosSevice;
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
-        public async Task<IActionResult> CreateAsync(AdicionaAgendamentoRequest agendamentoRequest)
+        public async Task<IActionResult> CreateAsync(AdicionarAgendaRequest agendamentoRequest)
         {
-            _response = await _agendamentoService.CreateAsync(agendamentoRequest);
+            _response = await _agendaSevice.CreateAsync(agendamentoRequest);
             return _response.Error ? BadRequest(_response) : Ok(_response);
         }
 
@@ -31,7 +30,7 @@ namespace MedSync.API.Controllers
         [ProducesResponseType(typeof(Response), 204)]
         public async Task<IActionResult> GetAllAsync()
         {
-            var agendamentos = await _agendamentoService.GetAllAsync();
+            var agendamentos = await _agendaSevice.GetAllAsync();
             return !agendamentos.Any() ? NoContent() : Ok(agendamentos);
         }
 
@@ -40,16 +39,16 @@ namespace MedSync.API.Controllers
         [ProducesResponseType(typeof(Response), 204)]
         public async Task<IActionResult> GetIdAsync(Guid id)
         {
-            var agendamento = await _agendamentoService.GetIdAsync(id);
+            var agendamento = await _agendaSevice.GetIdAsync(id);
             return agendamento == null ? NoContent() : Ok(agendamento);
         }
 
-        [HttpGet("agendaId/{pacienteId}")]
+        [HttpGet("pacienteId/{pacienteId}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
-        public async Task<IActionResult> GetAgendamentoIdAsync(Guid agendaId)
+        public async Task<IActionResult> GetPacienteIdAsync(Guid pacienteId)
         {
-            var agendamento = await _agendamentoService.GetAgendaIdAsync(agendaId);
+            var agendamento = await _agendaSevice.GetPacienteIdAsync(pacienteId);
             return agendamento == null ? NoContent() : Ok(agendamento);
         }
 
@@ -58,16 +57,16 @@ namespace MedSync.API.Controllers
         [ProducesResponseType(typeof(Response), 204)]
         public async Task<IActionResult> GetMedicoIdAsync(Guid medicoId)
         {
-            var agendamento = await _agendamentoService.GetMedicoIdAsync(medicoId);
+            var agendamento = await _agendaSevice.GetMedicoIdAsync(medicoId);
             return agendamento == null ? NoContent() : Ok(agendamento);
         }
 
         [HttpPut]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
-        public async Task<IActionResult> UpdateAsync(AtualizarAgendamentoRequest agendamentoRequest)
+        public async Task<IActionResult> UpdateAsync(AtualizarAgendaResquet agendamentoRequest)
         {
-            _response = await _agendamentoService.UpdateAsync(agendamentoRequest);
+            _response = await _agendaSevice.UpdateAsync(agendamentoRequest);
             return _response.Error ? BadRequest(_response) : Ok(_response);
 
         }
@@ -77,8 +76,9 @@ namespace MedSync.API.Controllers
         [ProducesResponseType(typeof(Response), 400)]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
-            _response = await _agendamentoService.DeleteAsync(id);
+            _response = await _agendaSevice.DeleteAsync(id);
             return _response.Error ? BadRequest(_response) : Ok(_response);
         }
     }
 }
+

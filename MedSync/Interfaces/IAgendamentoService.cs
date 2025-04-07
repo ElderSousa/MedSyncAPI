@@ -3,13 +3,13 @@ using static MedSync.Application.Requests.AgendamentoRequest;
 
 namespace MedSync.Application.Interfaces;
 
-public interface IAgendamentoSevice
+public interface IAgendamentoService
 {
-    Task<Response> CreateAsync(AdicionarAgendamentoRequest agendamentoRequest);
+    Task<Response> CreateAsync(AdicionaAgendamentoRequest agendamentoResquest);
     Task<IEnumerable<AgendamentoResponse?>> GetAllAsync();
     Task<AgendamentoResponse?> GetIdAsync(Guid id);
-    Task<IEnumerable<AgendamentoResponse?>> GetPacienteIdAsync(Guid pacienteId);
+    Task<IEnumerable<AgendamentoResponse?>> GetAgendaIdAsync(Guid agendaId);
     Task<IEnumerable<AgendamentoResponse?>> GetMedicoIdAsync(Guid medicoId);
-    Task<Response> UpdateAsync(AtualizarAgendamentoResquet agendamentoResquest);
+    Task<Response> UpdateAsync(AtualizarAgendamentoRequest agendamentoRequest);
     Task<Response> DeleteAsync(Guid id);
 }

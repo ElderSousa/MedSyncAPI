@@ -1,31 +1,22 @@
 ﻿using MedSync.Domain.Enum;
-using static MedSync.Application.Requests.MedicoResquest;
-using static MedSync.Application.Requests.PacienteRequest;
 
 namespace MedSync.Application.Requests;
 
 public class AgendamentoRequest
 {
-    public class AdicionarAgendamentoRequest
+    public class AdicionaAgendamentoRequest
     {
-        public Guid PacienteId { get; set; }
+        public Guid AgendaId { get; set; }
         public Guid MedicoId { get; set; }
-        public string? Observacao { get; set; }
-        public DateTime AgendadoPara { get; set; }
-        public AgendamentoTipo TipoAgendamento { get; set; }
-        public AgendamentoStatus Status { get; set; }
-
+        public DateTime DataHora { get; set; }
+        public DiaSemana DiaSemana { get; set; }
     }
-
-    public class AtualizarAgendamentoResquet
+    public class AtualizarAgendamentoRequest
     {
         public Guid Id { get; set; }
-        public Guid PacienteId { get; set; }
+        public Guid AgendaId { get; set; }
         public Guid MedicoId { get; set; }
-        public string? Observacao { get; set; }
-        public DateTime AgendadoPara { get; set; }
-        public AgendamentoTipo TipoAgendamento { get; set; }
-        public AgendamentoStatus Status { get; set; }
-
+        public DateTime DataHora { get; set; }
+        public DiaSemana DiaSemana { get; set; }
     }
 }
