@@ -5,9 +5,14 @@ using MedSync.Domain.Interfaces;
 namespace MedSync.Application.Validation;
 
 public class AgendamentoValidation : AbstractValidator<Agendamento>
-{
-    public AgendamentoValidation(IAgendamentoRepository agendamentoRepository, IAgendaRepository agendaRepository, IMedicoRepository medicoRepository, bool cadastrar)
+{    
+    public AgendamentoValidation(IAgendamentoRepository agendamentoRepository,
+        IAgendaRepository agendaRepository,
+        IMedicoRepository medicoRepository,
+        IPacienteRepository pacienteRepository,
+        bool cadastrar)
     {
+
         RuleFor(a => a.Id)
             .NotEmpty()
             .WithMessage(MessagesValidation.CampoObrigatorio);
@@ -22,21 +27,30 @@ public class AgendamentoValidation : AbstractValidator<Agendamento>
             .NotEmpty()
             .WithMessage(MessagesValidation.CampoObrigatorio)
             .Must(medicoRepository.Existe)
+            .WithMessage(MessagesValidation.NaoEncontrado); 
+        
+        RuleFor(a => a.PacienteId)
+            .NotEmpty()
+            .WithMessage(MessagesValidation.CampoObrigatorio)
+            .Must(pacienteRepository.Existe)
             .WithMessage(MessagesValidation.NaoEncontrado);
 
         RuleFor(a => a.DiaSemana)
             .IsInEnum()
             .WithMessage(MessagesValidation.CampoObrigatorio);
 
-        RuleFor(a => a.DataHora)
+        RuleFor(a => a.AgendadoPara)
             .NotEmpty()
-            .WithMessage(MessagesValidation.CampoObrigatorio)
-            .GreaterThanOrEqualTo(a => a.DataHora.AddMinutes(20))
-            .WithMessage(MessagesValidation.agendamentoInvalido);
+            .WithMessage(MessagesValidation.CampoObrigatorio);
 
-        RuleFor(a => agendamentoRepository.AgendamentoPeriodoExiste(a.DiaSemana, a.DataHora))
+
+        RuleFor(a => agendaRepository.AgendaPeriodoExiste(a.Agenda.DataDisponivel, a.Agenda.DiaSemana, a.Agenda.Agendado))
+           .Equal(true)
+           .WithMessage(MessagesValidation.PeriodoInvalido);
+
+        RuleFor(a => agendamentoRepository.AgendamentoPeriodoExiste(a.DiaSemana, a.AgendadoPara, a.Horario))
             .Equal(true)
-            .WithMessage(MessagesValidation.AgendamentoPeriodo);
+            .WithMessage(MessagesValidation.PeriodoInvalido);
 
         When(a => cadastrar, () =>
         {

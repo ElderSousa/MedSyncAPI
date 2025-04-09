@@ -49,8 +49,8 @@ namespace MedSync.API.Controllers
         [ProducesResponseType(typeof(Response), 204)]
         public async Task<IActionResult> GetAgendamentoIdAsync(Guid agendaId)
         {
-            var agendamento = await _agendamentoService.GetAgendaIdAsync(agendaId);
-            return agendamento == null ? NoContent() : Ok(agendamento);
+            var agendamentos = await _agendamentoService.GetAgendaIdAsync(agendaId);
+            return !agendamentos.Any() ? NoContent() : Ok(agendamentos);
         }
 
         [HttpGet("medicoId/{medicoId}")]
@@ -58,8 +58,8 @@ namespace MedSync.API.Controllers
         [ProducesResponseType(typeof(Response), 204)]
         public async Task<IActionResult> GetMedicoIdAsync(Guid medicoId)
         {
-            var agendamento = await _agendamentoService.GetMedicoIdAsync(medicoId);
-            return agendamento == null ? NoContent() : Ok(agendamento);
+            var agendamentos = await _agendamentoService.GetMedicoIdAsync(medicoId);
+            return !agendamentos.Any() ? NoContent() : Ok(agendamentos);
         }
 
         [HttpPut]

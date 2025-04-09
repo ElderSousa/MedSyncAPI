@@ -17,17 +17,20 @@ public class AgendamentoService : BaseService, IAgendamentoService
     private IAgendamentoRepository _agendamentoRepository;
     private IAgendaRepository _agendaRepository;
     private IMedicoRepository _medicoRepository;
+    private readonly IPacienteRepository _pacienteRepository;
 
     public AgendamentoService(IAgendamentoRepository agendamentoRepository,
         IAgendaRepository agendaRepository,
         IMedicoRepository medicoRepository,
         IMapper mapper,
         IHttpContextAccessor httpContextAccessor,
-        ILogger<AgendamentoService> logger) : base(mapper, httpContextAccessor, logger)
+        ILogger<AgendamentoService> logger,
+        IPacienteRepository pacienteRepository) : base(mapper, httpContextAccessor, logger)
     {
         _agendamentoRepository = agendamentoRepository;
         _agendaRepository = agendaRepository;
         _medicoRepository = medicoRepository;
+        _pacienteRepository = pacienteRepository;
     }
 
     public async Task<Response> CreateAsync(AdicionaAgendamentoRequest agendamentoResquest)
@@ -37,7 +40,7 @@ public class AgendamentoService : BaseService, IAgendamentoService
             var agendamento = mapper.Map<Agendamento>(agendamentoResquest);
             agendamento.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
 
-            _response = ExecultarValidacaoResponse(new AgendamentoValidation(_agendamentoRepository, _agendaRepository, _medicoRepository, true), agendamento);
+            _response = ExecultarValidacaoResponse(new AgendamentoValidation(_agendamentoRepository, _agendaRepository, _medicoRepository, _pacienteRepository,  true), agendamento);
             if (_response.Error)
                 throw new ArgumentException(_response.Status);
 
@@ -112,7 +115,7 @@ public class AgendamentoService : BaseService, IAgendamentoService
             var agendamento = mapper.Map<Agendamento>(agendamentoRequest);
             agendamento.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), false);
 
-            _response = ExecultarValidacaoResponse(new AgendamentoValidation(_agendamentoRepository, _agendaRepository, _medicoRepository, false), agendamento);
+            _response = ExecultarValidacaoResponse(new AgendamentoValidation(_agendamentoRepository, _agendaRepository, _medicoRepository, _pacienteRepository, false), agendamento);
             if (_response.Error)
                 throw new ArgumentException(_response.Status);
 

@@ -1,5 +1,4 @@
 ﻿using MedSync.Domain.Entities;
-using MedSync.Domain.Enum;
 
 namespace MedSync.Domain.Interfaces;
 
@@ -13,5 +12,5 @@ public interface IAgendamentoRepository
     Task<bool> UpdateAsync(Agendamento agendamento);
     Task<bool> DeleteAsync(Guid id);
     bool Existe(Guid id);
-    bool AgendamentoPeriodoExiste(DiaSemana dia, DateTime dataHora);
+    bool AgendamentoPeriodoExiste(DayOfWeek dia, DateTime dataAgendamento, TimeSpan horario);
 }

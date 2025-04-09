@@ -56,20 +56,21 @@ public class BaseRepository : IDisposable
         try
         {
             CreateConnection(mySqlConnection);
-            return mySqlConnection.QueryFirstOrDefault<int?>(sql, parametros) > 0;
+            int count = mySqlConnection.QuerySingle<int>(sql, parametros);
+            return count > 0;
         }
-        catch
+        catch(Exception e)
         {
             throw;
         }
     }
 
-    protected static void CreateConnection(MySqlConnection mySqlConnection) 
+    protected static void CreateConnection(MySqlConnection mySqlConnection)
     {
         if (mySqlConnection.State != System.Data.ConnectionState.Open)
             mySqlConnection.Open();
     }
-    
+
     protected static DateTime DataHoraAtual() => DateTime.UtcNow.AddHours(-3);
     public void Dispose()
     {

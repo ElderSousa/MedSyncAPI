@@ -1,28 +1,28 @@
 ﻿using MedSync.Application.Interfaces;
 using MedSync.Application.Responses;
-using MedSync.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using static MedSync.Application.Requests.AgendaRequest;
+using static MedSync.Application.Requests.HorarioRequest;
 
 namespace MedSync.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AgendaController : ControllerBase
+    public class HorarioController : ControllerBase
     {
         private Response _response = new();
-        private readonly IAgendaSevice _agendaSevice;
-        public AgendaController(IAgendaSevice agendamentosSevice)
+        private readonly IHorarioService _horarioService;
+
+        public HorarioController(IHorarioService horarioService)
         {
-            _agendaSevice = agendamentosSevice;
+            _horarioService = horarioService;
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
-        public async Task<IActionResult> CreateAsync(AdicionarAgendaRequest agendaRequest)
+        public async Task<IActionResult> CreateAsync(AdicionarHorarioRequest horarioRequest)
         {
-            _response = await _agendaSevice.CreateAsync(agendaRequest);
+            _response = await _horarioService.CreateAsync(horarioRequest);
             return _response.Error ? BadRequest(_response) : Ok(_response);
         }
 
@@ -31,8 +31,8 @@ namespace MedSync.API.Controllers
         [ProducesResponseType(typeof(Response), 204)]
         public async Task<IActionResult> GetAllAsync()
         {
-            var agendas = await _agendaSevice.GetAllAsync();
-            return !agendas.Any() ? NoContent() : Ok(agendas);
+            var horarios = await _horarioService.GetAllAsync();
+            return !horarios.Any() ? NoContent() : Ok(horarios);
         }
 
         [HttpGet("{id}")]
@@ -40,25 +40,25 @@ namespace MedSync.API.Controllers
         [ProducesResponseType(typeof(Response), 204)]
         public async Task<IActionResult> GetIdAsync(Guid id)
         {
-            var agenda = await _agendaSevice.GetIdAsync(id);
-            return agenda == null ? NoContent() : Ok(agenda);
+            var horario = await _horarioService.GetIdAsync(id);
+            return horario == null ? NoContent() : Ok(horario);
         }
-  
-        [HttpGet("medicoId/{medicoId}")]
+
+        [HttpGet("agendaId/{agendaId}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
-        public async Task<IActionResult> GetMedicoIdAsync(Guid medicoId)
+        public async Task<IActionResult> GetAgendaIdAsync(Guid agendaId)
         {
-            var agendas = await _agendaSevice.GetMedicoIdAsync(medicoId);
-            return !agendas.Any() ? NoContent() : Ok(agendas);
+            var horarios = await _horarioService.GetAgendaIdAsync(agendaId);
+            return !horarios.Any() ? NoContent() : Ok(horarios);
         }
 
         [HttpPut]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
-        public async Task<IActionResult> UpdateAsync(AtualizarAgendaResquet agendaRequest)
+        public async Task<IActionResult> UpdateAsync(AtualizarHorarioRequest horarioRequest)
         {
-            _response = await _agendaSevice.UpdateAsync(agendaRequest);
+            _response = await _horarioService.UpdateAsync(horarioRequest);
             return _response.Error ? BadRequest(_response) : Ok(_response);
 
         }
@@ -68,9 +68,8 @@ namespace MedSync.API.Controllers
         [ProducesResponseType(typeof(Response), 400)]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
-            _response = await _agendaSevice.DeleteAsync(id);
+            _response = await _horarioService.DeleteAsync(id);
             return _response.Error ? BadRequest(_response) : Ok(_response);
         }
     }
 }
-

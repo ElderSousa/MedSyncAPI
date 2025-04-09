@@ -3,6 +3,7 @@ using MedSync.Application.Responses;
 using MedSync.Domain.Entities;
 using static MedSync.Application.Requests.AgendaRequest;
 using static MedSync.Application.Requests.EnderecoRequest;
+using static MedSync.Application.Requests.HorarioRequest;
 using static MedSync.Application.Requests.MedicoResquest;
 using static MedSync.Application.Requests.PacienteRequest;
 using static MedSync.Application.Requests.PessoaRequest;
@@ -33,14 +34,13 @@ public class DomainToDTOMappingProfile : Profile
         CreateMap<Paciente, AtualizarPacienteRequest>().ReverseMap();
         CreateMap<Paciente, AdicionarPacienteRequest>().ReverseMap();
         CreateMap<Agenda, AgendaResponse>()
-            .ForPath(dest => dest.Paciente.Telefones, opt => opt.MapFrom(src => src.Paciente.Telefones))
             .ForPath(dest => dest.Medico.Telefones, opt => opt.MapFrom(src => src.Medico.Telefones))
             .ForPath(dest => dest.Medico.Pessoa, opt => opt.MapFrom(src => src.Medico.Pessoa))
-            .ForPath(dest => dest.Paciente.Pessoa, opt => opt.MapFrom(src => src.Paciente.Pessoa))
-            .ForPath(dest => dest.Paciente.Endereco, opt => opt.MapFrom(src => src.Paciente.Endereco))
-            .ForPath(dest => dest.Paciente, opt => opt.MapFrom(src => src.Paciente))
             .ForPath(dest => dest.Medico, opt => opt.MapFrom(src => src.Medico)).ReverseMap();
         CreateMap<Agenda, AdicionarAgendaRequest>().ReverseMap();
         CreateMap<Agenda, AtualizarAgendaResquet>().ReverseMap();
+        CreateMap<Horario, HorarioResponse>().ReverseMap();
+        CreateMap<Horario, AdicionarHorarioRequest>().ReverseMap();
+        CreateMap<Horario, AtualizarHorarioRequest>().ReverseMap();
     }
 }

@@ -1,16 +1,13 @@
-﻿using MedSync.Domain.Enum;
-
-namespace MedSync.Domain.Entities;
+﻿namespace MedSync.Domain.Entities;
 
 public class Agenda : BaseModel
 {
-    public Guid PacienteId { get; set; }
     public Guid MedicoId { get; set; }
-    public string ? Observacao { get; set; }
-    public DateTime AgendadoPara { get; set; }
-    public AgendamentoTipo Tipo { get; set; }
-    public AgendamentoStatus Status { get; set; }
-
-    public Paciente Paciente { get; set; } = new();
+    public bool Agendado { get; set; }
+    public DayOfWeek DiaSemana { get; set; }
+    public DateTime DataDisponivel { get; set; }
+   
     public Medico Medico { get; set; } = new();
+    public List<Horario> Horarios { get; set; } = new();
 }
+

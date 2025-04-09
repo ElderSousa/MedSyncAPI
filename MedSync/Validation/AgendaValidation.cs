@@ -6,31 +6,31 @@ namespace MedSync.Application.Validation;
 
 public class AgendaValidation : AbstractValidator<Agenda>
 {
-    public AgendaValidation(IAgendaRepository agendamentoRepository, bool cadastrar)
+   
+    public AgendaValidation(IAgendaRepository agendaRepository, IMedicoRepository medicoRepository, bool cadastrar)
     {
+
         RuleFor(a => a.Id)
             .NotEmpty()
             .WithMessage(MessagesValidation.CampoObrigatorio);
-        
-        RuleFor(a => a.PacienteId)
+         
+        RuleFor(a => a.MedicoId)
             .NotEmpty()
-            .WithMessage(MessagesValidation.CampoObrigatorio);
-
-        RuleFor(a => a.Tipo)
+            .WithMessage(MessagesValidation.CampoObrigatorio)
+            .Must(medicoRepository.Existe)
+            .WithMessage(MessagesValidation.NaoEncontrado);
+        
+        RuleFor(a => a.DataDisponivel)
+            .NotEmpty()
+            .WithMessage(MessagesValidation.CampoObrigatorio); 
+        
+        RuleFor(a => !(agendaRepository.AgendaPeriodoExiste(a.DataDisponivel, a.DiaSemana, a.Agendado)))
+            .Equal(true)
+            .WithMessage(MessagesValidation.PeriodoInvalido);
+ 
+        RuleFor(a => a.DiaSemana)
             .IsInEnum()
             .WithMessage(MessagesValidation.CampoObrigatorio);
-        
-        RuleFor(a => a.Status)
-            .IsInEnum()
-            .WithMessage(MessagesValidation.CampoObrigatorio);
-        
-        RuleFor(a => a.AgendadoPara)
-            .NotEmpty()
-            .WithMessage(MessagesValidation.CampoObrigatorio);
-
-        RuleFor(a => !(agendamentoRepository.AgendamentoPeriodoExiste(a.AgendadoPara.AddMinutes(20))))
-            .Equal(false)
-            .WithMessage(MessagesValidation.AgendamentoPeriodo);
 
         When(a => cadastrar, () =>
         {
@@ -42,12 +42,13 @@ public class AgendaValidation : AbstractValidator<Agenda>
         When(a => !cadastrar, () =>
         {
             RuleFor(a => a.Id)
-           .Must(agendamentoRepository.Existe)
+           .Must(agendaRepository.Existe)
            .WithMessage(MessagesValidation.NaoEncontrado);
 
             RuleFor(a => a.ModificadoEm)
            .NotEmpty()
            .WithMessage(MessagesValidation.CampoObrigatorio);
         });
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using MedSync.Domain.Entities;
+﻿using Dapper;
+using MedSync.Domain.Entities;
 using MedSync.Domain.Enum;
 using MedSync.Domain.Interfaces;
 using MedSync.Infrastructure.Repositories.Scripts;
@@ -23,7 +24,7 @@ public class AgendamentoRepository : BaseRepository, IAgendamentoRepository
     {
         var sql = AgendamentoScripts.SelectBase;
 
-        return await GenericGetList<Agendamento>(sql, null);
+        return await GetListAsync(sql, null);
     }
 
     public async Task<Agendamento?> GetIdAsync(Guid id)
@@ -31,7 +32,7 @@ public class AgendamentoRepository : BaseRepository, IAgendamentoRepository
         var sql = $"{AgendamentoScripts.SelectBase}{AgendamentoScripts.WhereId}";
         var parametro = new { Id = id };
 
-        return await GenericGetOne<Agendamento>(sql, parametro);
+        return (await GetListAsync(sql, parametro)).FirstOrDefault();
     }
 
     public async Task<IEnumerable<Agendamento?>> GetMedicoIdAsync(Guid medicoId)
@@ -39,7 +40,7 @@ public class AgendamentoRepository : BaseRepository, IAgendamentoRepository
         var sql = $"{AgendamentoScripts.SelectBase}{AgendamentoScripts.WhereMedicoId}";
         var parametro = new { MedicoId = medicoId };
 
-        return await GenericGetList<Agendamento>(sql, parametro);
+        return await GetListAsync(sql, parametro);
     }
 
     public async Task<IEnumerable<Agendamento?>> GetAgendaIdAsync(Guid agendaId)
@@ -47,7 +48,7 @@ public class AgendamentoRepository : BaseRepository, IAgendamentoRepository
         var sql = $"{AgendamentoScripts.SelectBase}{AgendamentoScripts.WhereAgendaId}";
         var parametro = new { AgendaId = agendaId };
 
-        return await GenericGetList<Agendamento>(sql, parametro);
+        return await GetListAsync(sql, parametro);
     }
 
     public async Task<bool> UpdateAsync(Agendamento agendamento)
@@ -57,10 +58,10 @@ public class AgendamentoRepository : BaseRepository, IAgendamentoRepository
         return await GenericExecuteAsync(sql, agendamento);
     }
 
-    public bool AgendamentoPeriodoExiste(DiaSemana dia, DateTime dataHora)
+    public bool AgendamentoPeriodoExiste(DayOfWeek dia, DateTime dataAgendamento, TimeSpan horario)
     {
         var sql = AgendamentoScripts.periodo;
-        var parametros = new { DiaSemana = dia, DataHora = dataHora};
+        var parametros = new { DiaSemana = dia, DataHora = dataAgendamento, Horario = horario};
 
         return JaExiste(sql, parametros);
     }
@@ -81,4 +82,52 @@ public class AgendamentoRepository : BaseRepository, IAgendamentoRepository
         return JaExiste(sql, parametro);
     }
 
+
+    #region MÉTODOSPRIVADOS
+    private async Task<IEnumerable<Agendamento?>> GetListAsync(string sql, object? parametros)
+    {
+        var agendamentoDictionary = new Dictionary<Guid, Agendamento>();
+
+        try
+        {
+            CreateConnection(mySqlConnection);
+
+            return (await mySqlConnection.QueryAsync<Agendamento, Paciente, Medico, Pessoa, Pessoa, Telefone, Endereco, Agendamento>(
+                sql,
+                (agendamento, paciente, medico, pessoaPaciente, pessoaMedico, telefone, endereco) =>
+                {
+                    if (!agendamentoDictionary.TryGetValue(agendamento.Id, out var agendamentoEntry))
+                    {
+                        agendamentoEntry = agendamento;
+                        agendamentoEntry.Paciente = paciente;
+                        agendamentoEntry.Paciente.Pessoa = pessoaPaciente;
+                        agendamentoEntry.Medico = medico;
+                        agendamentoEntry.Medico.Pessoa = pessoaMedico;
+
+                        agendamentoEntry.Paciente.Telefones = new();
+                        agendamentoEntry.Medico.Telefones = new();
+
+                        agendamentoDictionary.Add(agendamentoEntry.Id, agendamentoEntry);
+                    }
+
+                    if (telefone != null && telefone.MedicoId != null && !agendamentoEntry.Medico.Telefones.Exists(t => t.Id == telefone.Id))
+                        agendamentoEntry.Medico.Telefones.Add(telefone);
+                    else
+                        agendamentoEntry.Paciente.Telefones.Add(telefone!);
+
+                    agendamentoEntry.Paciente.Endereco = endereco;
+
+                    return agendamentoEntry;
+                },
+                parametros,
+                splitOn: "Id"
+                )).Distinct();
+            
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+    #endregion
 }
