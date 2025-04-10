@@ -13,7 +13,6 @@ public class Agendamento : BaseModel
     public DateTime AgendadoPara { get; set; }
     public TimeSpan Horario { get; set; }
 
-    public Agenda Agenda { get; set; } = new();
     public Medico Medico { get; set; } = new();
     public Paciente Paciente { get; set; } = new();
 }

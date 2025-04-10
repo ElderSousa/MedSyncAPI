@@ -33,6 +33,8 @@ public static class MessagesValidation
     public static string SigaInvalida =
        "O campo {PropertyName} deve ter 2 caracteres.";
     public static string PeriodoInvalido =
-        "O período informado existe em nossa base de dados!.";
+        "O período informado existe em nossa base de dados!."; 
+    public static string HorarioInvalido =
+        "O horário informado não está disponível para agendamento.";
 
 }

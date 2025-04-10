@@ -54,7 +54,10 @@ public class AgendamentoService : BaseService, IAgendamentoService
                 throw new InvalidOperationException("Falha ao criar agenda.");
 
             var horarios = await _horarioService.GetAgendaIdAsync(agendamento.AgendaId);
-            var horario = horarios.ToList().Single(h => h.Hora == agendamento.Horario);
+            if (!horarios.Any())
+                throw new KeyNotFoundException("Horários não encontrado em nossa base de dados!");
+
+            var horario = horarios.ToList().Single(h => h!.Hora == agendamento.Horario);
             horario!.Agendado = true;
 
             await _horarioService.UpdateStatusAsync(horario.Id, horario.Agendado);
@@ -104,6 +107,19 @@ public class AgendamentoService : BaseService, IAgendamentoService
             logger.LogError(ex, ex.Message, "GetMedicoIdAsync");
             throw;
         }
+    } 
+    
+    public async Task<IEnumerable<AgendamentoResponse?>> GetPacienteIdAsync(Guid pacienteId)
+    {
+        try
+        {
+            return mapper.Map<IEnumerable<AgendamentoResponse>>(await _agendamentoRepository.GetPacienteIdAsync(pacienteId));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, ex.Message, "GetPacienteIdAsync");
+            throw;
+        }
     }
 
     public async Task<IEnumerable<AgendamentoResponse?>> GetAgendaIdAsync(Guid agendaId)
@@ -114,7 +130,7 @@ public class AgendamentoService : BaseService, IAgendamentoService
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, ex.Message, "");
+            logger.LogError(ex, ex.Message, "GetAgendaIdAsync");
             throw;
         }
     }
@@ -135,7 +151,7 @@ public class AgendamentoService : BaseService, IAgendamentoService
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, ex.Message, "");
+            logger.LogError(ex, ex.Message, "UpdateAsync");
             throw;
         }
 
@@ -150,7 +166,7 @@ public class AgendamentoService : BaseService, IAgendamentoService
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, ex.Message, "");
+            logger.LogError(ex, ex.Message, "DeleteAsync");
             throw;
         }
 

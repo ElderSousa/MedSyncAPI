@@ -41,6 +41,14 @@ public class AgendamentoRepository : BaseRepository, IAgendamentoRepository
         var parametro = new { MedicoId = medicoId };
 
         return await GetListAsync(sql, parametro);
+    } 
+    
+    public async Task<IEnumerable<Agendamento?>> GetPacienteIdAsync(Guid pacienteId)
+    {
+        var sql = $"{AgendamentoScripts.SelectBase}{AgendamentoScripts.WherePacienteId}";
+        var parametro = new { PacienteId = pacienteId };
+
+        return await GetListAsync(sql, parametro);
     }
 
     public async Task<IEnumerable<Agendamento?>> GetAgendaIdAsync(Guid agendaId)

@@ -18,15 +18,6 @@ public class AgendamentoScripts
                 ag.CriadoPor,
                 ag.ModificadoEm,
                 ag.ModificadoPor,
-                a.Id,
-                a.MedicoId,
-                a.DiaSemana,
-                a.DataDisponivel,
-                a.Horario,
-                a.CriadoEm,
-                a.CriadoPor,
-                a.ModificadoEm,
-                a.ModificadoPor,
                 pa.Id,
                 pa.PessoaId,
                 pa.CriadoEm,
@@ -142,29 +133,34 @@ public class AgendamentoScripts
 
     internal static readonly string WhereId =
         @"
-            AND Id = @Id
+            AND ag.Id = @Id
         ";
 
     internal static readonly string WhereAgendaId =
         @"
-            AND AgendaId = @AgendaId
+            AND ag.AgendaId = @AgendaId
         ";
 
     internal static readonly string WhereMedicoId =
         @"
-            AND MedicoId = @MedicoId
+            AND ag.MedicoId = @MedicoId
+        ";
+    
+    internal static readonly string WherePacienteId =
+        @"
+            AND ag.PacienteId = @PacienteId
         ";
 
     internal static readonly string Update =
         @"
-            UPDATE SET agendamentos
+            UPDATE  agendamentos SET
                 AgendadoPara = @AgendadoPara,
                 DiaSemana = @DiaSemana,
                 Horario = @Horario,
                 Tipo = @Tipo,
                 Status = @Status,
                 ModificadoEm = @ModificadoEm,
-                MoficadoPor = @MoficadoPor
+                ModificadoPor = @ModificadoPor
             WHERE
                 Id = @Id
                 AND ExcluidoEm IS NULL
@@ -172,10 +168,9 @@ public class AgendamentoScripts
     
     internal static readonly string Delete =
         @"
-            UPDATE SET agendamentos
+            UPDATE  agendamentos SET
                 ModificadoEm = @ModificadoEm,
-                MoficadoPor = @MoficadoPor,
-                ExcluidoEm = @ExcluidoEm
+                ExcluidoEm = @ModificadoEm
             WHERE
                 Id = @Id
                 AND ExcluidoEm IS NULL

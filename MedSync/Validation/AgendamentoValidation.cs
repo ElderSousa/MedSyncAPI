@@ -49,6 +49,10 @@ public class AgendamentoValidation : AbstractValidator<Agendamento>
            .Equal(true)
            .WithMessage(MessagesValidation.PeriodoInvalido);
 
+        RuleFor(a => a)
+            .Must(a => horarioRepository.HorarioExiste(a.Horario, false))
+            .WithMessage(MessagesValidation.HorarioInvalido);
+            
         RuleFor(a => agendamentoRepository.AgendamentoPeriodoExiste(a.DiaSemana, a.AgendadoPara, a.Horario))
             .Equal(false)
             .WithMessage(MessagesValidation.AgendamentoPeriodo);
@@ -64,7 +68,7 @@ public class AgendamentoValidation : AbstractValidator<Agendamento>
         {
 
             RuleFor(a => a.Id)
-                .Must(agendaRepository.Existe)
+                .Must(agendamentoRepository.Existe)
                 .WithMessage(MessagesValidation.NaoEncontrado);
 
             RuleFor(a => a.ModificadoEm)

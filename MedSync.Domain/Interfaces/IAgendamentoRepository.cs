@@ -9,6 +9,7 @@ public interface IAgendamentoRepository
     Task<Agendamento?> GetIdAsync(Guid id);
     Task<IEnumerable<Agendamento?>> GetAgendaIdAsync(Guid agendaId);
     Task<IEnumerable<Agendamento?>> GetMedicoIdAsync(Guid medicoId);
+    Task<IEnumerable<Agendamento?>> GetPacienteIdAsync(Guid pacienteId);
     Task<bool> UpdateAsync(Agendamento agendamento);
     Task<bool> DeleteAsync(Guid id);
     bool Existe(Guid id);

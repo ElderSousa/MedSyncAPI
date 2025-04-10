@@ -17,7 +17,6 @@ public class AgendamentoRequest
         public DateTime AgendadoPara { get; set; }
         public TimeSpan Horario { get; set; }
 
-        public string AgendadoParaString => AgendadoPara.ToShortTimeString();
     }
     public class AtualizarAgendamentoRequest
     {
@@ -29,7 +28,7 @@ public class AgendamentoRequest
         public AgendamentoStatus status { get; set; }
         public DayOfWeek DiaSemana { get; set; }
         public DateTime AgendadoPara { get; set; }
+        public TimeSpan Horario { get; set; }
 
-        public string AgendadoParaString => AgendadoPara.ToShortTimeString();
     }
 }
