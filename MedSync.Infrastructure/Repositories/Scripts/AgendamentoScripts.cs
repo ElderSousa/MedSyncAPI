@@ -9,7 +9,7 @@ public class AgendamentoScripts
                 ag.AgendaId,
                 ag.MedicoId,
                 ag.PacienteId,
-                ag.DataAgendamento AS AgendadoPara,
+                ag.AgendadoPara,
                 ag.DiaSemana,
                 ag.Horario,
                 ag.Tipo,
@@ -109,12 +109,12 @@ public class AgendamentoScripts
 
     internal static readonly string Insert =
         @"
-            INSET INTO agendamento(
+            INSERT INTO agendamentos(
                 Id, 
                 AgendaId,
                 MedicoId,
                 PacienteId,
-                DataAgendamento,
+                AgendadoPara,
                 DiaSemana,
                 Horario,
                 Tipo,
@@ -122,13 +122,13 @@ public class AgendamentoScripts
                 CriadoEm,
                 CriadoPor,
                 ModificadoEm,
-                MoficadoPor
+                ModificadoPor
             )VALUES(
                 @Id, 
                 @AgendaId,
                 @MedicoId,
                 @PacienteId,
-                @DataAgendamento,
+                @AgendadoPara,
                 @DiaSemana,
                 @Horario,
                 @Tipo,
@@ -136,7 +136,7 @@ public class AgendamentoScripts
                 @CriadoEm,
                 @CriadoPor,
                 @ModificadoEm,
-                @MoficadoPor
+                @ModificadoPor
             )             
         ";
 
@@ -157,8 +157,8 @@ public class AgendamentoScripts
 
     internal static readonly string Update =
         @"
-            UPDATE SET agendas
-                DataAgendamento = @DataAgendamento,
+            UPDATE SET agendamentos
+                AgendadoPara = @AgendadoPara,
                 DiaSemana = @DiaSemana,
                 Horario = @Horario,
                 Tipo = @Tipo,
@@ -172,7 +172,7 @@ public class AgendamentoScripts
     
     internal static readonly string Delete =
         @"
-            UPDATE SET agendas
+            UPDATE SET agendamentos
                 ModificadoEm = @ModificadoEm,
                 MoficadoPor = @MoficadoPor,
                 ExcluidoEm = @ExcluidoEm
@@ -185,9 +185,9 @@ public class AgendamentoScripts
             SELECT 
                 COUNT(*)
             FROM 
-                agendas
+                agendamentos
             WHERE
-                DataAgendamento = @DataAgendamento
+                AgendadoPara = @AgendadoPara
                 AND DiaSemana = @DiaSemana
                 AND Horario = @Horario
                 AND ExcluidoEm IS NULL
@@ -198,7 +198,7 @@ public class AgendamentoScripts
             SELECT 
                 COUNT(*)
             FROM 
-                agendas
+                agendamentos
             WHERE
                 Id = @Id
                 AND ExcluidoEm IS NULL

@@ -17,18 +17,21 @@ public class AgendaService : BaseService, IAgendaSevice
     private readonly IMedicoService _medicoService;
     private readonly IMedicoRepository _medicoRepository;
     private readonly IHorarioService _horarioService;
+    private readonly IHorarioRepository _horarioRepository;
     public AgendaService(IAgendaRepository agendaRepository,
         IMedicoService medicoService,
         IMapper mapper,
         IHttpContextAccessor httpContextAccessor,
         ILogger<AgendaService> logger,
         IMedicoRepository medicoRepository,
-        IHorarioService horarioService) : base(mapper, httpContextAccessor, logger)
+        IHorarioService horarioService,
+        IHorarioRepository horarioRepository) : base(mapper, httpContextAccessor, logger)
     {
         _agendaRepository = agendaRepository;
         _medicoService = medicoService;
         _medicoRepository = medicoRepository;
         _horarioService = horarioService;
+        _horarioRepository = horarioRepository;
     }
 
     public async Task<Response> CreateAsync(AdicionarAgendaRequest agendaRequest)
@@ -38,7 +41,7 @@ public class AgendaService : BaseService, IAgendaSevice
             var agenda = mapper.Map<Agenda>(agendaRequest);
             agenda.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
 
-            _response = ExecultarValidacaoResponse(new AgendaValidation(_agendaRepository, _medicoRepository, true), agenda);
+            _response = ExecultarValidacaoResponse(new AgendaValidation(_agendaRepository, _medicoRepository, _horarioRepository, true), agenda);
             if (_response.Error)
                 throw new ArgumentException(_response.Status);
 
@@ -51,7 +54,10 @@ public class AgendaService : BaseService, IAgendaSevice
             foreach (var horario in agendaRequest.Horarios)
             {
                 horario.AgendaId = agenda.Id;
-                await _horarioService.CreateAsync(horario);
+
+                _response = await _horarioService.CreateAsync(horario);
+                if (_response.Error)
+                    await _agendaRepository.DeleteAsync(agenda.Id);
             }
 
         }
@@ -110,7 +116,7 @@ public class AgendaService : BaseService, IAgendaSevice
             var agenda = mapper.Map<Agenda>(agendaResquest);
             agenda.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), false);
 
-            _response = ExecultarValidacaoResponse(new AgendaValidation(_agendaRepository, _medicoRepository, false), agenda);
+            _response = ExecultarValidacaoResponse(new AgendaValidation(_agendaRepository, _medicoRepository, _horarioRepository, false), agenda);
             if (_response.Error)
                 throw new ArgumentException(_response.Status);
 

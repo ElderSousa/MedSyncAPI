@@ -49,10 +49,10 @@ public class AgendaRepository : BaseRepository, IAgendaRepository
         return await GenericExecuteAsync(sql, agenda);
     }
 
-    public bool AgendaPeriodoExiste(DateTime dataDisponivel, DayOfWeek dia, bool agendado)
+    public bool AgendaPeriodoExiste(DateTime dataDisponivel, DayOfWeek dia)
     {
         var sql = AgendaScritps.DataHoraExiste;
-        var parametros = new { DataDisponivel = dataDisponivel, DiaSemana = dia, Agendado = agendado };
+        var parametros = new { DataDisponivel = dataDisponivel, DiaSemana = dia};
 
         return JaExiste(sql, parametros);
     }

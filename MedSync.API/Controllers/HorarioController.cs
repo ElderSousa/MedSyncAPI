@@ -35,6 +35,15 @@ namespace MedSync.API.Controllers
             return !horarios.Any() ? NoContent() : Ok(horarios);
         }
 
+        [HttpGet("getagendadofalse")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 204)]
+        public async Task<IActionResult> GetAagendadoFalseAsync()
+        {
+            var horarios = await _horarioService.GetAgendadoFalseAsync();
+            return !horarios.Any() ? NoContent() : Ok(horarios);
+        }
+
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
@@ -59,6 +68,16 @@ namespace MedSync.API.Controllers
         public async Task<IActionResult> UpdateAsync(AtualizarHorarioRequest horarioRequest)
         {
             _response = await _horarioService.UpdateAsync(horarioRequest);
+            return _response.Error ? BadRequest(_response) : Ok(_response);
+
+        }
+
+        [HttpPut("status/{id}/{agendado}")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        public async Task<IActionResult> UpdateStatusAsync(Guid id, bool agendado)
+        {
+            _response = await _horarioService.UpdateStatusAsync(id, agendado);
             return _response.Error ? BadRequest(_response) : Ok(_response);
 
         }

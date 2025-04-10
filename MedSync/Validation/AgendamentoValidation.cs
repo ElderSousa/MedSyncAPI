@@ -10,6 +10,7 @@ public class AgendamentoValidation : AbstractValidator<Agendamento>
         IAgendaRepository agendaRepository,
         IMedicoRepository medicoRepository,
         IPacienteRepository pacienteRepository,
+        IHorarioRepository horarioRepository,
         bool cadastrar)
     {
 
@@ -44,13 +45,13 @@ public class AgendamentoValidation : AbstractValidator<Agendamento>
             .WithMessage(MessagesValidation.CampoObrigatorio);
 
 
-        RuleFor(a => agendaRepository.AgendaPeriodoExiste(a.Agenda.DataDisponivel, a.Agenda.DiaSemana, a.Agenda.Agendado))
+        RuleFor(a => agendaRepository.AgendaPeriodoExiste(a.AgendadoPara, a.DiaSemana))
            .Equal(true)
            .WithMessage(MessagesValidation.PeriodoInvalido);
 
         RuleFor(a => agendamentoRepository.AgendamentoPeriodoExiste(a.DiaSemana, a.AgendadoPara, a.Horario))
-            .Equal(true)
-            .WithMessage(MessagesValidation.PeriodoInvalido);
+            .Equal(false)
+            .WithMessage(MessagesValidation.AgendamentoPeriodo);
 
         When(a => cadastrar, () =>
         {

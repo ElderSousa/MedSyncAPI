@@ -29,7 +29,7 @@ public static class MessagesValidation
     public static string CaractereInvalido =
         "O campo {PropertyName} deve possuir somente um caracter.";
     public static string AgendamentoPeriodo =
-        "Não há disponibilidade de agendamento para o horário informado.";
+        "Não há disponibilidade de agendamento para o período informado.";
     public static string SigaInvalida =
        "O campo {PropertyName} deve ter 2 caracteres.";
     public static string PeriodoInvalido =

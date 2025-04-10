@@ -43,8 +43,8 @@ public class AgendaScritps
 	            t.ModificadoPor,
                 h.Id, 
                 h.AgendaId,
-                h.HorarioInicial,
-                h.HorarioFinal,
+                h.Hora,
+                h.Agendado,
                 h.CriadoEm,
                 h.CriadoPor,
                 h.ModificadoEm,
@@ -70,7 +70,6 @@ public class AgendaScritps
                 MedicoId,
                 DiaSemana,
                 DataDisponivel,
-                Agendado,
                 CriadoEm,
                 CriadoPor,
                 ModificadoEm,
@@ -80,7 +79,6 @@ public class AgendaScritps
                 @MedicoId,
                 @DiaSemana,
                 @DataDisponivel,
-                @Agendado,
                 @CriadoEm,
                 @CriadoPor,
                 @ModificadoEm,
@@ -129,7 +127,6 @@ public class AgendaScritps
             WHERE 
                 DataDisponivel = @DataDisponivel
                 AND DiaSemana = @DiaSemana
-                AND Agendado = 0
                 AND ExcluidoEm IS NULL
         ";
 

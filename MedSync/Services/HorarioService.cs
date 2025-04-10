@@ -124,4 +124,37 @@ public class HorarioService : BaseService, IHorarioService
             throw;
         }
     }
+
+    public async Task<IEnumerable<HorarioResponse?>> GetAgendadoFalseAsync()
+    {
+        try
+        {
+            return mapper.Map<IEnumerable<HorarioResponse>>(await _horarioRepository.GetAgendadoFalseAsync());
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, ex.Message, "GetAgendadoFalseAsync");
+            throw;
+        }
+    }
+
+    public async Task<Response> UpdateStatusAsync(Guid id, bool agendado)
+    {
+        try
+        {
+            var horario = GetIdAsync(id);
+            if (horario == null)
+                throw new KeyNotFoundException("Horário não encontrado em nossa base de dados.");
+
+            if (!await _horarioRepository.UpdateStatusAsync(id, agendado))
+                throw new InvalidOperationException("Falha ao atualizar status.");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, ex.Message, "UpdateAsync");
+            throw;
+        }
+
+        return ReturnResponseSuccess();
+    }
 }

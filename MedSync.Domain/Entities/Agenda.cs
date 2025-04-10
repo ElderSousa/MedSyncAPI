@@ -3,7 +3,6 @@
 public class Agenda : BaseModel
 {
     public Guid MedicoId { get; set; }
-    public bool Agendado { get; set; }
     public DayOfWeek DiaSemana { get; set; }
     public DateTime DataDisponivel { get; set; }
    

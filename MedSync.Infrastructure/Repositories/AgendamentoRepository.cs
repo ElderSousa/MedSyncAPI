@@ -58,10 +58,10 @@ public class AgendamentoRepository : BaseRepository, IAgendamentoRepository
         return await GenericExecuteAsync(sql, agendamento);
     }
 
-    public bool AgendamentoPeriodoExiste(DayOfWeek dia, DateTime dataAgendamento, TimeSpan horario)
+    public bool AgendamentoPeriodoExiste(DayOfWeek dia, DateTime agendadoPara, TimeSpan horario)
     {
         var sql = AgendamentoScripts.periodo;
-        var parametros = new { DiaSemana = dia, DataHora = dataAgendamento, Horario = horario};
+        var parametros = new { DiaSemana = dia, AgendadoPara = agendadoPara, Horario = horario};
 
         return JaExiste(sql, parametros);
     }

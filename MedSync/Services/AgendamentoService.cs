@@ -14,10 +14,12 @@ namespace MedSync.Application.Services;
 public class AgendamentoService : BaseService, IAgendamentoService
 {
     private Response _response = new();
-    private IAgendamentoRepository _agendamentoRepository;
-    private IAgendaRepository _agendaRepository;
-    private IMedicoRepository _medicoRepository;
+    private readonly IAgendamentoRepository _agendamentoRepository;
+    private readonly IAgendaRepository _agendaRepository;
+    private readonly IMedicoRepository _medicoRepository;
     private readonly IPacienteRepository _pacienteRepository;
+    private readonly IHorarioRepository _horarioRepository;
+    private readonly IHorarioService _horarioService;
 
     public AgendamentoService(IAgendamentoRepository agendamentoRepository,
         IAgendaRepository agendaRepository,
@@ -25,12 +27,16 @@ public class AgendamentoService : BaseService, IAgendamentoService
         IMapper mapper,
         IHttpContextAccessor httpContextAccessor,
         ILogger<AgendamentoService> logger,
-        IPacienteRepository pacienteRepository) : base(mapper, httpContextAccessor, logger)
+        IPacienteRepository pacienteRepository,
+        IHorarioRepository horarioRepository,
+        IHorarioService horarioService) : base(mapper, httpContextAccessor, logger)
     {
         _agendamentoRepository = agendamentoRepository;
         _agendaRepository = agendaRepository;
         _medicoRepository = medicoRepository;
         _pacienteRepository = pacienteRepository;
+        _horarioRepository = horarioRepository;
+        _horarioService = horarioService;
     }
 
     public async Task<Response> CreateAsync(AdicionaAgendamentoRequest agendamentoResquest)
@@ -40,13 +46,18 @@ public class AgendamentoService : BaseService, IAgendamentoService
             var agendamento = mapper.Map<Agendamento>(agendamentoResquest);
             agendamento.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
 
-            _response = ExecultarValidacaoResponse(new AgendamentoValidation(_agendamentoRepository, _agendaRepository, _medicoRepository, _pacienteRepository,  true), agendamento);
+            _response = ExecultarValidacaoResponse(new AgendamentoValidation(_agendamentoRepository, _agendaRepository, _medicoRepository, _pacienteRepository, _horarioRepository, true), agendamento);
             if (_response.Error)
                 throw new ArgumentException(_response.Status);
 
-            if (!await _agendamentoRepository.UpdateAsync(agendamento))
+            if (!await _agendamentoRepository.CreateAsync(agendamento))
                 throw new InvalidOperationException("Falha ao criar agenda.");
 
+            var horarios = await _horarioService.GetAgendaIdAsync(agendamento.AgendaId);
+            var horario = horarios.ToList().Single(h => h.Hora == agendamento.Horario);
+            horario!.Agendado = true;
+
+            await _horarioService.UpdateStatusAsync(horario.Id, horario.Agendado);
         }
         catch (Exception ex)
         {
@@ -115,7 +126,7 @@ public class AgendamentoService : BaseService, IAgendamentoService
             var agendamento = mapper.Map<Agendamento>(agendamentoRequest);
             agendamento.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), false);
 
-            _response = ExecultarValidacaoResponse(new AgendamentoValidation(_agendamentoRepository, _agendaRepository, _medicoRepository, _pacienteRepository, false), agendamento);
+            _response = ExecultarValidacaoResponse(new AgendamentoValidation(_agendamentoRepository, _agendaRepository, _medicoRepository, _pacienteRepository, _horarioRepository, false), agendamento);
             if (_response.Error)
                 throw new ArgumentException(_response.Status);
 

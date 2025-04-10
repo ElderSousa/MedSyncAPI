@@ -1,4 +1,5 @@
-﻿using MedSync.Domain.Entities;
+﻿using System.Reflection.Metadata.Ecma335;
+using MedSync.Domain.Entities;
 using MedSync.Domain.Enum;
 
 namespace MedSync.Application.Requests;
@@ -14,6 +15,7 @@ public class AgendamentoRequest
         public AgendamentoStatus status { get; set; }
         public DayOfWeek DiaSemana { get; set; }
         public DateTime AgendadoPara { get; set; }
+        public TimeSpan Horario { get; set; }
 
         public string AgendadoParaString => AgendadoPara.ToShortTimeString();
     }

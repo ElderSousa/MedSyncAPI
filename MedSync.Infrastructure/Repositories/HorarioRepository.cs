@@ -1,9 +1,10 @@
 ﻿using MedSync.Domain.Entities;
 using MedSync.Domain.Interfaces;
+using MedSync.Infrastructure.Repositories.Scripts;
 using Microsoft.AspNetCore.Http;
 using MySql.Data.MySqlClient;
 
-namespace MedSync.Infrastructure.Repositories.Scripts;
+namespace MedSync.Infrastructure.Repositories;
 
 public class HorarioRepository : BaseRepository, IHorarioRepository
 {
@@ -38,11 +39,26 @@ public class HorarioRepository : BaseRepository, IHorarioRepository
         return await GenericGetList<Horario>(sql, parametro);
     }
 
-    public async Task<bool> UpdateAsync(Horario horario)
+    public async Task<IEnumerable<Horario?>> GetAgendadoFalseAsync()
+    {
+        var sql = $"{HorarioScripts.SelectBase}{HorarioScripts.WhereAgendadoFalse}";
+        
+        return await GenericGetList<Horario>(sql, null);
+    }
+
+    public async Task<bool> UpdateAsync(Horario hora)
     {
         var sql = HorarioScripts.Update;
 
-        return await GenericExecuteAsync(sql, horario);
+        return await GenericExecuteAsync(sql, hora);
+    }
+
+    public async Task<bool> UpdateStatusAsync(Guid id, bool agendado)
+    {
+        var sql = HorarioScripts.Status;
+        var parametros = new {Id = id, Agendado = agendado, ModificadoEm = DataHoraAtual()};
+
+        return await GenericExecuteAsync(sql, parametros);
     }
 
     public async Task<bool> DeleteAsync(Guid id)
@@ -61,10 +77,10 @@ public class HorarioRepository : BaseRepository, IHorarioRepository
         return  JaExiste(sql, parametro);
     }
 
-    public bool HorarioPeriodoExiste(TimeSpan horarioInicial, TimeSpan horarioFinal)
+    public bool HorarioExiste(TimeSpan hora, bool agendado)
     {
-        var sql = HorarioScripts.HorarioPeriodoExiste;
-        var parametros = new {HorarioInicial = horarioInicial, HorarioFinal = horarioFinal};
+        var sql = HorarioScripts.HorarioExiste;
+        var parametros = new {Hora = hora, Agendado = agendado};
 
         var resp =  JaExiste(sql, parametros);
         return resp;

@@ -11,5 +11,5 @@ public interface IAgendaRepository
     Task<bool> UpdateAsync(Agenda agenda);
     Task<bool> DeleteAsync(Guid id);
     bool Existe(Guid id);
-    bool AgendaPeriodoExiste(DateTime dataDisponivel, DayOfWeek dia, bool agendado);
+    bool AgendaPeriodoExiste(DateTime dataDisponivel, DayOfWeek dia);
 }

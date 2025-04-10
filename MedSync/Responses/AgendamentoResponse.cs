@@ -18,6 +18,6 @@ public class AgendamentoResponse
     public Guid? ModificadoPor { get; private set; }
     public DateTime? ModificadoEm { get; private set; }
 
-    public Paciente Paciente { get; set; } = new();
-    public Medico Medico { get; set; } = new();
+    public PacienteResponse Paciente { get; set; } = new();
+    public Agenda Agenda { get; set; } = new();
 }

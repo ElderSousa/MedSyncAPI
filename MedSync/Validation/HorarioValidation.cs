@@ -18,15 +18,11 @@ public class HorarioValidation : AbstractValidator<Horario>
             .Must(agendaRepository.Existe)
             .WithMessage(MessagesValidation.NaoEncontrado);
 
-        RuleFor(h => h.HorarioInicial)
+        RuleFor(h => h.Hora)
             .NotEmpty()
             .WithMessage(MessagesValidation.CampoObrigatorio);
 
-        RuleFor(h => h.HorarioFinal)
-            .NotEmpty()
-            .WithMessage(MessagesValidation.CampoObrigatorio);
-
-        RuleFor(h => horarioRepository.HorarioPeriodoExiste(h.HorarioInicial, h.HorarioFinal))
+        RuleFor(h => horarioRepository.HorarioExiste(h.Hora, h.Agendado))
             .Equal(false)
             .WithMessage(MessagesValidation.PeriodoInvalido);
 

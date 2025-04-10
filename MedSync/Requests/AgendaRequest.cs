@@ -7,7 +7,6 @@ public class AgendaRequest
     public class AdicionarAgendaRequest
     {
         public Guid MedicoId { get; set; }
-        public bool Agendado { get; set; }
         public DayOfWeek DiaSemana { get; set; }
         public DateTime DataDisponivel { get; set; }
 
@@ -18,7 +17,6 @@ public class AgendaRequest
     {
         public Guid Id { get; set; }
         public Guid MedicoId { get; set; }
-        public bool Agendado { get; set; }
         public DayOfWeek DiaSemana { get; set; }
         public DateTime DataDisponivel { get; set; }
 

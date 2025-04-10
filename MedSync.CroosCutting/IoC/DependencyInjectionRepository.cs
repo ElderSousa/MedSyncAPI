@@ -1,6 +1,5 @@
 ﻿using MedSync.Domain.Interfaces;
 using MedSync.Infrastructure.Repositories;
-using MedSync.Infrastructure.Repositories.Scripts;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MedSync.CrossCutting.IoC;
@@ -16,6 +15,7 @@ public static class DependencyInjectionRepository
         services.AddScoped<IPacienteRepository, PacienteRepository>();
         services.AddScoped<IAgendaRepository, AgendaRepository>();
         services.AddScoped<IHorarioRepository, HorarioRepository>();
+        services.AddScoped<IAgendamentoRepository, AgendamentoRepository>();
 
         return services;
     }
