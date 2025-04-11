@@ -26,22 +26,22 @@ namespace MedSync.API.Controllers
             return _response.Error ? BadRequest(_response) : Ok(_response);
         }
 
-        [HttpGet("getall")]
+        [HttpGet("getall/{page}/{pageSize}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync(int page, int pageSize)
         {
-            var horarios = await _horarioService.GetAllAsync();
-            return !horarios.Any() ? NoContent() : Ok(horarios);
+            var horarios = await _horarioService.GetAllAsync(page, pageSize);
+            return !horarios.Itens.Any() ? NoContent() : Ok(horarios);
         }
 
-        [HttpGet("getagendadofalse")]
+        [HttpGet("getagendadofalse/{page}/{pageSize}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
-        public async Task<IActionResult> GetAagendadoFalseAsync()
+        public async Task<IActionResult> GetAagendadoFalseAsync(int page, int pageSize)
         {
-            var horarios = await _horarioService.GetAgendadoFalseAsync();
-            return !horarios.Any() ? NoContent() : Ok(horarios);
+            var horarios = await _horarioService.GetAgendadoFalseAsync(page, pageSize);
+            return !horarios.Itens.Any() ? NoContent() : Ok(horarios);
         }
 
         [HttpGet("{id}")]
@@ -53,13 +53,13 @@ namespace MedSync.API.Controllers
             return horario == null ? NoContent() : Ok(horario);
         }
 
-        [HttpGet("agendaId/{agendaId}")]
+        [HttpGet("agendaId/{agendaId}/{page}/{pageSize}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
-        public async Task<IActionResult> GetAgendaIdAsync(Guid agendaId)
+        public async Task<IActionResult> GetAgendaIdAsync(Guid agendaId, int page, int pageSize)
         {
-            var horarios = await _horarioService.GetAgendaIdAsync(agendaId);
-            return !horarios.Any() ? NoContent() : Ok(horarios);
+            var horarios = await _horarioService.GetAgendaIdAsync(agendaId, page, pageSize);
+            return !horarios.Itens.Any() ? NoContent() : Ok(horarios);
         }
 
         [HttpPut]

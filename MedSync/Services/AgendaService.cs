@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MedSync.Application.Interfaces;
+using MedSync.Application.PaginationModel;
 using MedSync.Application.Responses;
 using MedSync.Application.Validation;
 using MedSync.Domain.Entities;
@@ -70,11 +71,14 @@ public class AgendaService : BaseService, IAgendaSevice
         return ReturnResponseSuccess();
     }
 
-    public async Task<IEnumerable<AgendaResponse?>> GetAllAsync()
+    public async Task<Pagination<AgendaResponse>> GetAllAsync(int page, int pageSize)
     {
         try
         {
-            return mapper.Map<IEnumerable<AgendaResponse>>(await _agendaRepository.GetAllAsync());
+            var agendas = mapper.Map<IEnumerable<AgendaResponse>>(await _agendaRepository.GetAllAsync());
+
+            return Paginar(agendas, page, pageSize);
+
         }
         catch (Exception ex)
         {
@@ -96,11 +100,13 @@ public class AgendaService : BaseService, IAgendaSevice
         }
     }
 
-    public async Task<IEnumerable<AgendaResponse?>> GetMedicoIdAsync(Guid medicoId)
+    public async Task<Pagination<AgendaResponse>> GetMedicoIdAsync(Guid medicoId, int page, int pageSize)
     {
         try
         {
-            return mapper.Map<IEnumerable<AgendaResponse>>(await _agendaRepository.GetMedicoIdAsync(medicoId));
+            var agendas = mapper.Map<IEnumerable<AgendaResponse>>(await _agendaRepository.GetMedicoIdAsync(medicoId));
+
+            return Paginar(agendas, page, pageSize);
         }
         catch (Exception ex)
         {

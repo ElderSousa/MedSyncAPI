@@ -1,6 +1,8 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using AutoMapper;
 using MedSync.Application.Interfaces;
+using MedSync.Application.PaginationModel;
 using MedSync.Application.Responses;
 using MedSync.Application.Validation;
 using MedSync.Domain.Entities;
@@ -53,11 +55,11 @@ public class AgendamentoService : BaseService, IAgendamentoService
             if (!await _agendamentoRepository.CreateAsync(agendamento))
                 throw new InvalidOperationException("Falha ao criar agenda.");
 
-            var horarios = await _horarioService.GetAgendaIdAsync(agendamento.AgendaId);
-            if (!horarios.Any())
+            var horarios = await _horarioService.GetAgendaIdAsync(agendamento.AgendaId, int.MaxValue, int.MaxValue);
+            if (!horarios.Itens.Any())
                 throw new KeyNotFoundException("Horários não encontrado em nossa base de dados!");
 
-            var horario = horarios.ToList().Single(h => h!.Hora == agendamento.Horario);
+            var horario = horarios.Itens.ToList().Single(h => h!.Hora == agendamento.Horario);
             horario!.Agendado = true;
 
             await _horarioService.UpdateStatusAsync(horario.Id, horario.Agendado);
@@ -70,11 +72,13 @@ public class AgendamentoService : BaseService, IAgendamentoService
         return ReturnResponseSuccess();
     }
 
-    public async Task<IEnumerable<AgendamentoResponse?>> GetAllAsync()
+    public async Task<Pagination<AgendamentoResponse>> GetAllAsync(int page, int pageSize)
     {
         try
         {
-            return mapper.Map<IEnumerable<AgendamentoResponse>>(await _agendamentoRepository.GetAllAsync());
+            var agendamentos = mapper.Map<IEnumerable<AgendamentoResponse>>(await _agendamentoRepository.GetAllAsync());
+
+            return Paginar(agendamentos, page, pageSize);
         }
         catch (Exception ex)
         {
@@ -96,11 +100,13 @@ public class AgendamentoService : BaseService, IAgendamentoService
         }
     }
 
-    public async Task<IEnumerable<AgendamentoResponse?>> GetMedicoIdAsync(Guid medicoId)
+    public async Task<Pagination<AgendamentoResponse>> GetMedicoIdAsync(Guid medicoId, int page, int pageSize)
     {
         try
         {
-            return mapper.Map<IEnumerable<AgendamentoResponse>>(await _agendamentoRepository.GetMedicoIdAsync(medicoId));
+            var agendamentos = mapper.Map<IEnumerable<AgendamentoResponse>>(await _agendamentoRepository.GetMedicoIdAsync(medicoId));
+
+            return Paginar(agendamentos, page, pageSize);
         }
         catch (Exception ex)
         {
@@ -109,11 +115,13 @@ public class AgendamentoService : BaseService, IAgendamentoService
         }
     } 
     
-    public async Task<IEnumerable<AgendamentoResponse?>> GetPacienteIdAsync(Guid pacienteId)
+    public async Task<Pagination<AgendamentoResponse>> GetPacienteIdAsync(Guid pacienteId, int page, int pageSize)
     {
         try
         {
-            return mapper.Map<IEnumerable<AgendamentoResponse>>(await _agendamentoRepository.GetPacienteIdAsync(pacienteId));
+            var agendamentos =  mapper.Map<IEnumerable<AgendamentoResponse>>(await _agendamentoRepository.GetPacienteIdAsync(pacienteId));
+
+            return Paginar(agendamentos, page, pageSize);
         }
         catch (Exception ex)
         {
@@ -122,11 +130,13 @@ public class AgendamentoService : BaseService, IAgendamentoService
         }
     }
 
-    public async Task<IEnumerable<AgendamentoResponse?>> GetAgendaIdAsync(Guid agendaId)
+    public async Task<Pagination<AgendamentoResponse>> GetAgendaIdAsync(Guid agendaId, int page, int pageSize)
     {
         try
         {
-            return mapper.Map<IEnumerable<AgendamentoResponse>>(await _agendamentoRepository.GetAgendaIdAsync(agendaId));
+            var agendamentos = mapper.Map<IEnumerable<AgendamentoResponse>>(await _agendamentoRepository.GetAgendaIdAsync(agendaId));
+
+            return Paginar(agendamentos, page, pageSize);
         }
         catch (Exception ex)
         {

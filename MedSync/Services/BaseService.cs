@@ -1,6 +1,8 @@
-﻿using System.Security.Claims;
+﻿using System.Runtime.CompilerServices;
+using System.Security.Claims;
 using AutoMapper;
 using FluentValidation;
+using MedSync.Application.PaginationModel;
 using MedSync.Application.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -64,7 +66,23 @@ namespace MedSync.Application.Services
 
         protected static DateTime DataHoraAtual() => DateTime.UtcNow.AddHours(-3);
 
-        private static string ObterErro(Exception exception) => exception.InnerException is not null ? exception.InnerException.Message : exception.Message;
+        protected static Pagination<T> Paginar<T>(IEnumerable<T> itens, int page, int pageSize)
+        {
+            var quantityOfPages = (int)Math.Ceiling((double)itens.Count() / pageSize);
 
+            var lista = itens
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+   ;
+
+            return new Pagination<T>
+            {
+                QuantityOfPages = quantityOfPages,
+                TotalItens = itens.Count(),
+                CurrentPage = page,
+                Itens = lista
+            };
+        }
     }
 }

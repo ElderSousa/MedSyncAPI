@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MedSync.Application.Interfaces;
+using MedSync.Application.PaginationModel;
 using MedSync.Application.Responses;
 using MedSync.Application.Validation;
 using MedSync.Domain.Entities;
@@ -48,11 +49,13 @@ public class HorarioService : BaseService, IHorarioService
         return ReturnResponseSuccess();
     }
 
-    public async Task<IEnumerable<HorarioResponse?>> GetAllAsync()
+    public async Task<Pagination<HorarioResponse>> GetAllAsync(int page, int pageSize)
     {
         try
         {
-            return mapper.Map<IEnumerable<HorarioResponse>>(await _horarioRepository.GetAllAsync());
+            var horarios = mapper.Map<IEnumerable<HorarioResponse>>(await _horarioRepository.GetAllAsync());
+
+            return Paginar(horarios, page, pageSize);
         }
         catch (Exception ex)
         {
@@ -73,11 +76,13 @@ public class HorarioService : BaseService, IHorarioService
         }
     }
 
-    public async Task<IEnumerable<HorarioResponse?>> GetAgendaIdAsync(Guid agendaId)
+    public async Task<Pagination<HorarioResponse>> GetAgendaIdAsync(Guid agendaId, int page, int pageSize)
     {
         try
         {
-            return mapper.Map<IEnumerable<HorarioResponse>>(await _horarioRepository.GetAgendaIdAsync(agendaId));
+            var horarios = mapper.Map<IEnumerable<HorarioResponse>>(await _horarioRepository.GetAgendaIdAsync(agendaId));
+
+            return Paginar(horarios, page, pageSize);
         }
         catch (Exception ex)
         {
@@ -125,11 +130,13 @@ public class HorarioService : BaseService, IHorarioService
         }
     }
 
-    public async Task<IEnumerable<HorarioResponse?>> GetAgendadoFalseAsync()
+    public async Task<Pagination<HorarioResponse>> GetAgendadoFalseAsync(int page, int pageSize)
     {
         try
         {
-            return mapper.Map<IEnumerable<HorarioResponse>>(await _horarioRepository.GetAgendadoFalseAsync());
+            var horarios = mapper.Map<IEnumerable<HorarioResponse>>(await _horarioRepository.GetAgendadoFalseAsync());
+
+            return Paginar(horarios, page, pageSize);
         }
         catch (Exception ex)
         {

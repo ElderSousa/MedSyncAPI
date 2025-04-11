@@ -1,4 +1,5 @@
-﻿using MedSync.Application.Responses;
+﻿using MedSync.Application.PaginationModel;
+using MedSync.Application.Responses;
 using static MedSync.Application.Requests.AgendamentoRequest;
 
 namespace MedSync.Application.Interfaces;
@@ -6,11 +7,11 @@ namespace MedSync.Application.Interfaces;
 public interface IAgendamentoService
 {
     Task<Response> CreateAsync(AdicionaAgendamentoRequest agendamentoResquest);
-    Task<IEnumerable<AgendamentoResponse?>> GetAllAsync();
+    Task<Pagination<AgendamentoResponse>> GetAllAsync(int page, int pageSize);
     Task<AgendamentoResponse?> GetIdAsync(Guid id);
-    Task<IEnumerable<AgendamentoResponse?>> GetAgendaIdAsync(Guid agendaId);
-    Task<IEnumerable<AgendamentoResponse?>> GetMedicoIdAsync(Guid medicoId);
-    Task<IEnumerable<AgendamentoResponse?>> GetPacienteIdAsync(Guid pacienteId);
+    Task<Pagination<AgendamentoResponse>> GetAgendaIdAsync(Guid agendaIdint,int page, int pageSize);
+    Task<Pagination<AgendamentoResponse>> GetMedicoIdAsync(Guid medicoId, int page, int pageSize);
+    Task<Pagination<AgendamentoResponse>> GetPacienteIdAsync(Guid pacienteId, int page, int pageSize);
     Task<Response> UpdateAsync(AtualizarAgendamentoRequest agendamentoRequest);
     Task<Response> DeleteAsync(Guid id);
 }

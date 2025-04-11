@@ -25,13 +25,13 @@ namespace MedSync.API.Controllers
            return _response.Error ? BadRequest(_response) : Ok(_response);
         }
         
-        [HttpGet("getall")]
+        [HttpGet("getall/{page}/{pageSize}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync(int page, int pageSize)
         {
-            var medicos = await _medicoService.GetAllAsync();
-           return !medicos.Any() ? NoContent() : Ok(medicos);
+            var medicos = await _medicoService.GetAllAsync(page, pageSize);
+           return !medicos.Itens.Any() ? NoContent() : Ok(medicos);
         }
         
         [HttpGet("{id}")]

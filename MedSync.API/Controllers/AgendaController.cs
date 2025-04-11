@@ -26,13 +26,13 @@ namespace MedSync.API.Controllers
             return _response.Error ? BadRequest(_response) : Ok(_response);
         }
 
-        [HttpGet("getall")]
+        [HttpGet("getall/{page}/{pageSize}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync(int page, int pageSize)
         {
-            var agendas = await _agendaSevice.GetAllAsync();
-            return !agendas.Any() ? NoContent() : Ok(agendas);
+            var agendas = await _agendaSevice.GetAllAsync(page, pageSize);
+            return !agendas.Itens.Any() ? NoContent() : Ok(agendas);
         }
 
         [HttpGet("{id}")]
@@ -44,13 +44,13 @@ namespace MedSync.API.Controllers
             return agenda == null ? NoContent() : Ok(agenda);
         }
   
-        [HttpGet("medicoId/{medicoId}")]
+        [HttpGet("medicoId/{medicoId}/{page}/{pageSize}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
-        public async Task<IActionResult> GetMedicoIdAsync(Guid medicoId)
+        public async Task<IActionResult> GetMedicoIdAsync(Guid medicoId, int page, int pageSize)
         {
-            var agendas = await _agendaSevice.GetMedicoIdAsync(medicoId);
-            return !agendas.Any() ? NoContent() : Ok(agendas);
+            var agendas = await _agendaSevice.GetMedicoIdAsync(medicoId, page, pageSize);
+            return !agendas.Itens.Any() ? NoContent() : Ok(agendas);
         }
 
         [HttpPut]

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MedSync.Application.Interfaces;
+using MedSync.Application.PaginationModel;
 using MedSync.Application.Responses;
 using MedSync.Application.Validation;
 using MedSync.Domain.Entities;
@@ -64,11 +65,13 @@ namespace MedSync.Application.Services
             }
             return ReturnResponseSuccess();
         }
-        public async Task<IEnumerable<MedicoResponse?>> GetAllAsync()
+        public async Task<Pagination<MedicoResponse>> GetAllAsync(int page, int pageSize)
         {
             try
             {
-                return mapper.Map<IEnumerable<MedicoResponse>>(await _medicoRepository.GetAllAsync());
+                var medicos = mapper.Map<IEnumerable<MedicoResponse>>(await _medicoRepository.GetAllAsync());
+
+                return Paginar(medicos, page, pageSize);
             }
             catch (Exception ex)
             {

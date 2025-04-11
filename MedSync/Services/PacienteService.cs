@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MedSync.Application.Interfaces;
+using MedSync.Application.PaginationModel;
 using MedSync.Application.Responses;
 using MedSync.Application.Validation;
 using MedSync.Domain.Entities;
@@ -70,11 +71,13 @@ public class PacienteService : BaseService, IPacienteService
         }
         return ReturnResponseSuccess();
     }
-    public async Task<IEnumerable<PacienteResponse?>> GetAllAsync()
+    public async Task<Pagination<PacienteResponse>> GetAllAsync(int page, int pageSize)
     {
         try
         {
-            return mapper.Map<IEnumerable<PacienteResponse>>(await _pacienteRepository.GetAllAsync());
+            var pacientes = mapper.Map<IEnumerable<PacienteResponse>>(await _pacienteRepository.GetAllAsync());
+
+            return Paginar(pacientes, page, pageSize);
         }
         catch (Exception ex)
         {
