@@ -36,5 +36,7 @@ public static class MessagesValidation
         "O período informado existe em nossa base de dados!."; 
     public static string HorarioInvalido =
         "O horário informado não está disponível para agendamento.";
+    public static string DataInvalida =
+        "Data não pode se menor que o valor da  data atual.";
 
 }

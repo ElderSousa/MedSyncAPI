@@ -25,7 +25,8 @@ public class AgendaValidation : AbstractValidator<Agenda>
 
         RuleFor(a => a.DataDisponivel)
             .NotEmpty()
-            .WithMessage(MessagesValidation.CampoObrigatorio);
+            .WithMessage(MessagesValidation.CampoObrigatorio)
+            .GreaterThan(DateTime.Now).WithMessage(MessagesValidation.DataInvalida);
 
         RuleFor(a => VerificaPeriodo(a.DataDisponivel, a.DiaSemana, a.Horarios.Exists(a => a.Agendado), a.Horarios))
             .Equal(false)

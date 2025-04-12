@@ -42,7 +42,9 @@ public class AgendamentoValidation : AbstractValidator<Agendamento>
 
         RuleFor(a => a.AgendadoPara)
             .NotEmpty()
-            .WithMessage(MessagesValidation.CampoObrigatorio);
+            .WithMessage(MessagesValidation.CampoObrigatorio)
+            .GreaterThan(DateTime.Now)
+            .WithMessage(MessagesValidation.DataInvalida);
 
 
         RuleFor(a => agendaRepository.AgendaPeriodoExiste(a.AgendadoPara, a.DiaSemana))
