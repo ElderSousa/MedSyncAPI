@@ -20,7 +20,6 @@ public static class DependencyInjectionService
         services.AddScoped<IHorarioService, HorarioService>();
         services.AddScoped<IAgendamentoService, AgendamentoService>();
         services.AddValidatorsFromAssemblyContaining<AgendamentoValidation>();//Única chamada o Validator varre todo o assembly para injetar todas a validações.
-        services.AddValidatorsFromAssemblyContaining<TelefoneValidation>();
 
         return services;
     }
