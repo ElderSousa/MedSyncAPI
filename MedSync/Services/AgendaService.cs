@@ -49,7 +49,7 @@ public class AgendaService : BaseService, IAgendaSevice
                  throw new KeyNotFoundException("Medico não encontrado em nossa base de dados.");
 
             if (!await _agendaRepository.CreateAsync(agenda))
-                throw new InvalidOperationException("Falha ao criar agendamento.");
+                throw new InvalidOperationException("Falha ao criar agenda.");
 
             foreach (var horario in agendaRequest.Horarios)
             {

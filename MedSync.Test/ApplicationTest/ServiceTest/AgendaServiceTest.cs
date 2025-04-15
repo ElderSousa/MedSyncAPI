@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using AutoMapper;
+﻿using AutoMapper;
 using FluentValidation;
 using MedSync.Application.Interfaces;
 using MedSync.Application.Responses;
@@ -93,5 +92,126 @@ public class AgendaServiceTest
         Assert.False(response.Error);
         _mockMapper.Verify(m => m.Map<Agenda>(It.IsAny<AdicionarAgendaRequest>()), Times.Once);
         _mockAgendaRepository.Verify(a => a.CreateAsync(It.IsAny<Agenda>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task CreateAsync_DeveRetornar_InvalidOperationException_Quando_Falha_AoCriarAgenda()
+    {
+        //Arrange
+        MedicoResponse medicoResponse = new() { Id = Guid.NewGuid() };
+        var agendaRequest = new AdicionarAgendaRequest()
+        {
+            MedicoId = medicoResponse.Id,
+            DiaSemana = DayOfWeek.Monday,
+            DataDisponivel = DateTime.Now.AddHours(1),
+            Horarios = new List<AdicionarHorarioRequest> { new AdicionarHorarioRequest() }
+        };
+
+        var agenda = new Agenda();
+        var medico = new Medico();
+
+        _mockMapper.Setup(m => m.Map<Agenda>(It.IsAny<AdicionarAgendaRequest>()))
+            .Returns(agenda);
+        _mockAgendaValidation.Setup(v => v.ValidateAsync(It.IsAny<Agenda>(), default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+        _mockMapper.Setup(m => m.Map<Medico>(It.IsAny<MedicoResponse>()))
+            .Returns(medico);
+        _mockMedicoService.Setup(med => med.GetIdAsync(agenda.MedicoId))
+             .ReturnsAsync(medicoResponse);
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAnyAsync<InvalidOperationException>(() => _agendaService.CreateAsync(agendaRequest));
+        Assert.Equal("Falha ao criar agenda.", exception.Message);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_Deve_Atualizar_Agenda_Quando_Dados_Validos()
+    {
+        //Arrange
+        var medicoResponse = new MedicoResponse() { Id = Guid.NewGuid()};
+
+        var agendaRequest = new AtualizarAgendaResquet()
+        {
+            MedicoId = medicoResponse.Id,
+            DiaSemana = DayOfWeek.Monday,
+            DataDisponivel = DateTime.Now.AddHours(1),
+            Horarios = new List<AtualizarHorarioRequest> { new AtualizarHorarioRequest() { AgendaId = Guid.NewGuid(), Hora = TimeSpan.Parse("08:00:00"), Agendado = false} }
+        };
+
+        var agenda = new Agenda();
+        _mockMapper.Setup(m => m.Map<Agenda>(It.IsAny<AtualizarAgendaResquet>()))
+            .Returns(agenda);
+        _mockAgendaValidation.Setup(v => v.ValidateAsync(It.IsAny<Agenda>(), default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+        _mockAgendaRepository.Setup(a => a.UpdateAsync(It.IsAny<Agenda>()))
+            .ReturnsAsync(true);
+        _mockHorarioService.Setup(a => a.UpdateAsync(agendaRequest.Horarios.First(h => h.AgendaId != Guid.Empty)))
+            .ReturnsAsync(new Response() { Status = "Sucesso", Error = false});
+
+        //Act
+        var response = await _agendaService.UpdateAsync(agendaRequest);
+
+        //Assert
+        Assert.NotNull(response);
+        Assert.True(response.Status == "Sucesso");
+        Assert.False(response.Error);
+        _mockAgendaRepository.Verify(v => v.UpdateAsync(It.IsAny<Agenda>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_Retorna_InvalidOperationException_Quando_Falha_Ao_Atualizar_Agenda()
+    {
+        //Arrange
+        var agendaRequest = new AtualizarAgendaResquet()
+        {
+            MedicoId = Guid.NewGuid(),
+            DiaSemana = DayOfWeek.Monday,
+            DataDisponivel = DateTime.Now.AddHours(1),
+            Horarios = new List<AtualizarHorarioRequest> { new AtualizarHorarioRequest() }
+        };
+
+        var agenda = new Agenda();
+
+        _mockMapper.Setup(m => m.Map<Agenda>(It.IsAny<AtualizarAgendaResquet>()))
+            .Returns(agenda);
+        _mockAgendaValidation.Setup(v => v.ValidateAsync(It.IsAny<Agenda>(), default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _agendaService.UpdateAsync(agendaRequest));
+        Assert.Equal("Falha ao atualiza agendamento.", exception.Message);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_Deve_Excluir_Agenda_Quando_Dados_Validos()
+    {
+        //Arrange
+        var agendaId = Guid.NewGuid();
+
+        _mockAgendaRepository.Setup(a => a.DeleteAsync(agendaId))
+            .ReturnsAsync(true);
+
+        //Act
+        var response = await _agendaService.DeleteAsync(agendaId);
+
+        //Assert
+        Assert.NotNull(response);
+        Assert.True(response.Status == "Sucesso");
+        Assert.False(response.Error);
+        _mockAgendaRepository.Verify(a => a.DeleteAsync(agendaId), Times.Once);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_Deve_Retornar_InvalidOperationException_Quando_Falha_Ao_Excluir()
+    {
+        //Arrange
+        var agendaId = Guid.NewGuid();
+
+        _mockAgendaRepository.Setup(a => a.DeleteAsync(agendaId))
+            .ReturnsAsync(false);
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _agendaService.DeleteAsync(agendaId));
+        Assert.Equal("Falha ao deletar agendamento de nossa base de dados.", exception.Message);
     }
 }

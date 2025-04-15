@@ -307,7 +307,7 @@ public class EnderecoServiceTest
 
         // Assert
         Assert.NotNull(response);
-        Assert.False(response.Error); // Sucesso esperado
+        Assert.False(response.Error);
         Assert.Equal("Sucesso", response.Status);
 
         _mockEnderecoRepository.Verify(r => r.DeleteAsync(enderecoId), Times.Once);
