@@ -1,6 +1,9 @@
 ﻿using MedSync.Application.Interfaces;
 using MedSync.Application.Services;
+using MedSync.Application.Validation;
 using Microsoft.Extensions.DependencyInjection;
+using FluentValidation;
+
 
 namespace MedSync.CrossCutting.IoC;
 
@@ -16,6 +19,8 @@ public static class DependencyInjectionService
         services.AddScoped<IAgendaSevice, AgendaService>();
         services.AddScoped<IHorarioService, HorarioService>();
         services.AddScoped<IAgendamentoService, AgendamentoService>();
+        services.AddValidatorsFromAssemblyContaining<AgendamentoValidation>();//Única chamada o Validator varre todo o assembly para injetar todas a validações.
+        services.AddValidatorsFromAssemblyContaining<TelefoneValidation>();
 
         return services;
     }

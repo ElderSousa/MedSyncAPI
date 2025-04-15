@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MedSync.Application.Interfaces;
 using MedSync.Application.Responses;
 using MedSync.Application.Validation;
@@ -14,12 +15,15 @@ public class PessoaService : BaseService, IPessoaService
 {
     private Response _response = new();
     private readonly IPessoaRepository _pessoaRepository;
+    private readonly IValidator<Pessoa> _pessoaValidation;
     public PessoaService(IPessoaRepository pessoaRepository,
+        IValidator<Pessoa> pessoaValidation,
         IMapper mapper,
         IHttpContextAccessor httpContextAccessor,
         ILogger<PessoaService> logger) : base(mapper, httpContextAccessor, logger)
     {
         _pessoaRepository = pessoaRepository;
+        _pessoaValidation = pessoaValidation;
     }
 
     public async Task<Response> CreateAsync(AdicionarPessoaRequest pessoaRequest)
@@ -28,8 +32,9 @@ public class PessoaService : BaseService, IPessoaService
         {
             var pessoa = mapper.Map<Pessoa>(pessoaRequest);
             pessoa.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
+            pessoa.ValidacaoCadastrar = true;
 
-            _response = ExecultarValidacaoResponse(new PessoaValidation(_pessoaRepository, true), pessoa);
+            _response = await ExecultarValidacaoResponse(_pessoaValidation, pessoa);
             if (_response.Error) 
                 throw new ArgumentException(_response.Status);
 
@@ -77,14 +82,15 @@ public class PessoaService : BaseService, IPessoaService
     {
         try
         {
-            var pessoaResponse = mapper.Map<Pessoa>(pessoaRequest);
-            pessoaResponse.AdicionarBaseModel(null, DataHoraAtual(), false);
+            var pessoa = mapper.Map<Pessoa>(pessoaRequest);
+            pessoa.AdicionarBaseModel(null, DataHoraAtual(), false);
+            pessoa.ValidacaoCadastrar = false;
 
-            _response = ExecultarValidacaoResponse(new PessoaValidation(_pessoaRepository, false), pessoaResponse);
+            _response = await ExecultarValidacaoResponse(_pessoaValidation, pessoa);
             if (_response.Error)
                 throw new ArgumentException(_response.Status);
 
-            if (!await _pessoaRepository.UpdateAsync(pessoaResponse))
+            if (!await _pessoaRepository.UpdateAsync(pessoa))
                 throw new InvalidOperationException("Falha na atualização em nossa base de dados.");
         }
         catch (Exception ex)

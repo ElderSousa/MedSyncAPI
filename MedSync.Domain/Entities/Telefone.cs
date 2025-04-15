@@ -1,4 +1,5 @@
-﻿using MedSync.Domain.Enum;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using MedSync.Domain.Enum;
 
 namespace MedSync.Domain.Entities;
 
@@ -8,4 +9,8 @@ public class Telefone : BaseModel
     public Guid? MedicoId { get; set; }
     public string? Numero { get; set; }
     public TelefoneTipo? Tipo { get; set; }
+
+    [NotMapped]
+    public bool ValidacaoCadastrar { get; set; }
 }
+

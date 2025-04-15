@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
 using MedSync.Application.Responses;
 using MedSync.Application.Services;
 using MedSync.Domain.Entities;
@@ -13,6 +15,7 @@ namespace MedSync.Test.ApplicationTest.ServiceTest;
 public class TelefoneServiceTest
 {
     private readonly Mock<ITelefoneRepository> _mockTelefoneRepository;
+    private readonly Mock<IValidator<Telefone>> _mockTelefoneValidation;
     private readonly Mock<IMapper> _mockMapper;
     private readonly Mock<IHttpContextAccessor> _mockHttpContext;
     private readonly Mock<ILogger<TelefoneService>> _mockLogger;
@@ -21,12 +24,14 @@ public class TelefoneServiceTest
     public TelefoneServiceTest()
     {
         _mockTelefoneRepository = new Mock<ITelefoneRepository>();
+        _mockTelefoneValidation = new Mock<IValidator<Telefone>>();
         _mockMapper = new Mock<IMapper>();
         _mockHttpContext = new Mock<IHttpContextAccessor>();
         _mockLogger = new Mock<ILogger<TelefoneService>>();
 
         _telefoneService = new TelefoneService(
                 _mockTelefoneRepository.Object,
+                _mockTelefoneValidation.Object,
                 _mockMapper.Object,
                 _mockHttpContext.Object,
                 _mockLogger.Object
@@ -51,11 +56,14 @@ public class TelefoneServiceTest
             PacienteId = telefoneRequest.PacienteId,
             MedicoId = telefoneRequest.MedicoId,
             Numero = telefoneRequest.Numero,
-            Tipo = telefoneRequest.Tipo
+            Tipo = telefoneRequest.Tipo,
+            ValidacaoCadastrar = true   
         };
 
         _mockMapper.Setup(m => m.Map<Telefone>(It.IsAny<AdicionarTelefoneRequest>()))
             .Returns(telefone);
+        _mockTelefoneValidation.Setup(v => v.ValidateAsync(It.IsAny<Telefone>(), default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _mockTelefoneRepository.Setup(t => t.CreateAsync(It.IsAny<Telefone>()))
             .ReturnsAsync(true);
 
@@ -87,11 +95,14 @@ public class TelefoneServiceTest
             PacienteId = telefoneRequest.PacienteId,
             MedicoId = telefoneRequest.MedicoId,
             Numero = telefoneRequest.Numero,
-            Tipo = telefoneRequest.Tipo
+            Tipo = telefoneRequest.Tipo,
+            ValidacaoCadastrar = true
         };
 
         _mockMapper.Setup(m => m.Map<Telefone>(It.IsAny<AdicionarTelefoneRequest>()))
            .Returns(telefone);
+        _mockTelefoneValidation.Setup(v => v.ValidateAsync(It.IsAny<Telefone>(), default))
+           .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         //Act & Assert
         var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => 
@@ -156,9 +167,13 @@ public class TelefoneServiceTest
             Tipo = telefoneRequest.Tipo
         };
 
-        _mockMapper
-           .Setup(m => m.Map<Telefone>(It.IsAny<AdicionarTelefoneRequest>()))
-           .Returns(telefone);
+        _mockMapper.Setup(m => m.Map<Telefone>(It.IsAny<AdicionarTelefoneRequest>()))
+            .Returns(telefone);
+        _mockTelefoneValidation.Setup(v => v.ValidateAsync(It.IsAny<Telefone>(), default))
+            .ReturnsAsync(new ValidationResult(new List<ValidationFailure>
+            {
+                new ValidationFailure("Numero", "Número inválido")
+            }));
 
         //Act & Assert
         var ex = await Assert.ThrowsAsync<ArgumentException>(() => 
@@ -192,7 +207,7 @@ public class TelefoneServiceTest
 
 
         _mockTelefoneRepository.Setup(r => r.GetIdAsync(telefoneId))
-        .ReturnsAsync(telefone);
+            .ReturnsAsync(telefone);
         _mockMapper.Setup(m => m.Map<TelefoneResponse>(It.IsAny<Telefone>()))
             .Returns(telefoneResponse);
 
@@ -255,13 +270,14 @@ public class TelefoneServiceTest
             PacienteId = Guid.Empty,
             MedicoId = null,
             Numero = "85999454649",
-            Tipo = 0
+            Tipo = 0,
+            ValidacaoCadastrar = false
         };
 
         _mockMapper.Setup(m => m.Map<Telefone>(It.IsAny<AtualizarTelefoneRequest>()))
             .Returns(telefone);
-        _mockTelefoneRepository.Setup(t => t.Existe(telefone.Id))
-            .Returns(true);
+        _mockTelefoneValidation.Setup(v => v.ValidateAsync(It.IsAny<Telefone>(), default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _mockTelefoneRepository.Setup(t => t.UpdateAsync(It.IsAny<Telefone>()))
             .ReturnsAsync(true);
 
@@ -273,7 +289,6 @@ public class TelefoneServiceTest
         Assert.Contains("Sucesso", response.Status);
         Assert.False(response.Error == true);
         _mockMapper.Verify(m => m.Map<Telefone>(It.IsAny<AtualizarTelefoneRequest>()), Times.Once);
-        _mockTelefoneRepository.Verify(t => t.Existe(telefone.Id), Times.Once);
         _mockTelefoneRepository.Verify(t => t.UpdateAsync(It.IsAny<Telefone>()), Times.Once);
     }
 
@@ -302,16 +317,19 @@ public class TelefoneServiceTest
 
         _mockMapper.Setup(m => m.Map<Telefone>(It.IsAny<AtualizarTelefoneRequest>()))
             .Returns(telefone);
-        _mockTelefoneRepository.Setup(t => t.Existe(telefone.Id))
-            .Returns(true);
         _mockTelefoneRepository.Setup(t => t.UpdateAsync(It.IsAny<Telefone>()))
             .ReturnsAsync(true);
+        _mockTelefoneValidation.Setup(v => v.ValidateAsync(It.IsAny<Telefone>(), default))
+            .ReturnsAsync(new ValidationResult(new List<ValidationFailure>
+            {
+            new ValidationFailure("Campo", "Campo obrigatório")
+            }));
 
         //Act & Assert
         var ex = await Assert.ThrowsAsync<ArgumentException>(() =>
         _telefoneService.UpdateAsync(telefoneRequest));
 
-        Assert.Contains("O campo", ex.Message);
+        Assert.Contains("Campo", ex.Message);
       
     }
 

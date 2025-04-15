@@ -8,7 +8,9 @@ public class AgendaValidation : AbstractValidator<Agenda>
 {
     private IHorarioRepository _horarioRepository;
     private IAgendaRepository _agendaRepository;
-    public AgendaValidation(IAgendaRepository agendaRepository, IMedicoRepository medicoRepository, IHorarioRepository horarioRepository, bool cadastrar)
+    public AgendaValidation(IAgendaRepository agendaRepository,
+        IMedicoRepository medicoRepository,
+        IHorarioRepository horarioRepository)
     {
         _horarioRepository = horarioRepository;
         _agendaRepository = agendaRepository;
@@ -36,14 +38,14 @@ public class AgendaValidation : AbstractValidator<Agenda>
             .IsInEnum()
             .WithMessage(MessagesValidation.CampoObrigatorio);
 
-        When(a => cadastrar, () =>
+        When(a => a.ValidacaoCadastrar, () =>
         {
             RuleFor(a => a.CriadoEm)
            .NotEmpty()
            .WithMessage(MessagesValidation.CampoObrigatorio);
         });
 
-        When(a => !cadastrar, () =>
+        When(a => !a.ValidacaoCadastrar, () =>
         {
             RuleFor(a => a.Id)
            .Must(agendaRepository.Existe)

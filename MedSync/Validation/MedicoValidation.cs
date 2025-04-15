@@ -8,7 +8,7 @@ namespace MedSync.Application.Validation;
 
 public class MedicoValidation : AbstractValidator<Medico>
 {
-    public MedicoValidation(IMedicoRepository medicoRepository, bool cadastrar)
+    public MedicoValidation(IMedicoRepository medicoRepository)
     {
         RuleFor(m => m.Id)
             .NotEmpty()
@@ -24,7 +24,7 @@ public class MedicoValidation : AbstractValidator<Medico>
             .Matches(@"^\d{4,6}(\/[A-Z]{2})?$", RegexOptions.IgnoreCase)
             .WithMessage(MessagesValidation.CRMInvalido); 
 
-        When(m => cadastrar, () =>
+        When(m => m.ValidacaoCadastrar, () =>
         {
             RuleFor(m => medicoRepository.CRMExiste(m.CRM))
            .Equal(false)
@@ -35,7 +35,7 @@ public class MedicoValidation : AbstractValidator<Medico>
                 .WithMessage(MessagesValidation.CampoObrigatorio);
         }); 
         
-        When(m => !cadastrar, () =>
+        When(m => !m.ValidacaoCadastrar, () =>
         {
             RuleFor(m => m.Id)
                 .Must(medicoRepository.Existe)

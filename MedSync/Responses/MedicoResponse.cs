@@ -4,13 +4,13 @@ namespace MedSync.Application.Responses;
 
 public class MedicoResponse
 {
-    public Guid Id { get; private set; }
+    public Guid Id { get; set; }
     public string? CRM { get; set; }
     public MedicoEspecialidade Especialidade { get; set; }
-    public Guid? CriadoPor { get; private set; }
-    public DateTime? CriadoEm { get; private set; }
-    public Guid? ModificadoPor { get; private set; }
-    public DateTime? ModificadoEm { get; private set; }
+    public Guid? CriadoPor { get; set; }
+    public DateTime? CriadoEm { get; set; }
+    public Guid? ModificadoPor { get; set; }
+    public DateTime? ModificadoEm { get; set; }
 
     public PessoaResponse Pessoa { get; set; } = new();
     public List<TelefoneResponse> Telefones { get; set; } = new();

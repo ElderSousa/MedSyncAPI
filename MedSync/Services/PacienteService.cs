@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MedSync.Application.Interfaces;
 using MedSync.Application.PaginationModel;
 using MedSync.Application.Responses;
@@ -18,10 +19,12 @@ public class PacienteService : BaseService, IPacienteService
     private readonly IPessoaService _pessoaService;
     private readonly IEnderecoService _enderecoService;
     private readonly ITelefoneService _telefoneService;
+    private readonly IValidator<Paciente> _pacienteValidator;
     public PacienteService(IPacienteRepository pacienteRepository,
         IPessoaService pessoaService,
         IEnderecoService enderecoService,
         ITelefoneService telefoneService,
+        IValidator<Paciente> pacienteValidator,
         IMapper mapper,
         IHttpContextAccessor httpContextAccessor,
         ILogger<PacienteService> logger) : base(mapper, httpContextAccessor, logger)
@@ -30,6 +33,7 @@ public class PacienteService : BaseService, IPacienteService
         _pessoaService = pessoaService;
         _enderecoService = enderecoService;
         _telefoneService = telefoneService;
+        _pacienteValidator = pacienteValidator;
     }
 
     public async Task<Response> CreateAsync(AdicionarPacienteRequest pacienteRequest)
@@ -38,8 +42,9 @@ public class PacienteService : BaseService, IPacienteService
         {
             var paciente = mapper.Map<Paciente>(pacienteRequest);
             paciente.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
+            paciente.ValidacaoCadastrar = true;
 
-            _response = ExecultarValidacaoResponse(new PacienteValidation(_pacienteRepository, true), paciente);
+            _response = await ExecultarValidacaoResponse(_pacienteValidator, paciente);
             if (_response.Error)
                 throw new ArgumentException(_response.Status);
 
@@ -107,8 +112,9 @@ public class PacienteService : BaseService, IPacienteService
         {
             var paciente = mapper.Map<Paciente>(pacienteRequest);
             paciente.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), false);
+            paciente.ValidacaoCadastrar = false;
 
-            _response = ExecultarValidacaoResponse(new PacienteValidation(_pacienteRepository, false), paciente);
+            _response = await ExecultarValidacaoResponse(_pacienteValidator, paciente);
             if (_response.Error)
                 throw new ArgumentException(_response.Status);
 

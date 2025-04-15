@@ -1,4 +1,6 @@
-﻿namespace MedSync.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MedSync.Domain.Entities;
 
 public class Endereco : BaseModel
 {
@@ -11,4 +13,8 @@ public class Endereco : BaseModel
    public string? Cidade { get; set; }
    public string? Estado { get; set; }
    public string? CEP { get; set; }
+
+    [NotMapped]
+    public bool ValidacaoCadastrar { get; set; }
 }
+

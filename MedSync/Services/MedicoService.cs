@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MedSync.Application.Interfaces;
 using MedSync.Application.PaginationModel;
 using MedSync.Application.Responses;
@@ -17,9 +18,11 @@ namespace MedSync.Application.Services
         private readonly IMedicoRepository _medicoRepository;
         private readonly IPessoaService _pessoaService;
         private readonly ITelefoneService _telefoneService;
+        private readonly IValidator<Medico> _medicoValidation;
         public MedicoService(IMedicoRepository medicoRepository,
             IPessoaService pessoaService,
             ITelefoneService telefoneService,
+            IValidator<Medico> medicoValidator,
             IMapper mapper,
             IHttpContextAccessor httpContextAccessor,
             ILogger<MedicoService> logger) : base(mapper, httpContextAccessor, logger)
@@ -27,6 +30,7 @@ namespace MedSync.Application.Services
             _medicoRepository = medicoRepository;
             _pessoaService = pessoaService;
             _telefoneService = telefoneService;
+            _medicoValidation = medicoValidator;
         }
 
         public async Task<Response> CreateAsync(AdicionarMedicoRequest medicoRequest)
@@ -35,8 +39,9 @@ namespace MedSync.Application.Services
             {
                 var medico = mapper.Map<Medico>(medicoRequest);
                 medico.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
+                medico.ValidacaoCadastrar = true;
 
-                _response = ExecultarValidacaoResponse(new MedicoValidation(_medicoRepository, true), medico);
+                _response = await ExecultarValidacaoResponse(_medicoValidation, medico);
                 if (_response.Error)
                     throw new ArgumentException(_response.Status);
 
@@ -115,8 +120,9 @@ namespace MedSync.Application.Services
             {
                 var medico = mapper.Map<Medico>(medicoRequest);
                 medico.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), false);
+                medico.ValidacaoCadastrar = false;
 
-                _response = ExecultarValidacaoResponse(new MedicoValidation(_medicoRepository, false), medico);
+                _response = await ExecultarValidacaoResponse(_medicoValidation, medico);
                 if (_response.Error)
                     throw new ArgumentException(_response.Status);
 

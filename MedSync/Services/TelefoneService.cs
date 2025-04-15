@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MedSync.Application.Interfaces;
 using MedSync.Application.Responses;
 using MedSync.Application.Validation;
@@ -14,11 +15,14 @@ public class TelefoneService : BaseService, ITelefoneService
 {
     private Response _response = new();
     private readonly ITelefoneRepository _telefoneRepository;
+    private readonly IValidator<Telefone> _telefoneValidation;
     public TelefoneService(ITelefoneRepository telefoneRepository,
+        IValidator<Telefone> telefoneValidation,
         IMapper mapper, IHttpContextAccessor httpContextAccessor,
         ILogger<TelefoneService> logger) : base(mapper, httpContextAccessor, logger)
     {
         _telefoneRepository = telefoneRepository;
+        _telefoneValidation = telefoneValidation;
     }
 
     public async Task<Response> CreateAsync(AdicionarTelefoneRequest telefoneRequest)
@@ -27,8 +31,9 @@ public class TelefoneService : BaseService, ITelefoneService
         {
             var telefone = mapper.Map<Telefone>(telefoneRequest);
             telefone.AdicionarBaseModel(null, DataHoraAtual(), true);
+            telefone.ValidacaoCadastrar = true;
 
-            _response = ExecultarValidacaoResponse(new TelefoneValidation(_telefoneRepository, true), telefone);
+            _response = await ExecultarValidacaoResponse(_telefoneValidation, telefone);
             if (_response.Error) 
                 throw new ArgumentException(_response.Status);
 
@@ -76,8 +81,9 @@ public class TelefoneService : BaseService, ITelefoneService
         {
             var telefone = mapper.Map<Telefone>(telefoneRequest);
             telefone.AdicionarBaseModel(null, DataHoraAtual(), false);
+            telefone.ValidacaoCadastrar = false;
 
-            _response = ExecultarValidacaoResponse(new TelefoneValidation(_telefoneRepository, false), telefone);
+            _response = await ExecultarValidacaoResponse(_telefoneValidation, telefone);
             if (_response.Error)
                 throw new ArgumentException(_response.Status);
 

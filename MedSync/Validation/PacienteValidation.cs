@@ -6,20 +6,20 @@ namespace MedSync.Application.Validation;
 
 public class PacienteValidation : AbstractValidator<Paciente>
 {
-    public PacienteValidation(IPacienteRepository pacienteRepository, bool cadastar)
+    public PacienteValidation(IPacienteRepository pacienteRepository)
     {
         RuleFor(p => p.Id)
             .NotEmpty()
             .WithMessage(MessagesValidation.CampoObrigatorio);
 
-        When(p => cadastar, () =>
+        When(p => p.ValidacaoCadastrar, () =>
         {
             RuleFor(p => p.CriadoEm)
                 .NotEmpty()
                 .WithMessage(MessagesValidation.CampoObrigatorio);
         });
 
-        When(p => !cadastar, () =>
+        When(p => !p.ValidacaoCadastrar, () =>
         {
             RuleFor(p => p.Id)
                 .Must(pacienteRepository.Existe)

@@ -6,7 +6,7 @@ namespace MedSync.Application.Validation;
 
 public class HorarioValidation : AbstractValidator<Horario>
 {
-    public HorarioValidation(IHorarioRepository horarioRepository, IAgendaRepository agendaRepository, bool cadastrar)
+    public HorarioValidation(IHorarioRepository horarioRepository, IAgendaRepository agendaRepository)
     {
         RuleFor(h => h.Id)
             .NotEmpty()
@@ -26,14 +26,14 @@ public class HorarioValidation : AbstractValidator<Horario>
             .Equal(false)
             .WithMessage(MessagesValidation.PeriodoInvalido);
 
-        When(h => cadastrar, () =>
+        When(h => h.ValidacaoCadastrar, () =>
         {
             RuleFor(h => h.CriadoEm)
             .NotEmpty()
             .WithMessage(MessagesValidation.CampoObrigatorio);
         });
         
-        When(h => !cadastrar, () =>
+        When(h => !h.ValidacaoCadastrar, () =>
         {
             RuleFor(h => h.Id)
                .Must(horarioRepository.Existe)

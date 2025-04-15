@@ -43,11 +43,11 @@ namespace MedSync.Application.Services
             return response;
         }
 
-        protected Response ExecultarValidacaoResponse<TV, TE>(TV validacao, TE entidade) where TV : AbstractValidator<TE>
+        protected async Task<Response> ExecultarValidacaoResponse<T>(IValidator<T> validator, T entidade)
         {
-            var validator = validacao.Validate(entidade);
-            if (validator.IsValid) return ReturnResponseSuccess();
-            return ReturnResponse(validator.ToString(), true);
+            var result = await validator.ValidateAsync(entidade);
+            return result.IsValid ? ReturnResponseSuccess() :
+            ReturnResponse(result.ToString()!, true);
         }
 
         protected Guid ObterUsuarioLogadoId()

@@ -7,7 +7,7 @@ namespace MedSync.Application.Validation;
 
 public class PessoaValidation : AbstractValidator<Pessoa>
 {
-    public PessoaValidation(IPessoaRepository pessoaRepository, bool cadastrar)
+    public PessoaValidation(IPessoaRepository pessoaRepository)
     {
         RuleFor(p => p.Id)
             .NotEmpty().WithMessage(MessagesValidation.CampoObrigatorio);
@@ -29,7 +29,7 @@ public class PessoaValidation : AbstractValidator<Pessoa>
         RuleFor(p => p.Sexo)
              .MaximumLength(1).WithMessage(MessagesValidation.CaractereInvalido);
 
-        When(p => cadastrar, () =>
+        When(p => p.ValidacaoCadastrar, () =>
         {
             RuleFor(p => p.CriadoEm)
                 .NotEmpty().WithMessage(MessagesValidation.CampoObrigatorio);
@@ -38,7 +38,7 @@ public class PessoaValidation : AbstractValidator<Pessoa>
                 .WithMessage(MessagesValidation.CPFCadastrado);
         });
 
-        When(p => !cadastrar, () =>
+        When(p => !p.ValidacaoCadastrar, () =>
         {
             RuleFor(p => p.Id)
                 .Must(pessoaRepository.Existe).WithMessage(MessagesValidation.NaoEncontrado);

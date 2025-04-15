@@ -1,4 +1,6 @@
-﻿namespace MedSync.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MedSync.Domain.Entities;
 
 public class Pessoa : BaseModel
 {
@@ -9,5 +11,9 @@ public class Pessoa : BaseModel
     public string? Sexo { get; set; }
     public DateTime? DataNascimento { get; set; }
 
+    [NotMapped]
+    public bool ValidacaoCadastrar { get; set; }
 }
+
+
 

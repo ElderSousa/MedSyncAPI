@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+﻿
+using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
 using MedSync.Application.Responses;
 using MedSync.Application.Services;
 using MedSync.Domain.Entities;
@@ -13,6 +16,7 @@ namespace MedSync.Test.ApplicationTest.ServiceTest;
 public class EnderecoServiceTest
 {
     private readonly Mock<IEnderecoRepository> _mockEnderecoRepository;
+    private readonly Mock<IValidator<Endereco>> _mockEnderecoValidation;
     private readonly Mock<IMapper> _mockMapper;
     private readonly Mock<IHttpContextAccessor> _mockHttpContextAcessor;
     private readonly Mock<ILogger<EnderecoService>> _mockLogger;
@@ -21,12 +25,14 @@ public class EnderecoServiceTest
     public EnderecoServiceTest()
     {
         _mockEnderecoRepository = new Mock<IEnderecoRepository>();
+        _mockEnderecoValidation = new Mock<IValidator<Endereco>>();
         _mockMapper = new Mock<IMapper>();
         _mockHttpContextAcessor = new Mock<IHttpContextAccessor>();
         _mockLogger = new Mock<ILogger<EnderecoService>>();
 
         _enderecoService = new EnderecoService(
             _mockEnderecoRepository.Object,
+            _mockEnderecoValidation.Object,
             _mockMapper.Object,
             _mockHttpContextAcessor.Object,
             _mockLogger.Object     
@@ -61,10 +67,13 @@ public class EnderecoServiceTest
          Bairro = enderecoRequest.Bairro,
          Cidade = enderecoRequest.Cidade,
          Estado = enderecoRequest.Estado,
-         CEP = enderecoRequest.CEP
+         CEP = enderecoRequest.CEP,
+         ValidacaoCadastrar = true
      });
         _mockEnderecoRepository.Setup(e => e.CreateAsync(It.IsAny<Endereco>()))
             .ReturnsAsync(true);
+        _mockEnderecoValidation.Setup(v => v.ValidateAsync(It.IsAny<Endereco>(), default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
         //Act
         var response = await _enderecoService.CreateAsync(enderecoRequest);
@@ -73,7 +82,7 @@ public class EnderecoServiceTest
         //Assert
         Assert.NotNull(response);
         Assert.True(response.Status == "Sucesso");
-        Assert.False(response.Error == false);
+        Assert.False(response.Error);
         _mockMapper.Verify(m => m.Map<Endereco>(It.IsAny<AdicionarEnderecoRequest>()), Times.Once);
         _mockEnderecoRepository.Verify(e => e.CreateAsync(It.IsAny<Endereco>()), Times.Once);
     }
@@ -101,15 +110,21 @@ public class EnderecoServiceTest
             Bairro = enderecoRequest.Bairro,
             Cidade = enderecoRequest.Cidade,
             Estado = enderecoRequest.Estado,
-            CEP = enderecoRequest.CEP
+            CEP = enderecoRequest.CEP,
+            ValidacaoCadastrar = false,
         };
 
         _mockMapper.Setup(m => m.Map<Endereco>(It.IsAny<AdicionarEnderecoRequest>()))
             .Returns(endereco);
+        _mockEnderecoValidation.Setup(v => v.ValidateAsync(It.IsAny<Endereco>(), default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
+            {
+                new ValidationFailure("Campo", "Campo obrigatório")
+            }));
 
         // Act & Assert
         var ex = await Assert.ThrowsAsync<ArgumentException>(() => _enderecoService.CreateAsync(enderecoRequest));
-        Assert.Contains("O campo", ex.Message);
+        Assert.Contains("Campo", ex.Message);
     }
 
 
@@ -209,13 +224,13 @@ public class EnderecoServiceTest
             Cidade = "Fortaleza",
             Estado = "CE",
             CEP = "60000-000",
-            ModificadoEm = DateTime.Now
+            ModificadoEm = DateTime.Now,
+            ValidacaoCadastrar = false
         };
 
         _mockMapper.Setup(m => m.Map<Endereco>(enderecoRequest)).Returns(endereco);
-
-        _mockEnderecoRepository.Setup(r => r.Existe(enderecoId)).Returns(true);
-
+        _mockEnderecoValidation.Setup(v => v.ValidateAsync(It.IsAny<Endereco>(), default))
+            .ReturnsAsync(new ValidationResult());
         _mockEnderecoRepository.Setup(r => r.UpdateAsync(It.IsAny<Endereco>())).ReturnsAsync(true);
 
         // Act
@@ -251,13 +266,17 @@ public class EnderecoServiceTest
             Cidade = enderecoRequest.Cidade,
             Estado = enderecoRequest.Estado,
             CEP = enderecoRequest.CEP,
-            ModificadoEm = DateTime.Now
+            ModificadoEm = DateTime.Now,
+            ValidacaoCadastrar = false
         };
 
         _mockMapper.Setup(m => m.Map<Endereco>(It.IsAny<AtualizarEnderecoRequest>()))
             .Returns(endereco);
-
-        _mockEnderecoRepository.Setup(r => r.Existe(It.IsAny<Guid>())).Returns(false);
+        _mockEnderecoValidation.Setup(v => v.ValidateAsync(It.IsAny<Endereco>(), default))
+             .ReturnsAsync(new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
+             {
+                new ValidationFailure("Id", "Id não foi encontrado")
+             }));
 
         // Act & Assert
         var ex = await Assert.ThrowsAsync<ArgumentException>(() => _enderecoService.UpdateAsync(enderecoRequest));

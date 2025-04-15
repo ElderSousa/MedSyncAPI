@@ -10,8 +10,7 @@ public class AgendamentoValidation : AbstractValidator<Agendamento>
         IAgendaRepository agendaRepository,
         IMedicoRepository medicoRepository,
         IPacienteRepository pacienteRepository,
-        IHorarioRepository horarioRepository,
-        bool cadastrar)
+        IHorarioRepository horarioRepository)
     {
 
         RuleFor(a => a.Id)
@@ -59,14 +58,14 @@ public class AgendamentoValidation : AbstractValidator<Agendamento>
             .Equal(false)
             .WithMessage(MessagesValidation.AgendamentoPeriodo);
 
-        When(a => cadastrar, () =>
+        When(a => a.ValidacaoCadastrar, () =>
         {
             RuleFor(a => a.CriadoEm)
                 .NotEmpty()
                 .WithMessage(MessagesValidation.CampoObrigatorio);
         });
 
-        When(a => !cadastrar, () =>
+        When(a => !a.ValidacaoCadastrar, () =>
         {
 
             RuleFor(a => a.Id)

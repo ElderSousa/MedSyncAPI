@@ -1,4 +1,5 @@
-﻿using MedSync.Domain.Enum;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using MedSync.Domain.Enum;
 
 namespace MedSync.Domain.Entities;
 
@@ -15,4 +16,8 @@ public class Agendamento : BaseModel
 
     public Medico Medico { get; set; } = new();
     public Paciente Paciente { get; set; } = new();
+
+    [NotMapped]
+    public bool ValidacaoCadastrar { get; set; }
 }
+

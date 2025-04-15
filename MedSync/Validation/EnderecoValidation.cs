@@ -6,7 +6,7 @@ namespace MedSync.Application.Validation;
 
 public class EnderecoValidation : AbstractValidator<Endereco>
 {
-    public EnderecoValidation(IEnderecoRepository enderecoRepository, bool cadastrar)
+    public EnderecoValidation(IEnderecoRepository enderecoRepository)
     {
         RuleFor(e => e.Id)
             .NotEmpty()
@@ -29,23 +29,18 @@ public class EnderecoValidation : AbstractValidator<Endereco>
             .WithMessage(MessagesValidation.CampoObrigatorio)
             .MinimumLength(3).WithMessage(MessagesValidation.NomeInvalido); 
 
-        RuleFor(e => e.Estado)
-            .NotEmpty()
-            .WithMessage(MessagesValidation.CampoObrigatorio)
-           .MinimumLength(2).WithMessage(MessagesValidation.SigaInvalida);
-
         RuleFor(e => e.CEP)
            .Matches(@"^\d{5}-?\d{3}$")
            .WithMessage(MessagesValidation.CEPInvalido);
 
-        When(e => cadastrar, () =>
+        When(e => e.ValidacaoCadastrar, () =>
         {
             RuleFor(e => e.Id)
                 .NotEmpty()
                 .WithMessage(MessagesValidation.CampoObrigatorio);
         });
 
-        When(e => !cadastrar, () =>
+        When(e => !e.ValidacaoCadastrar, () =>
         {
             RuleFor(e => e.Id)
                 .Must(enderecoRepository.Existe)

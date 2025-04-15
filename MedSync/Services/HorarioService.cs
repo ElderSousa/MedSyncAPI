@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MedSync.Application.Interfaces;
 using MedSync.Application.PaginationModel;
 using MedSync.Application.Responses;
-using MedSync.Application.Validation;
 using MedSync.Domain.Entities;
 using MedSync.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -15,15 +15,15 @@ public class HorarioService : BaseService, IHorarioService
 {
     private Response _response = new();
     private IHorarioRepository _horarioRepository;
-    private IAgendaRepository _agendaRepository;
+    private IValidator<Horario> _horarioValidator;
     public HorarioService(IHorarioRepository horarioRepository,
+        IValidator<Horario> horarioValidator,
         IMapper mapper,
         IHttpContextAccessor httpContextAccessor,
-        ILogger<HorarioService> logger,
-        IAgendaRepository agendaRepository) : base(mapper, httpContextAccessor, logger)
+        ILogger<HorarioService> logger) : base(mapper, httpContextAccessor, logger)
     {
         _horarioRepository = horarioRepository;
-        _agendaRepository = agendaRepository;
+        _horarioValidator = horarioValidator;
     }
 
     public async Task<Response> CreateAsync(AdicionarHorarioRequest horarioRequest)
@@ -32,8 +32,9 @@ public class HorarioService : BaseService, IHorarioService
         {
             var horario = mapper.Map<Horario>(horarioRequest);
             horario.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
+            horario.ValidacaoCadastrar = true;
 
-            _response = ExecultarValidacaoResponse(new HorarioValidation(_horarioRepository, _agendaRepository, true), horario);
+            _response = await ExecultarValidacaoResponse(_horarioValidator, horario);
             if (_response.Error)
                 throw new ArgumentException(_response.Status);
 
@@ -97,8 +98,9 @@ public class HorarioService : BaseService, IHorarioService
         {
             var horario = mapper.Map<Horario>(horarioResquest);
             horario.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), false);
+            horario.ValidacaoCadastrar = false;
 
-            _response = ExecultarValidacaoResponse(new HorarioValidation(_horarioRepository, _agendaRepository, false), horario);
+            _response = await ExecultarValidacaoResponse(_horarioValidator, horario);
             if (_response.Error)
                 throw new ArgumentException(_response.Status);
 

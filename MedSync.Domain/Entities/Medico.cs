@@ -1,4 +1,5 @@
-﻿using MedSync.Domain.Enum;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using MedSync.Domain.Enum;
 
 namespace MedSync.Domain.Entities
 {
@@ -10,5 +11,9 @@ namespace MedSync.Domain.Entities
 
         public Pessoa Pessoa { get; set; } = new();
         public List<Telefone> Telefones { get; set; } = new();
+
+        [NotMapped]
+        public bool ValidacaoCadastrar { get; set; }
     }
 }
+

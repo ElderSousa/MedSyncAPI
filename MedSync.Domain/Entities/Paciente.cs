@@ -1,4 +1,6 @@
-﻿namespace MedSync.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MedSync.Domain.Entities;
 
 public class Paciente : BaseModel
 {
@@ -7,4 +9,8 @@ public class Paciente : BaseModel
     public Pessoa Pessoa { get; set; } = new();
     public Endereco Endereco { get; set; } = new();
     public List<Telefone> Telefones { get; set; } = new();
+
+    [NotMapped]
+    public bool ValidacaoCadastrar { get; set; }
 }
+

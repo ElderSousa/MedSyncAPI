@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MedSync.Application.Interfaces;
 using MedSync.Application.PaginationModel;
 using MedSync.Application.Responses;
@@ -16,23 +17,20 @@ public class AgendaService : BaseService, IAgendaSevice
     private Response _response = new();
     private readonly IAgendaRepository _agendaRepository;
     private readonly IMedicoService _medicoService;
-    private readonly IMedicoRepository _medicoRepository;
     private readonly IHorarioService _horarioService;
-    private readonly IHorarioRepository _horarioRepository;
+    private readonly IValidator<Agenda> _agendaValidator;
     public AgendaService(IAgendaRepository agendaRepository,
         IMedicoService medicoService,
+        IHorarioService horarioService,
+        IValidator<Agenda> agendaValidator,
         IMapper mapper,
         IHttpContextAccessor httpContextAccessor,
-        ILogger<AgendaService> logger,
-        IMedicoRepository medicoRepository,
-        IHorarioService horarioService,
-        IHorarioRepository horarioRepository) : base(mapper, httpContextAccessor, logger)
+        ILogger<AgendaService> logger) : base(mapper, httpContextAccessor, logger)
     {
         _agendaRepository = agendaRepository;
         _medicoService = medicoService;
-        _medicoRepository = medicoRepository;
         _horarioService = horarioService;
-        _horarioRepository = horarioRepository;
+        _agendaValidator = agendaValidator;
     }
 
     public async Task<Response> CreateAsync(AdicionarAgendaRequest agendaRequest)
@@ -41,8 +39,9 @@ public class AgendaService : BaseService, IAgendaSevice
         {
             var agenda = mapper.Map<Agenda>(agendaRequest);
             agenda.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
+            agenda.ValidacaoCadastrar = true;
 
-            _response = ExecultarValidacaoResponse(new AgendaValidation(_agendaRepository, _medicoRepository, _horarioRepository, true), agenda);
+            _response = await ExecultarValidacaoResponse(_agendaValidator, agenda);
             if (_response.Error)
                 throw new ArgumentException(_response.Status);
 
@@ -121,8 +120,9 @@ public class AgendaService : BaseService, IAgendaSevice
         {
             var agenda = mapper.Map<Agenda>(agendaResquest);
             agenda.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), false);
+            agenda.ValidacaoCadastrar = false; 
 
-            _response = ExecultarValidacaoResponse(new AgendaValidation(_agendaRepository, _medicoRepository, _horarioRepository, false), agenda);
+            _response = await ExecultarValidacaoResponse(_agendaValidator, agenda);
             if (_response.Error)
                 throw new ArgumentException(_response.Status);
 
