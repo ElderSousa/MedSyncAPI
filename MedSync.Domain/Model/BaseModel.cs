@@ -1,10 +1,10 @@
 ﻿public abstract class BaseModel
 {
-    public Guid Id { get; private set; }
-    public Guid? CriadoPor { get; private set; }
-    public DateTime? CriadoEm { get; private set; }
-    public Guid? ModificadoPor { get; private set; }
-    public DateTime? ModificadoEm { get; private set; }
+    public Guid Id { get; set; }
+    public Guid? CriadoPor { get; set; }
+    public DateTime? CriadoEm { get; set; }
+    public Guid? ModificadoPor { get; set; }
+    public DateTime? ModificadoEm { get; set; }
 
     public void AdicionarBaseModel(Guid? usuarioId, DateTime dataHora, bool cadastrar)
     {

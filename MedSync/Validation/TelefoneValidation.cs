@@ -6,15 +6,14 @@ namespace MedSync.Application.Validation;
 
 public class TelefoneValidation : AbstractValidator<Telefone>
 {
-    public TelefoneValidation(ITelefoneRepository telefoneRepository, bool cadastrar)
+    public TelefoneValidation(ITelefoneRepository telefoneRepository)
     {
         RuleFor(t => t.Id)
             .NotEmpty()
             .WithMessage(MessagesValidation.CampoObrigatorio); 
 
         RuleFor(t => t.Tipo)
-            .NotEmpty()
-            .WithMessage(MessagesValidation.CampoObrigatorio);
+            .IsInEnum().WithMessage(MessagesValidation.CampoObrigatorio);
 
         RuleFor(t => t.Numero)
             .NotEmpty()
@@ -22,14 +21,14 @@ public class TelefoneValidation : AbstractValidator<Telefone>
             .Matches(@"^\d{2}-?\d{5}\d{4}$")
             .WithMessage(MessagesValidation.NumeroInvalido);
 
-        When(t => cadastrar, () =>
+        When(t => t.ValidacaoCadastrar, () =>
         {
             RuleFor(t => t.CriadoEm)
                 .NotEmpty()
                 .WithMessage(MessagesValidation.CampoObrigatorio);
         });
 
-        When(t => !cadastrar, () =>
+        When(t => !t.ValidacaoCadastrar, () =>
         {
             RuleFor(t => t.Id)
                 .Must(telefoneRepository.Existe)

@@ -1,5 +1,8 @@
-﻿using AutoMapper;
+﻿using System.Runtime.CompilerServices;
+using System.Security.Claims;
+using AutoMapper;
 using FluentValidation;
+using MedSync.Application.PaginationModel;
 using MedSync.Application.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -8,9 +11,9 @@ namespace MedSync.Application.Services
 {
     public class BaseService
     {
-        protected IMapper mapper;
+        protected readonly IMapper mapper;
         private HttpContext? _context;
-        protected ILogger logger;
+        protected readonly ILogger logger;
         public BaseService(IMapper mapper, IHttpContextAccessor httpContextAccessor, ILogger logger)
         {
             this.mapper = mapper;
@@ -29,17 +32,6 @@ namespace MedSync.Application.Services
             return response;
         }
 
-        protected static Response RetunrResponse(Exception exception)
-        {
-            Response response = new()
-            {
-                Status = ObterErro(exception),
-                Error = true
-            };
-
-            return response;
-        }
-
         protected static Response ReturnResponseSuccess()
         {
             Response response = new()
@@ -51,20 +43,46 @@ namespace MedSync.Application.Services
             return response;
         }
 
-        protected Response ExecultarValidacaoResponse<TV, TE>(TV validacao, TE entidade) where TV : AbstractValidator<TE>
+        protected async Task<Response> ExecultarValidacaoResponse<T>(IValidator<T> validator, T entidade)
         {
-            var validator = validacao.Validate(entidade);
-            if (validator.IsValid) return ReturnResponseSuccess();
-            return ReturnResponse(validator.ToString(), true);
+            var result = await validator.ValidateAsync(entidade);
+            return result.IsValid ? ReturnResponseSuccess() :
+            ReturnResponse(result.ToString()!, true);
         }
 
-        protected static string Notificar(string mensagem) => mensagem;
-
-        protected static string Notificar(Exception exception) => ObterErro(exception);
+        protected Guid ObterUsuarioLogadoId()
+        {
+            try
+            {
+                var identity = _context?.User.Identity as ClaimsIdentity;
+                var usuarioId = identity?.FindFirst("UserId")?.Value;
+                return usuarioId != null ? Guid.Parse(usuarioId) : Guid.Empty;
+            }
+            catch (Exception)
+            {
+                return Guid.Empty;
+            }
+        }
 
         protected static DateTime DataHoraAtual() => DateTime.UtcNow.AddHours(-3);
 
-        private static string ObterErro(Exception exception) => exception.InnerException is not null ? exception.InnerException.Message : exception.Message;
+        protected static Pagination<T> Paginar<T>(IEnumerable<T> itens, int page, int pageSize)
+        {
+            var quantityOfPages = (int)Math.Ceiling((double)itens.Count() / pageSize);
 
+            var lista = itens
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+   ;
+
+            return new Pagination<T>
+            {
+                QuantityOfPages = quantityOfPages,
+                TotalItens = itens.Count(),
+                CurrentPage = page,
+                Itens = lista
+            };
+        }
     }
 }

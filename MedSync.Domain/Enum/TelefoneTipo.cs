@@ -1,6 +1,6 @@
 ﻿namespace MedSync.Domain.Enum;
 
-public enum Tipo
+public enum TelefoneTipo
 {
    Celular = 0,
    Residencial = 1

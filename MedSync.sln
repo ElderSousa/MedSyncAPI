@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedSync.Infrastructure", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedSync.CrossCutting", "MedSync.CroosCutting\MedSync.CrossCutting.csproj", "{B0A2A5F5-E9BC-47E3-AD39-7650376373CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedSync.Test", "MedSync.Test\MedSync.Test.csproj", "{3D43CCBD-8973-4C1B-858C-E026961297AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{B0A2A5F5-E9BC-47E3-AD39-7650376373CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0A2A5F5-E9BC-47E3-AD39-7650376373CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0A2A5F5-E9BC-47E3-AD39-7650376373CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D43CCBD-8973-4C1B-858C-E026961297AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D43CCBD-8973-4C1B-858C-E026961297AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D43CCBD-8973-4C1B-858C-E026961297AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D43CCBD-8973-4C1B-858C-E026961297AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

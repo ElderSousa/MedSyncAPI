@@ -2,7 +2,7 @@
 
 public class EnderecoResponse
 {
-    public Guid Id { get; private set; }
+    public Guid Id { get; set; }
     public Guid? PacienteId { get; set; }
     public Guid? MedicoId { get; set; }
     public string? Logradouro { get; set; }

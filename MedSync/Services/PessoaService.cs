@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MedSync.Application.Interfaces;
 using MedSync.Application.Responses;
 using MedSync.Application.Validation;
@@ -14,12 +15,15 @@ public class PessoaService : BaseService, IPessoaService
 {
     private Response _response = new();
     private readonly IPessoaRepository _pessoaRepository;
+    private readonly IValidator<Pessoa> _pessoaValidation;
     public PessoaService(IPessoaRepository pessoaRepository,
+        IValidator<Pessoa> pessoaValidation,
         IMapper mapper,
         IHttpContextAccessor httpContextAccessor,
         ILogger<PessoaService> logger) : base(mapper, httpContextAccessor, logger)
     {
         _pessoaRepository = pessoaRepository;
+        _pessoaValidation = pessoaValidation;
     }
 
     public async Task<Response> CreateAsync(AdicionarPessoaRequest pessoaRequest)
@@ -27,14 +31,15 @@ public class PessoaService : BaseService, IPessoaService
         try
         {
             var pessoa = mapper.Map<Pessoa>(pessoaRequest);
-            pessoa.AdicionarBaseModel(null, DataHoraAtual(), true);
+            pessoa.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
+            pessoa.ValidacaoCadastrar = true;
 
-            _response = ExecultarValidacaoResponse(new PessoaValidation(_pessoaRepository, true), pessoa);
+            _response = await ExecultarValidacaoResponse(_pessoaValidation, pessoa);
             if (_response.Error) 
-                return _response;
+                throw new ArgumentException(_response.Status);
 
             if (!await _pessoaRepository.CreateAsync(pessoa)) 
-                return ReturnResponse("Pessao não adicionada ", true);
+                throw new InvalidOperationException("Falha ao criar pessoa.");
 
         }
         catch (Exception ex)
@@ -51,10 +56,7 @@ public class PessoaService : BaseService, IPessoaService
     {
         try
         {
-            var pessoa = await _pessoaRepository.GetIdAsync(id);
-
-            return mapper.Map<PessoaResponse>(pessoa);
-           
+            return mapper.Map<PessoaResponse>(await _pessoaRepository.GetIdAsync(id));  
         }
         catch (Exception ex)
         {
@@ -67,9 +69,7 @@ public class PessoaService : BaseService, IPessoaService
     {
         try
         {
-            var pessoa = await _pessoaRepository.GetCPFAsync(cpf);
-            return mapper.Map<PessoaResponse>(pessoa);
-
+            return mapper.Map<PessoaResponse>(await _pessoaRepository.GetCPFAsync(cpf));
         }
         catch (Exception ex)
         {
@@ -82,14 +82,16 @@ public class PessoaService : BaseService, IPessoaService
     {
         try
         {
-            var pessoaResponse = mapper.Map<Pessoa>(pessoaRequest);
-            pessoaResponse.AdicionarBaseModel(null, DataHoraAtual(), false);
+            var pessoa = mapper.Map<Pessoa>(pessoaRequest);
+            pessoa.AdicionarBaseModel(null, DataHoraAtual(), false);
+            pessoa.ValidacaoCadastrar = false;
 
-            _response = ExecultarValidacaoResponse(new PessoaValidation(_pessoaRepository, false), pessoaResponse);
-            if (_response.Error) return _response;
+            _response = await ExecultarValidacaoResponse(_pessoaValidation, pessoa);
+            if (_response.Error)
+                throw new ArgumentException(_response.Status);
 
-            if (!await _pessoaRepository.UpdateAsync(pessoaResponse))
-                return ReturnResponse("Atualização não obteve sucesso.", true);
+            if (!await _pessoaRepository.UpdateAsync(pessoa))
+                throw new InvalidOperationException("Falha na atualização em nossa base de dados.");
         }
         catch (Exception ex)
         {

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MedSync.Application.Interfaces;
 using MedSync.Application.Responses;
 using MedSync.Application.Validation;
@@ -14,11 +15,14 @@ public class TelefoneService : BaseService, ITelefoneService
 {
     private Response _response = new();
     private readonly ITelefoneRepository _telefoneRepository;
+    private readonly IValidator<Telefone> _telefoneValidation;
     public TelefoneService(ITelefoneRepository telefoneRepository,
+        IValidator<Telefone> telefoneValidation,
         IMapper mapper, IHttpContextAccessor httpContextAccessor,
         ILogger<TelefoneService> logger) : base(mapper, httpContextAccessor, logger)
     {
         _telefoneRepository = telefoneRepository;
+        _telefoneValidation = telefoneValidation;
     }
 
     public async Task<Response> CreateAsync(AdicionarTelefoneRequest telefoneRequest)
@@ -27,12 +31,14 @@ public class TelefoneService : BaseService, ITelefoneService
         {
             var telefone = mapper.Map<Telefone>(telefoneRequest);
             telefone.AdicionarBaseModel(null, DataHoraAtual(), true);
+            telefone.ValidacaoCadastrar = true;
 
-            _response = ExecultarValidacaoResponse(new TelefoneValidation(_telefoneRepository, true), telefone);
-            if (_response.Error) return _response;
+            _response = await ExecultarValidacaoResponse(_telefoneValidation, telefone);
+            if (_response.Error) 
+                throw new ArgumentException(_response.Status);
 
             if (!await _telefoneRepository.CreateAsync(telefone))
-                ReturnResponse("Telefone não adicionado em nossa base de dados.", true);
+                throw new InvalidOperationException("Telefone não adicionado em nossa base de dados.");
         }
         catch (Exception ex)
         {
@@ -75,12 +81,14 @@ public class TelefoneService : BaseService, ITelefoneService
         {
             var telefone = mapper.Map<Telefone>(telefoneRequest);
             telefone.AdicionarBaseModel(null, DataHoraAtual(), false);
+            telefone.ValidacaoCadastrar = false;
 
-            _response = ExecultarValidacaoResponse(new TelefoneValidation(_telefoneRepository, false), telefone);
-            if (_response.Error) return _response;
+            _response = await ExecultarValidacaoResponse(_telefoneValidation, telefone);
+            if (_response.Error)
+                throw new ArgumentException(_response.Status);
 
-            if (!await _telefoneRepository.UpdateAsync(telefone)) 
-                return ReturnResponse("Telefone não atualizado.", true);
+            if (!await _telefoneRepository.UpdateAsync(telefone))
+                throw new InvalidOperationException("Telefone não atualizado em nossa base de dados.");
         }
         catch (Exception ex)
         {
@@ -94,8 +102,8 @@ public class TelefoneService : BaseService, ITelefoneService
     {
         try
         {
-            if (await _telefoneRepository.DeleteAsync(id))
-                return ReturnResponse("Telefone não excluído da nossa base de dados.", true);
+            if (!await _telefoneRepository.DeleteAsync(id))
+                throw new InvalidOperationException("Telefone não excluído da nossa base de dados.");
         }
         catch (Exception ex)
         {

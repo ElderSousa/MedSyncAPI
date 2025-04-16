@@ -31,7 +31,7 @@ namespace MedSync.API.Controllers
         public async Task<IActionResult> GetIdAsync(Guid id)
         {
             var pessoa = await _pessoaService.GetIdAsync(id);
-            return pessoa is null ? BadRequest(StatusCodes.Status204NoContent) : Ok(pessoa);
+            return pessoa is null ? NoContent() : Ok(pessoa);
         }
 
         [ProducesResponseType(typeof(PessoaResponse), 200)]

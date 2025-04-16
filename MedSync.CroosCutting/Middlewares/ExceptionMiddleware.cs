@@ -38,6 +38,7 @@ public class ExceptionMiddleware
 
         var statusCode = ex switch
         {
+            NullReferenceException => StatusCodes.Status400BadRequest,       // 400 - Erro de referência
             KeyNotFoundException => StatusCodes.Status404NotFound,           // 404 - Não encontrado
             ArgumentException => StatusCodes.Status400BadRequest,            // 400 - Argumento inválido
             InvalidOperationException => StatusCodes.Status400BadRequest,    // 400 - Operação inválida

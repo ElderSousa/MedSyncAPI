@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MedSync.Application.Interfaces;
 using MedSync.Application.Responses;
 using MedSync.Application.Validation;
@@ -14,9 +15,15 @@ namespace MedSync.Application.Services
     {
         private Response _response = new();
         private readonly IEnderecoRepository _enderecoRepository;
-        public EnderecoService(IEnderecoRepository enderecoRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, ILogger<EnderecoService> logger) : base(mapper, httpContextAccessor, logger)
+        private readonly IValidator<Endereco> _enderecoValidator;
+        public EnderecoService(IEnderecoRepository enderecoRepository,
+            IValidator<Endereco> enderecoValidator,
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor,
+            ILogger<EnderecoService> logger) : base(mapper, httpContextAccessor, logger)
         {
             _enderecoRepository = enderecoRepository;
+            _enderecoValidator = enderecoValidator;
         }
 
         public async Task<Response> CreateAsync(AdicionarEnderecoRequest enderecoRequest)
@@ -25,12 +32,14 @@ namespace MedSync.Application.Services
             {
                 var endereco = mapper.Map<Endereco>(enderecoRequest);
                 endereco.AdicionarBaseModel(null, DataHoraAtual(), true);
+                endereco.ValidacaoCadastrar = true;
 
-                _response = ExecultarValidacaoResponse(new EnderecoValidation(_enderecoRepository, true), endereco);
-                if (_response.Error) return _response;
+                _response = await ExecultarValidacaoResponse(_enderecoValidator, endereco);
+                if (_response.Error) 
+                    throw new ArgumentException(_response.Status);
 
                 if (!await _enderecoRepository.CreateAsync(endereco))
-                    return ReturnResponse("Endereço não adicionado a nossa base de dados.", true);
+                    throw new InvalidOperationException("Endereço não adicionado a nossa base de dados.");
 
             }
             catch (Exception ex)
@@ -75,12 +84,14 @@ namespace MedSync.Application.Services
             {
                 var endereco = mapper.Map<Endereco>(enderecoRequest);
                 endereco.AdicionarBaseModel(null, DataHoraAtual(), false);
+                endereco.ValidacaoCadastrar = false;
 
-                _response = ExecultarValidacaoResponse(new EnderecoValidation(_enderecoRepository, false), endereco);
-                if (_response.Error) return _response;
-                
+                _response = await ExecultarValidacaoResponse(_enderecoValidator, endereco);
+                if (_response.Error) 
+                    throw new ArgumentException(_response.Status);
+
                 if (!await _enderecoRepository.UpdateAsync(endereco))
-                    ReturnResponse("Endereço não atualizado.", true);
+                    throw new InvalidOperationException("Endereço não atualizado em nossa base de dados.");
 
             }
             catch (Exception ex)
@@ -97,7 +108,7 @@ namespace MedSync.Application.Services
             try
             {
                 if (!await _enderecoRepository.DeleteAsync(id))
-                    return ReturnResponse("Endereço não excluído da nossa base de dados.", false);
+                    throw new ArgumentException("Endereço não excluído da nossa base de dados.");
                 return ReturnResponseSuccess();
             }
             catch (Exception ex)

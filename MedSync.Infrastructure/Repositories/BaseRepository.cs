@@ -16,9 +16,8 @@ public class BaseRepository : IDisposable
     {
         try
         {
-            using var connection = CreateConnection();
-            await connection.OpenAsync();
-            return await connection.ExecuteAsync(sql, parametros) > 0;
+            CreateConnection(mySqlConnection);
+            return await mySqlConnection.ExecuteAsync(sql, parametros) > 0;
         }
         catch
         {
@@ -30,9 +29,8 @@ public class BaseRepository : IDisposable
     {
         try
         {
-            using var connection = CreateConnection();
-            await connection.OpenAsync();
-            return await connection.QueryFirstOrDefaultAsync<T>(sql, parametros);
+            CreateConnection(mySqlConnection);
+            return await mySqlConnection.QueryFirstOrDefaultAsync<T>(sql, parametros);
         }
         catch
         {
@@ -40,13 +38,12 @@ public class BaseRepository : IDisposable
         }
     }
 
-    protected async Task<IEnumerable<T>> GenericGetList<T>(string sql, object parametros)
+    protected async Task<IEnumerable<T>> GenericGetList<T>(string sql, object? parametros)
     {
         try
         {
-            using var connection = CreateConnection();
-            await connection.OpenAsync();
-            return await connection.QueryAsync<T>(sql, parametros);
+            CreateConnection(mySqlConnection);
+            return await mySqlConnection.QueryAsync<T>(sql, parametros);
         }
         catch
         {
@@ -58,18 +55,28 @@ public class BaseRepository : IDisposable
     {
         try
         {
-            using var connection = CreateConnection();
-            connection.Open();
-            return connection.QueryFirstOrDefault<int?>(sql, parametros) > 0;
+            CreateConnection(mySqlConnection);
+            int count = mySqlConnection.QuerySingle<int>(sql, parametros);
+            return count > 0;
         }
-        catch
+        catch(Exception e)
         {
             throw;
         }
     }
 
-    protected MySqlConnection CreateConnection() => new MySqlConnection(mySqlConnection.ConnectionString);
-    
+    protected static void CreateConnection(MySqlConnection mySqlConnection)
+    {
+        if (mySqlConnection.State != System.Data.ConnectionState.Open)
+            mySqlConnection.Open();
+    }
+
     protected static DateTime DataHoraAtual() => DateTime.UtcNow.AddHours(-3);
-    public void Dispose() => mySqlConnection.Dispose();
+    public void Dispose()
+    {
+        if (mySqlConnection.State == System.Data.ConnectionState.Open)
+            mySqlConnection.Close();
+
+        mySqlConnection.Dispose();
+    }
 }
