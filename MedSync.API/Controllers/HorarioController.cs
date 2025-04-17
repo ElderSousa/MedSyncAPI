@@ -1,4 +1,5 @@
-﻿using MedSync.Application.Interfaces;
+﻿using Asp.Versioning;
+using MedSync.Application.Interfaces;
 using MedSync.Application.Responses;
 using Microsoft.AspNetCore.Mvc;
 using static MedSync.Application.Requests.HorarioRequest;
@@ -6,7 +7,8 @@ using static MedSync.Application.Requests.HorarioRequest;
 namespace MedSync.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class HorarioController : ControllerBase
     {
         private Response _response = new();
