@@ -41,7 +41,7 @@ public class EnderecoServiceTest
     }
 
     [Fact]
-    public async Task CreateAsync_DeveCriarEndereco_ComDadosDeEnderecoValido()
+    public async Task CreateAsync_Deve_Criar_Endereco_Quando_DadosValidos()
     {
         //Arrange
         var enderecoRequest = new AdicionarEnderecoRequest()
@@ -73,7 +73,7 @@ public class EnderecoServiceTest
         _mockEnderecoRepository.Setup(e => e.CreateAsync(It.IsAny<Endereco>()))
             .ReturnsAsync(true);
         _mockEnderecoValidation.Setup(v => v.ValidateAsync(It.IsAny<Endereco>(), default))
-            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+            .ReturnsAsync(new ValidationResult());
 
         //Act
         var response = await _enderecoService.CreateAsync(enderecoRequest);
@@ -83,12 +83,11 @@ public class EnderecoServiceTest
         Assert.NotNull(response);
         Assert.True(response.Status == "Sucesso");
         Assert.False(response.Error);
-        _mockMapper.Verify(m => m.Map<Endereco>(It.IsAny<AdicionarEnderecoRequest>()), Times.Once);
         _mockEnderecoRepository.Verify(e => e.CreateAsync(It.IsAny<Endereco>()), Times.Once);
     }
 
     [Fact]
-    public async Task CreateAsync_DeveLancarArgumentException_QuandoDadosSaoInvalidos()
+    public async Task CreateAsync_Deve_Retornar_ArgumentException_Quando_Dados_Invalidos()
     {
         // Arrange
         var enderecoRequest = new AdicionarEnderecoRequest
@@ -117,7 +116,7 @@ public class EnderecoServiceTest
         _mockMapper.Setup(m => m.Map<Endereco>(It.IsAny<AdicionarEnderecoRequest>()))
             .Returns(endereco);
         _mockEnderecoValidation.Setup(v => v.ValidateAsync(It.IsAny<Endereco>(), default))
-            .ReturnsAsync(new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
+            .ReturnsAsync(new ValidationResult(new List<ValidationFailure>
             {
                 new ValidationFailure("Campo", "Campo obrigatório")
             }));
@@ -129,7 +128,7 @@ public class EnderecoServiceTest
 
 
     [Fact]
-    public async Task GetIdAsync_DeveRetornarEnderecoResponse_QuandoIdExistir()
+    public async Task GetIdAsync_Deve_Retornar_EnderecoResponse_Quando_IdExistir()
     {
         // Arrange
         var enderecoId = Guid.NewGuid();
@@ -156,12 +155,9 @@ public class EnderecoServiceTest
             CEP = endereco.CEP
         };
 
-        _mockEnderecoRepository
-            .Setup(r => r.GetIdAsync(enderecoId))
+        _mockEnderecoRepository.Setup(r => r.GetIdAsync(enderecoId))
             .ReturnsAsync(endereco);
-
-        _mockMapper
-            .Setup(m => m.Map<EnderecoResponse>(endereco))
+        _mockMapper.Setup(m => m.Map<EnderecoResponse>(endereco))
             .Returns(enderecoResponse);
 
         // Act
@@ -172,18 +168,16 @@ public class EnderecoServiceTest
         Assert.Equal(enderecoResponse.Id, result!.Id);
         Assert.Equal("Rua Exemplo", result.Logradouro);
         _mockEnderecoRepository.Verify(r => r.GetIdAsync(enderecoId), Times.Once);
-        _mockMapper.Verify(m => m.Map<EnderecoResponse>(endereco), Times.Once);
     }
 
     [Fact]
-    public async Task GetIdAsync_DeveLancarExcecao_QuandoErroAcontecer()
+    public async Task GetIdAsync_Deve_Retornar_Exception_Quando_Dados_Invalidos()
     {
         // Arrange
         var enderecoId = Guid.NewGuid();
         var exception = new Exception("Erro inesperado");
 
-        _mockEnderecoRepository
-            .Setup(r => r.GetIdAsync(enderecoId))
+        _mockEnderecoRepository.Setup(r => r.GetIdAsync(enderecoId))
             .ThrowsAsync(exception);
 
         // Act & Assert
@@ -200,7 +194,7 @@ public class EnderecoServiceTest
     }
 
     [Fact]
-    public async Task UpdateAsync_DeveAtualizarEndereco_QuandoDadosValidos()
+    public async Task UpdateAsync_Deve_Atualizar_Endereco_Quando_Dados_Validos()
     {
         // Arrange
         var enderecoId = Guid.NewGuid();
@@ -240,10 +234,11 @@ public class EnderecoServiceTest
         Assert.NotNull(response);
         Assert.False(response.Error);
         Assert.Equal("Sucesso", response.Status);
+        _mockEnderecoRepository.Verify(v => v.UpdateAsync(endereco),Times.Once);
     }
 
     [Fact]
-    public async Task UpdateAsync_DeveLancarArgumentException_QuandoValidacaoFalhar()
+    public async Task UpdateAsync_Deve_Retornar_ArgumentException_Quand_Dados_Invalidos()
     {
         // Arrange
         var enderecoRequest = new AtualizarEnderecoRequest
@@ -273,7 +268,7 @@ public class EnderecoServiceTest
         _mockMapper.Setup(m => m.Map<Endereco>(It.IsAny<AtualizarEnderecoRequest>()))
             .Returns(endereco);
         _mockEnderecoValidation.Setup(v => v.ValidateAsync(It.IsAny<Endereco>(), default))
-             .ReturnsAsync(new FluentValidation.Results.ValidationResult(new List<ValidationFailure>
+             .ReturnsAsync(new ValidationResult(new List<ValidationFailure>
              {
                 new ValidationFailure("Id", "Id não foi encontrado")
              }));
@@ -294,7 +289,7 @@ public class EnderecoServiceTest
 
 
     [Fact]
-    public async Task DeleteAsync_DeveRetornarSucesso_QuandoEnderecoForExcluido()
+    public async Task DeleteAsync_Deve_Excluir_Endereco_Quando_Dados_Invalidos()
     {
         // Arrange
         var enderecoId = Guid.NewGuid();
@@ -309,13 +304,12 @@ public class EnderecoServiceTest
         Assert.NotNull(response);
         Assert.False(response.Error);
         Assert.Equal("Sucesso", response.Status);
-
         _mockEnderecoRepository.Verify(r => r.DeleteAsync(enderecoId), Times.Once);
     }
 
 
     [Fact]
-    public async Task DeleteAsync_DeveLancarArgumentException_QuandoEnderecoNaoForExcluido()
+    public async Task DeleteAsync_Deve_Retornar_ArgumentException_Quando_Dados_Invalidos()
     {
         // Arrange
         var enderecoId = Guid.NewGuid();

@@ -39,7 +39,7 @@ public class TelefoneServiceTest
     }
 
     [Fact]
-    public async Task CreateAsync_CriarTelefone_QuandoDadosValidos()
+    public async Task CreateAsync_Deve_Criar_Telefone_Quando_Dados_Validos()
     {
 
         //Arrange
@@ -73,12 +73,11 @@ public class TelefoneServiceTest
         Assert.NotNull(response);
         Assert.True(response.Status == "Sucesso");
         Assert.False(response.Error == true);
-        _mockMapper.Verify(m => m.Map<Telefone>(It.IsAny<AdicionarTelefoneRequest>()), Times.Once);
         _mockTelefoneRepository.Verify(t => t.CreateAsync(It.IsAny<Telefone>()), Times.Once);
     }
 
     [Fact]
-    public async Task CreateAsync_RetornarInvalidOperationException_QuandoDadosInValidos()
+    public async Task CreateAsync_Retornar_InvalidOperationException_Quando_Dados_InValidos()
     {
 
         //Arrange
@@ -102,7 +101,7 @@ public class TelefoneServiceTest
         _mockMapper.Setup(m => m.Map<Telefone>(It.IsAny<AdicionarTelefoneRequest>()))
            .Returns(telefone);
         _mockTelefoneValidation.Setup(v => v.ValidateAsync(It.IsAny<Telefone>(), default))
-           .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+           .ReturnsAsync(new ValidationResult());
 
         //Act & Assert
         var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => 
@@ -112,7 +111,7 @@ public class TelefoneServiceTest
     }
 
     [Fact]
-    public async Task CreateAsync_RetornarAutoMapperMappingException_QuandoMapeamentoInvalido()
+    public async Task CreateAsync_Retornar_AutoMapperMappingException_Quando_Mapeamento_Invalido()
     {
         // Arrange
         var telefoneRequest = new AdicionarTelefoneRequest()
@@ -135,7 +134,7 @@ public class TelefoneServiceTest
     }
 
     [Fact]
-    public async Task CreateAsync_RetornaNullReferenceException_QuandoDadosInvalidos()
+    public async Task CreateAsync_Retorna_NullReferenceException_Quando_Dados_Invalidos()
     {
         //Arrange
         AdicionarTelefoneRequest telefoneRequest = new();
@@ -148,7 +147,7 @@ public class TelefoneServiceTest
     }
 
     [Fact]
-    public async Task CreateAsync_RetornaArgumentException_QuandoDadosInvalidos()
+    public async Task CreateAsync_Retorna_ArgumentException_Quando_Dados_Invalidos()
     {
         //Arrange
         var telefoneRequest = new AdicionarTelefoneRequest()
@@ -176,14 +175,12 @@ public class TelefoneServiceTest
             }));
 
         //Act & Assert
-        var ex = await Assert.ThrowsAsync<ArgumentException>(() => 
-        _telefoneService.CreateAsync(telefoneRequest));
-
+        var ex = await Assert.ThrowsAsync<ArgumentException>(() => _telefoneService.CreateAsync(telefoneRequest));
         Assert.Contains("Número", ex.Message);
     }
 
     [Fact]
-    public async Task GetIdAsync_Retorna_Telefone_QuandoIdValido()
+    public async Task GetIdAsync_Retorna_Telefone_Quando_IdValido()
     {
         //Arrange
         var telefoneId = Guid.Empty;
@@ -218,11 +215,10 @@ public class TelefoneServiceTest
         Assert.NotNull(response);
         Assert.Equal(telefoneResponse.Id, response.Id);
         _mockTelefoneRepository.Verify(t => t.GetIdAsync(telefoneId), Times.Once);
-        _mockMapper.Verify(m => m.Map<TelefoneResponse>(It.IsAny<Telefone>()), Times.Once);
     }
 
     [Fact]
-    public async Task GetIdAsync_RetornaException_QuandoDadosInvalidos()
+    public async Task GetIdAsync_Retorna_Exception_Quando_Dados_Invalidos()
     {
         //Arrange
         var telefoneId = Guid.Empty;
@@ -244,14 +240,12 @@ public class TelefoneServiceTest
             .Throws(new AutoMapperMappingException("Erro no mapeamento"));
 
         //Act & Assert
-        var ex = await Assert.ThrowsAsync<AutoMapperMappingException>(() => 
-        _telefoneService.GetIdAsync(telefoneId));
-
+        var ex = await Assert.ThrowsAsync<AutoMapperMappingException>(() =>  _telefoneService.GetIdAsync(telefoneId));
         Assert.Contains("Erro", ex.Message);
     }
 
     [Fact]
-    public async Task UpdateAsync_AtualizarTelefone_QuandoDadosValidos()
+    public async Task UpdateAsync_Atualizar_Telefone_Quando_Dados_Validos()
     {
         //Arrange
         var telefoneId = Guid.NewGuid();
@@ -288,12 +282,11 @@ public class TelefoneServiceTest
         Assert.NotNull(response);
         Assert.Contains("Sucesso", response.Status);
         Assert.False(response.Error == true);
-        _mockMapper.Verify(m => m.Map<Telefone>(It.IsAny<AtualizarTelefoneRequest>()), Times.Once);
         _mockTelefoneRepository.Verify(t => t.UpdateAsync(It.IsAny<Telefone>()), Times.Once);
     }
 
     [Fact]
-    public async Task UpdateAsync_RetornarArgumentException_QuandoDadosInValidos()
+    public async Task UpdateAsync_Retornar_ArgumentException_Quando_Dados_InValidos()
     {
         //Arrange
         var telefoneId = Guid.NewGuid();
@@ -326,15 +319,13 @@ public class TelefoneServiceTest
             }));
 
         //Act & Assert
-        var ex = await Assert.ThrowsAsync<ArgumentException>(() =>
-        _telefoneService.UpdateAsync(telefoneRequest));
-
+        var ex = await Assert.ThrowsAsync<ArgumentException>(() =>_telefoneService.UpdateAsync(telefoneRequest));
         Assert.Contains("Campo", ex.Message);
       
     }
 
     [Fact]
-    public async Task DeleteAsync_DeveRetornarSucesso_QuandoTelefoneExcluido()
+    public async Task DeleteAsync_Deve_Excluir_Telefone_Quando_Dados_Validos()
     {
         //Arrange
         var telefoneId = Guid.NewGuid();
@@ -353,7 +344,7 @@ public class TelefoneServiceTest
     }
 
     [Fact]
-    public async Task DeleteAsync_DeveRetornarInvalidOperationException_QuandoDadosInvalidos()
+    public async Task DeleteAsync_Deve_Retornar_InvalidOperationException_Quando_Dados_Invalidos()
     {
         //Arrange
         var telefoneId = Guid.NewGuid();

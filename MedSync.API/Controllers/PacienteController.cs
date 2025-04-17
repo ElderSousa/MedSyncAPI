@@ -18,7 +18,11 @@ namespace MedSync.API.Controllers
         {
             _pacienteService = pacienteService;
         }
-
+        /// <summary>
+        /// Cria paciente com os dados informados
+        /// </summary>
+        /// <param name="pacienteRequest">Objeto com os dados para criação do paciente</param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
@@ -27,7 +31,12 @@ namespace MedSync.API.Controllers
             _response = await _pacienteService.CreateAsync(pacienteRequest);
             return _response.Error ? BadRequest(_response) : Ok(_response);
         }
-
+        /// <summary>
+        /// Busca todos os pacientes da base de dados
+        /// </summary>
+        /// <param name="page">Número da página</param>
+        /// <param name="pageSize">Quantidade e itens na página</param>
+        /// <returns></returns>
         [HttpGet("getall/{page}/{pageSize}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
@@ -36,7 +45,11 @@ namespace MedSync.API.Controllers
             var pacientes = await _pacienteService.GetAllAsync(page, pageSize);
             return !pacientes.Itens.Any() ? NoContent() : Ok(pacientes);
         }
-
+        /// <summary>
+        /// Busca médico do id informado
+        /// </summary>
+        /// <param name="id">Parâmetro informado para busca do paciente</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
@@ -45,7 +58,11 @@ namespace MedSync.API.Controllers
             var paciente = await _pacienteService.GetIdAsync(id);
             return paciente == null ? NoContent() : Ok(paciente);
         }
-
+        /// <summary>
+        /// Atualiza paciente com dados informados
+        /// </summary>
+        /// <param name="pacienteRequest">Objeto com dados para atualização do paciente</param>
+        /// <returns></returns>
         [HttpPut]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
@@ -55,7 +72,11 @@ namespace MedSync.API.Controllers
             return _response.Error ? BadRequest(_response) : Ok(_response);
 
         }
-
+        /// <summary>
+        /// Exclusão do paciente do id informado
+        /// </summary>
+        /// <param name="id">Parâmetro informado para exclusão do paciente</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]

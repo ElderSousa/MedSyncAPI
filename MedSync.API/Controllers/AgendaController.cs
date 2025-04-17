@@ -17,7 +17,10 @@ namespace MedSync.API.Controllers
         {
             _agendaSevice = agendaSevice;
         }
-
+        /// <summary>
+        /// Cria uma agenda com base nos dados fornecidos
+        /// </summary>
+        /// <param name="agendaRequest">Objeto para criação da agenda</param>
         [HttpPost]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
@@ -26,7 +29,12 @@ namespace MedSync.API.Controllers
             _response = await _agendaSevice.CreateAsync(agendaRequest);
             return _response.Error ? BadRequest(_response) : Ok(_response);
         }
-
+        /// <summary>
+        /// Retorna todas as agendas da base de dados.
+        /// </summary>
+        /// <param name="page">Número da página</param>
+        /// <param name="pageSize">Quantidade e itens na página</param>
+        /// <returns></returns>
         [HttpGet("getall/{page}/{pageSize}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
@@ -35,7 +43,11 @@ namespace MedSync.API.Controllers
             var agendas = await _agendaSevice.GetAllAsync(page, pageSize);
             return !agendas.Itens.Any() ? NoContent() : Ok(agendas);
         }
-
+        /// <summary>
+        /// Retorna agenda do id informado
+        /// </summary>
+        /// <param name="id">Parâmetro informado para a busca da agenda</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
@@ -44,7 +56,13 @@ namespace MedSync.API.Controllers
             var agenda = await _agendaSevice.GetIdAsync(id);
             return agenda == null ? NoContent() : Ok(agenda);
         }
-  
+        /// <summary>
+        /// Retorna agenda do id informado
+        /// </summary>
+        /// <param name="medicoId">Parâmetro informado para a busca da agenda</param>
+        /// <param name="page">Número da página</param>
+        /// <param name="pageSize">Quantidade e itens na página</param>
+        /// <returns></returns>
         [HttpGet("medicoId/{medicoId}/{page}/{pageSize}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
@@ -53,7 +71,11 @@ namespace MedSync.API.Controllers
             var agendas = await _agendaSevice.GetMedicoIdAsync(medicoId, page, pageSize);
             return !agendas.Itens.Any() ? NoContent() : Ok(agendas);
         }
-
+        /// <summary>
+        /// Atualiza a agenda informada
+        /// </summary>
+        /// <param name="agendaRequest">Objetos contendo dados da agenda para atualização</param>
+        /// <returns></returns>
         [HttpPut]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
@@ -63,7 +85,11 @@ namespace MedSync.API.Controllers
             return _response.Error ? BadRequest(_response) : Ok(_response);
 
         }
-
+        /// <summary>
+        /// Exclui agenda do id informado
+        /// </summary>
+        /// <param name="id">Parâmetro informado para a exclusão da agenda</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]

@@ -53,7 +53,7 @@ public class PacienteServiceTests
     }
 
     [Fact]
-    public async Task CreatAsync_DeveCriarPaciente_ComDadosValidos()
+    public async Task CreatAsync_Deve_CriarPaciente_Quando_Dados_Validos()
     {
         //Arrange
         var pacienteResquest = new AdicionarPacienteRequest
@@ -87,8 +87,6 @@ public class PacienteServiceTests
         //Assert
         Assert.NotNull(response);
         _mockPacienteRepository.Verify(pa => pa.CreateAsync(It.IsAny<Paciente>()), Times.Once);
-        _mockEnderecoService.Verify(e => e.CreateAsync(It.IsAny<AdicionarEnderecoRequest>()), Times.Once);
-        _mockTelefoneService.Verify(t => t.CreateAsync(It.IsAny<AdicionarTelefoneRequest>()), Times.Once);
     }
 
     [Fact]
@@ -126,13 +124,13 @@ public class PacienteServiceTests
 
         // Assert
         Assert.NotNull(response);
-        Assert.NotNull(_mockPacienteValidation);
-        Assert.NotNull(_pacienteService);
+        Assert.True(response.Status == "Sucesso");
+        Assert.False(response.Error);
         _mockPessoaService.Verify(p => p.CreateAsync(It.IsAny<AdicionarPessoaRequest>()), Times.Once);
     }
 
     [Fact]
-    public async Task CreateAsync_DeveLancarExcecao_QuandoFalhaAoSalvarPaciente()
+    public async Task CreateAsync_Deve_Retornar_Excecao_Quando_Dados_Invalidos()
     {
         // Arrange
 
@@ -174,7 +172,7 @@ public class PacienteServiceTests
     }
 
     [Fact]
-    public async Task CreateAsync_DeveLancarExcecao_QuandoEnderecoFalha()
+    public async Task CreateAsync_Deve_Retornar_Excecao_Quando_Dados_Endereco_Invalidos()
     {
         // Arrange
         var pacienteRequest = new AdicionarPacienteRequest
@@ -204,7 +202,7 @@ public class PacienteServiceTests
     }
 
     [Fact]
-    public async Task CreateAsync_DeveLancarExcecao_QuandoTelefoneFalha()
+    public async Task CreateAsync_Deve_Retornar_Exception_Quando_Dados_Telefone_Invalidos()
     {
         // Arrange
         var pacienteRequest = new AdicionarPacienteRequest

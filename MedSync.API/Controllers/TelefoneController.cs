@@ -18,7 +18,11 @@ namespace MedSync.API.Controllers
         {
             _telefoneService = telefoneService;
         }
-
+        /// <summary>
+        /// Cria telefone com os dados informados
+        /// </summary>
+        /// <param name="telefoneRequest">Objeto com os dados para a criação do telefone</param>
+        /// <returns></returns>
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
         [HttpPost]
@@ -27,7 +31,11 @@ namespace MedSync.API.Controllers
             _response = await _telefoneService.CreateAsync(telefoneRequest);
             return _response.Error ? BadRequest(_response) : Ok(_response);
         }
-
+        /// <summary>
+        /// Busca telefone pelo id informado
+        /// </summary>
+        /// <param name="id">Parâmetro informado para a busca do telefone</param>
+        /// <returns></returns>
         [ProducesResponseType(typeof(PessoaResponse), 200)]
         [ProducesResponseType(typeof(PessoaResponse), 400)]
         [HttpGet("{id}")]
@@ -36,7 +44,11 @@ namespace MedSync.API.Controllers
             var telefone = await _telefoneService.GetIdAsync(id);
             return telefone is null ? NoContent() : Ok(telefone);
         }
-
+        /// <summary>
+        /// Busca telefone pelo número informado
+        /// </summary>
+        /// <param name="numero">Parâmetro informado para a busca do telefone</param>
+        /// <returns></returns>
         [ProducesResponseType(typeof(PessoaResponse), 200)]
         [ProducesResponseType(typeof(PessoaResponse), 400)]
         [HttpGet("numero/{numero}")]
@@ -45,7 +57,11 @@ namespace MedSync.API.Controllers
             var endereco = await _telefoneService.GetNumeroAsync(numero);
             return endereco is null ? NoContent() : Ok(endereco);
         }
-
+        /// <summary>
+        /// Atualiza telefone com os dados informados
+        /// </summary>
+        /// <param name="telefoneRequest">Objeto com dados para a criação do telefone</param>
+        /// <returns></returns>
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
         [HttpPut]
@@ -54,7 +70,11 @@ namespace MedSync.API.Controllers
             _response = await _telefoneService.UpdateAsync(telefoneRequest);
             return _response.Error ? BadRequest(_response) : Ok(_response);
         }
-
+        /// <summary>
+        /// Exclusão do telefone do id informado
+        /// </summary>
+        /// <param name="id">Parâmetro informado para a exclusão do telefone</param>
+        /// <returns></returns>
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
         [HttpDelete("{id}")]

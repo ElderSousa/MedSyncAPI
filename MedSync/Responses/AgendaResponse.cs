@@ -14,6 +14,6 @@ public class AgendaResponse
     public Guid? ModificadoPor { get; private set; }
     public DateTime? ModificadoEm { get; private set; }
 
-    public Medico Medico { get; set; } = new();
+    public MedicoResponse Medico { get; set; } = new();
     public List<HorarioResponse> Horarios { get; set; } = new();
 }
