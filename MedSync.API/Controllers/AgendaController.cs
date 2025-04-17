@@ -1,20 +1,21 @@
-﻿using MedSync.Application.Interfaces;
+﻿using Asp.Versioning;
+using MedSync.Application.Interfaces;
 using MedSync.Application.Responses;
-using MedSync.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using static MedSync.Application.Requests.AgendaRequest;
 
 namespace MedSync.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class AgendaController : ControllerBase
     {
         private Response _response = new();
         private readonly IAgendaSevice _agendaSevice;
-        public AgendaController(IAgendaSevice agendamentosSevice)
+        public AgendaController(IAgendaSevice agendaSevice)
         {
-            _agendaSevice = agendamentosSevice;
+            _agendaSevice = agendaSevice;
         }
 
         [HttpPost]

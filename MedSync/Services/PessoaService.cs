@@ -108,7 +108,7 @@ public class PessoaService : BaseService, IPessoaService
         try
         {
             if (!await _pessoaRepository.DeleteAsync(id))
-                return ReturnResponse("Exclusão não realizada.", true);
+                throw new InvalidOperationException("Falha ao realizar exclusão.");
         }
         catch (Exception ex)
         {
