@@ -82,7 +82,14 @@ public class HorarioRepository : BaseRepository, IHorarioRepository
         var sql = HorarioScripts.HorarioExiste;
         var parametros = new {Hora = hora, Agendado = agendado};
 
-        var resp =  JaExiste(sql, parametros);
-        return resp;
+        return JaExiste(sql, parametros);
+    }
+
+    public bool ExisteIntervalo(TimeSpan hora)
+    {
+        var sql = HorarioScripts.WhereHoraIntervaloInvalido;
+        var parametros = new { Hora = hora.ToString()};
+
+        return JaExiste(sql, parametros);
     }
 }

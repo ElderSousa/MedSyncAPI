@@ -17,7 +17,11 @@ namespace MedSync.API.Controllers
         {
             _pessoaService = pessoaService;
         }
-
+        /// <summary>
+        /// Cria paciente com os dados informados
+        /// </summary>
+        /// <param name="pessoa">Objeto com dados para criação da pessoa</param>
+        /// <returns></returns>
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
         [HttpPost]
@@ -26,7 +30,11 @@ namespace MedSync.API.Controllers
             _response = await _pessoaService.CreateAsync(pessoa);
             return _response.Error ? BadRequest(_response) : Ok(_response);
         }
-
+        /// <summary>
+        /// Busca todas as pessoas da base de dados
+        /// </summary>
+        /// <param name="id">Parâmetro informado para a busca da pessoa</param>
+        /// <returns></returns>
         [ProducesResponseType(typeof(PessoaResponse), 200)]
         [ProducesResponseType(typeof(PessoaResponse), 400)]
         [HttpGet("{id}")]
@@ -35,7 +43,11 @@ namespace MedSync.API.Controllers
             var pessoa = await _pessoaService.GetIdAsync(id);
             return pessoa is null ? NoContent() : Ok(pessoa);
         }
-
+        /// <summary>
+        /// Busca de pessoa pelo cpf informado
+        /// </summary>
+        /// <param name="cpf">Parãmetro informado para busca da pessoa</param>
+        /// <returns></returns>
         [ProducesResponseType(typeof(PessoaResponse), 200)]
         [ProducesResponseType(typeof(PessoaResponse), 400)]
         [HttpGet("cpf/{cpf}")]
@@ -44,7 +56,11 @@ namespace MedSync.API.Controllers
             var pessoa = await _pessoaService.GetCPFAsync(cpf);
             return pessoa is null ? NoContent() : Ok(pessoa);
         }
-
+        /// <summary>
+        /// Atualiza a pessoa com os dados informados
+        /// </summary>
+        /// <param name="pessoa">Objeto com dados para atualização da pessoa</param>
+        /// <returns></returns>
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
         [HttpPut]
@@ -53,7 +69,11 @@ namespace MedSync.API.Controllers
             _response = await _pessoaService.UpdateAsync(pessoa);
             return _response.Error ? BadRequest(_response) : Ok(_response);
         }
-
+        /// <summary>
+        /// Exclui pessoa do id informado
+        /// </summary>
+        /// <param name="id">Parâmetro informado para exclusão da pessoa</param>
+        /// <returns></returns>
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
         [HttpDelete("{id}")]

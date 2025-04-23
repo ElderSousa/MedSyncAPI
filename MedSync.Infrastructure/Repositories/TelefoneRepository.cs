@@ -17,12 +17,34 @@ public class TelefoneRepository : BaseRepository, ITelefoneRepository
         return await GenericExecuteAsync(sql, telefone);
     }
 
+    public async Task<IEnumerable<Telefone?>> GetAllAsync()
+    {
+        var sql = TelefoneScripts.SelectBase;
+       
+        return await GenericGetList<Telefone>(sql, null);
+    }
+
     public async Task<Telefone?> GetIdAsync(Guid id)
     {
         var sql = $"{TelefoneScripts.SelectBase}{TelefoneScripts.WhereId}";
         var parametro = new { Id = id };
 
         return await GenericGetOne<Telefone>(sql, parametro);
+    }
+    public async Task<IEnumerable<Telefone?>> GetMedicoIdAsync(Guid medicoId)
+    {
+        var sql = $"{TelefoneScripts.SelectBase}{TelefoneScripts.WhereMedicoId}";
+        var parametro = new { MedicoId = medicoId };
+
+        return await GenericGetList<Telefone>(sql, parametro);
+    }
+
+    public async Task<IEnumerable<Telefone?>> GetPacienteIdAsync(Guid pacienteId)
+    {
+        var sql = $"{TelefoneScripts.SelectBase}{TelefoneScripts.WherePcienteId}";
+        var parametro = new { PacienteId = pacienteId };
+
+        return await GenericGetList<Telefone>(sql, parametro);
     }
 
     public async Task<Telefone?> GetNumeroAsync(string numero)
@@ -43,7 +65,7 @@ public class TelefoneRepository : BaseRepository, ITelefoneRepository
     public async Task<bool> DeleteAsync(Guid id)
     {
         var sql = TelefoneScripts.Delete;
-        var parametro = new { Id = id };
+        var parametro = new { Id = id, ModificadoEm = DataHoraAtual() };
 
         return await GenericExecuteAsync(sql, parametro);
     }
@@ -51,8 +73,9 @@ public class TelefoneRepository : BaseRepository, ITelefoneRepository
     public bool Existe(Guid id)
     {
         var sql = TelefoneScripts.Existe;
-        var parametro = new { Id = id };
+        var parametro = new { Id = id};
 
         return JaExiste(sql, parametro);
     }
+
 }

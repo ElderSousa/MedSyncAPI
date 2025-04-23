@@ -55,9 +55,7 @@ public class AgendaService : BaseService, IAgendaSevice
             {
                 horario.AgendaId = agenda.Id;
 
-                _response = await _horarioService.CreateAsync(horario);
-                if (_response.Error)
-                    await _agendaRepository.DeleteAsync(agenda.Id);
+                await _horarioService.CreateAsync(horario);        
             }
 
         }

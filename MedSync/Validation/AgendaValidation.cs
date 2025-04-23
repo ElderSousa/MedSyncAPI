@@ -28,9 +28,10 @@ public class AgendaValidation : AbstractValidator<Agenda>
         RuleFor(a => a.DataDisponivel)
             .NotEmpty()
             .WithMessage(MessagesValidation.CampoObrigatorio)
-            .GreaterThan(DateTime.Now).WithMessage(MessagesValidation.DataInvalida);
+            .GreaterThanOrEqualTo(DateTime.UtcNow.AddHours(-3))
+            .WithMessage(MessagesValidation.DataInvalida);
 
-        RuleFor(a => VerificaPeriodo(a.DataDisponivel, a.DiaSemana, a.Horarios.Exists(a => a.Agendado), a.Horarios))
+        RuleFor(a => VerificaPeriodoExiste(a.DataDisponivel, a.DiaSemana, a.Horarios.Exists(a => a.Agendado), a.Horarios))
             .Equal(false)
             .WithMessage(MessagesValidation.PeriodoInvalido);
 
@@ -58,7 +59,7 @@ public class AgendaValidation : AbstractValidator<Agenda>
 
     }
 
-    private bool VerificaPeriodo(DateTime data, DayOfWeek dia, bool agendado, List<Horario> horarios)
+    private bool VerificaPeriodoExiste(DateTime data, DayOfWeek dia, bool agendado, List<Horario> horarios)
     {
         if (_agendaRepository.AgendaPeriodoExiste(data, dia))
         {

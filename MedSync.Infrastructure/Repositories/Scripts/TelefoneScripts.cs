@@ -50,6 +50,16 @@ public class TelefoneScripts
             AND Id = @Id
         ";
 
+    internal static readonly string WhereMedicoId =
+        @"
+            AND MedicoId = @MedicoId
+        ";
+    
+    internal static readonly string WherePcienteId =
+        @"
+            AND PacienteId = @PacienteId
+        ";
+
     internal static readonly string WhereNumero =
         @"
             AND Numero = @Numero

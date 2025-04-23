@@ -25,7 +25,7 @@ public class BaseRepository : IDisposable
         }
     }
 
-    protected async Task<T?> GenericGetOne<T>(string sql, object parametros)
+    protected async Task<T?> GenericGetOne<T>(string sql, object? parametros)
     {
         try
         {
@@ -59,7 +59,7 @@ public class BaseRepository : IDisposable
             int count = mySqlConnection.QuerySingle<int>(sql, parametros);
             return count > 0;
         }
-        catch(Exception e)
+        catch
         {
             throw;
         }

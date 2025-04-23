@@ -151,7 +151,7 @@ public class HorarioService : BaseService, IHorarioService
     {
         try
         {
-            var horario = GetIdAsync(id);
+            var horario = await GetIdAsync(id);
             if (horario == null)
                 throw new KeyNotFoundException("Horário não encontrado em nossa base de dados.");
 

@@ -46,7 +46,7 @@ namespace MedSync.Application.Services
                     throw new ArgumentException(_response.Status);
 
                 var pessoa = await _pessoaService.GetCPFAsync(medicoRequest.Pessoa.CPF!);
-                if (pessoa == null)
+                if (pessoa == null || pessoa.Id == Guid.Empty)
                     _response = await _pessoaService.CreateAsync(medicoRequest.Pessoa);
  
                 medico.Pessoa = mapper.Map<Pessoa>(await _pessoaService.GetCPFAsync(medicoRequest.Pessoa.CPF!));
@@ -59,7 +59,7 @@ namespace MedSync.Application.Services
                 {
                     medicoRequest.Telefones[i].MedicoId = medico.Id;
                     await _telefoneService.CreateAsync(medicoRequest.Telefones[i]);
-                    medico.Telefones[i] = mapper.Map<Telefone>(medicoRequest.Telefones[i]);      
+                    medico.Telefones.Add(mapper.Map<Telefone>(medicoRequest.Telefones[i]));      
                 }
 
             }

@@ -17,7 +17,11 @@ namespace MedSync.API.Controllers
         {
             _medicoService = medicoService;
         }
-
+        /// <summary>
+        /// Cria médico com os dados informados 
+        /// </summary>
+        /// <param name="medicoRequest">Objeto com dados para criação do médico</param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
@@ -26,7 +30,12 @@ namespace MedSync.API.Controllers
             _response = await _medicoService.CreateAsync(medicoRequest);
            return _response.Error ? BadRequest(_response) : Ok(_response);
         }
-        
+        /// <summary>
+        /// Busca todos os médicos da base de dados
+        /// </summary>
+        /// <param name="page">Número da página</param>
+        /// <param name="pageSize">Quantidade e itens na página</param>
+        /// <returns></returns>
         [HttpGet("getall/{page}/{pageSize}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
@@ -35,7 +44,11 @@ namespace MedSync.API.Controllers
             var medicos = await _medicoService.GetAllAsync(page, pageSize);
            return !medicos.Itens.Any() ? NoContent() : Ok(medicos);
         }
-        
+        /// <summary>
+        /// Busca médico do id informado
+        /// </summary>
+        /// <param name="id">Parâmetro informado para busca do médico</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
@@ -44,7 +57,11 @@ namespace MedSync.API.Controllers
             var medico = await _medicoService.GetIdAsync(id);
            return medico == null ? NoContent() : Ok(medico);
         }
-        
+        /// <summary>
+        /// Busca médico pelo crm informado
+        /// </summary>
+        /// <param name="crm">Parâmetro informado para busca do médico</param>
+        /// <returns></returns>
         [HttpGet("crm/{crm}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 204)]
@@ -53,7 +70,11 @@ namespace MedSync.API.Controllers
             var medico = await _medicoService.GetCRMAsync(crm);
             return medico == null ? NoContent() : Ok(medico);
         }
-
+        /// <summary>
+        /// Atualiza o médico informado
+        /// </summary>
+        /// <param name="medicoRequest">Objeto com os dados para atualização do médico</param>
+        /// <returns></returns>
         [HttpPut]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
@@ -63,7 +84,11 @@ namespace MedSync.API.Controllers
            return _response.Error ? BadRequest(_response) : Ok(_response);
 
         }
-        
+        /// <summary>
+        /// Exclui médico do id informado
+        /// </summary>
+        /// <param name="id">Parâmetro informado para exclusão do médico</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
