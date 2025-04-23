@@ -65,7 +65,7 @@ public class TelefoneRepository : BaseRepository, ITelefoneRepository
     public async Task<bool> DeleteAsync(Guid id)
     {
         var sql = TelefoneScripts.Delete;
-        var parametro = new { Id = id };
+        var parametro = new { Id = id, ModificadoEm = DataHoraAtual() };
 
         return await GenericExecuteAsync(sql, parametro);
     }
@@ -73,7 +73,7 @@ public class TelefoneRepository : BaseRepository, ITelefoneRepository
     public bool Existe(Guid id)
     {
         var sql = TelefoneScripts.Existe;
-        var parametro = new { Id = id };
+        var parametro = new { Id = id};
 
         return JaExiste(sql, parametro);
     }

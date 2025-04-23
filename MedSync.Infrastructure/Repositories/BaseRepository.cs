@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Http;
 using MySql.Data.MySqlClient;
-using Newtonsoft.Json;
 
 public class BaseRepository : IDisposable
 {
@@ -60,7 +59,7 @@ public class BaseRepository : IDisposable
             int count = mySqlConnection.QuerySingle<int>(sql, parametros);
             return count > 0;
         }
-        catch(Exception e)
+        catch
         {
             throw;
         }

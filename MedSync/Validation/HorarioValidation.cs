@@ -20,7 +20,9 @@ public class HorarioValidation : AbstractValidator<Horario>
 
         RuleFor(h => h.Hora)
             .NotEmpty()
-            .WithMessage(MessagesValidation.CampoObrigatorio);
+            .WithMessage(MessagesValidation.CampoObrigatorio)
+            .GreaterThan(DateTime.UtcNow.TimeOfDay)
+            .WithMessage(MessagesValidation.HoraInvalida);
 
         RuleFor(h => horarioRepository.HorarioExiste(h.Hora, h.Agendado))
             .Equal(false)

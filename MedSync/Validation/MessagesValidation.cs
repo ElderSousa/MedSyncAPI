@@ -36,6 +36,8 @@ public static class MessagesValidation
         "O horário informado não está disponível para agendamento.";
     public static string DataInvalida =
         "Data não pode se menor que o valor da  data atual.";
+    public static string HoraInvalida =
+        "Hora não pode se menor que o valor da hora atual.";
     public static string HoraIntervaloInvalido =
         "Horário deve ter 20 minutos de diferença do horário anterior.";
 

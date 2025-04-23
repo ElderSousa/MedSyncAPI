@@ -52,7 +52,7 @@ public class AgendaRepository : BaseRepository, IAgendaRepository
     public bool AgendaPeriodoExiste(DateTime dataDisponivel, DayOfWeek dia)
     {
         var sql = AgendaScritps.DataHoraExiste;
-        var parametros = new { DataDisponivel = dataDisponivel, DiaSemana = dia};
+        var parametros = new { DataDisponivel = dataDisponivel.Date, DiaSemana = dia};
 
         return JaExiste(sql, parametros);
     }
