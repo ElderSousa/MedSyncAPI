@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using MedSync.Application.Interfaces;
+using MedSync.Application.PaginationModel;
 using MedSync.Application.Responses;
-using MedSync.Application.Validation;
 using MedSync.Domain.Entities;
 using MedSync.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -62,6 +62,48 @@ public class TelefoneService : BaseService, ITelefoneService
         }
     }
 
+    public async Task<Pagination<TelefoneResponse>> GetAllAsync(int page, int pageSize)
+    {
+        try
+        {
+            var telefones = mapper.Map<IEnumerable<TelefoneResponse>>(await _telefoneRepository.GetAllAsync());
+            return Paginar(telefones, page, pageSize);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, ex.Message, "GetIdAsync");
+            throw;
+        }
+    }
+
+    public async Task<Pagination<TelefoneResponse>> GetMedicoIdAsync(Guid medicoId, int page, int pageSize)
+    {
+        try
+        {
+            var telefones = mapper.Map<IEnumerable<TelefoneResponse>>(await _telefoneRepository.GetMedicoIdAsync(medicoId));
+            return Paginar(telefones, page, pageSize);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, ex.Message, "GetMedicoIdAsync");
+            throw;
+        }
+    }
+
+    public async Task<Pagination<TelefoneResponse>> GetPacienteIdAsync(Guid pacienteId, int page, int pageSize)
+    {
+        try
+        {
+            var telefones = mapper.Map<IEnumerable<TelefoneResponse>>(await _telefoneRepository.GetPacienteIdAsync(pacienteId));
+            return Paginar(telefones, page, pageSize);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, ex.Message, "GetPacienteIdAsync");
+            throw;
+        }
+    }
+
     public async Task<TelefoneResponse?> GetNumeroAsync(string numero)
     {
         try
@@ -113,4 +155,5 @@ public class TelefoneService : BaseService, ITelefoneService
 
         return ReturnResponseSuccess();
     }
+
 }

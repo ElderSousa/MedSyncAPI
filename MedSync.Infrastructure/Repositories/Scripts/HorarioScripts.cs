@@ -112,4 +112,16 @@ public class HorarioScripts
             AND Agendado = 0
         ";
 
+    internal static readonly string WhereHoraIntervaloInvalido =
+        @"
+            SELECT 
+                COUNT(*)
+            FROM
+                horarios
+            WHERE
+                ABS(TIMESTAMPDIFF(MINUTE,
+                            STR_TO_DATE(Hora, '%H:%i:%s'),
+                            STR_TO_DATE(@Hora, '%H:%i:%s'))) < 20;
+        ";
+
 }

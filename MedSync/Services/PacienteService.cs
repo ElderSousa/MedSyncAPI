@@ -55,7 +55,8 @@ public class PacienteService : BaseService, IPacienteService
                 pessoa = await _pessoaService.GetCPFAsync(pacienteRequest.Pessoa.CPF!);
                 paciente.PessoaId = pessoa!.Id;
             }
-           
+
+            paciente.PessoaId = pessoa.Id;
             if (!await _pacienteRepository.CreateAsync(paciente))
                 throw new InvalidOperationException("Falha ao adicionar paciente em nossa base de dados.");
 

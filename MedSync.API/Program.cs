@@ -2,7 +2,6 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
 using Asp.Versioning;
-using Google.Protobuf.WellKnownTypes;
 using MedSync.CrossCutting.Data;
 using MedSync.CrossCutting.IoC;
 using MedSync.CrossCutting.Middlewares;

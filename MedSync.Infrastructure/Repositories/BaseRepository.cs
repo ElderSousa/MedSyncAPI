@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Http;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 
 public class BaseRepository : IDisposable
 {
@@ -25,7 +26,7 @@ public class BaseRepository : IDisposable
         }
     }
 
-    protected async Task<T?> GenericGetOne<T>(string sql, object parametros)
+    protected async Task<T?> GenericGetOne<T>(string sql, object? parametros)
     {
         try
         {

@@ -42,7 +42,7 @@ public class AgendamentoValidation : AbstractValidator<Agendamento>
         RuleFor(a => a.AgendadoPara)
             .NotEmpty()
             .WithMessage(MessagesValidation.CampoObrigatorio)
-            .GreaterThan(DateTime.Now)
+            .GreaterThanOrEqualTo(DateTime.UtcNow.AddHours(-3))
             .WithMessage(MessagesValidation.DataInvalida);
 
 

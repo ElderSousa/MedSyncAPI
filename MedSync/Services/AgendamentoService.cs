@@ -1,11 +1,8 @@
-﻿using System.Linq.Expressions;
-using System.Runtime.InteropServices;
-using AutoMapper;
+﻿using AutoMapper;
 using FluentValidation;
 using MedSync.Application.Interfaces;
 using MedSync.Application.PaginationModel;
 using MedSync.Application.Responses;
-using MedSync.Application.Validation;
 using MedSync.Domain.Entities;
 using MedSync.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -152,6 +149,9 @@ public class AgendamentoService : BaseService, IAgendamentoService
 
             if (!await _agendamentoRepository.UpdateAsync(agendamento))
                 throw new InvalidOperationException("Falha ao atualizar agendamento.");
+ 
+            var horarios = await _horarioService.GetAgendadoFalseAsync(int.MaxValue, int.MaxValue);
+            await _horarioService.UpdateStatusAsync(horarios.Itens.FirstOrDefault(h => h.Hora == agendamento.Horario)!.Id, true);
         }
         catch (Exception ex)
         {

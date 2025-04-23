@@ -26,6 +26,10 @@ public class HorarioValidation : AbstractValidator<Horario>
             .Equal(false)
             .WithMessage(MessagesValidation.PeriodoInvalido);
 
+        RuleFor(h => horarioRepository.ExisteIntervalo(h.Hora))
+            .Equal(false)
+            .WithMessage(MessagesValidation.HoraIntervaloInvalido);
+
         When(h => h.ValidacaoCadastrar, () =>
         {
             RuleFor(h => h.CriadoEm)

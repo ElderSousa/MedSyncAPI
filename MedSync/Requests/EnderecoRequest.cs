@@ -12,14 +12,8 @@ public class EnderecoRequest
         public string? Bairro { get; set; }
         public string? Cidade { get; set; }
         public string? CEP { get; set; }
+        public string? Estado { get; set; }
 
-        private string? _estado { get; set; }
-
-        public string? Estado
-        {
-            get => _estado!.ToUpper();
-            set => _estado = value;
-        }
     }
 
     public class AtualizarEnderecoRequest
@@ -33,14 +27,8 @@ public class EnderecoRequest
         public string? Bairro { get; set; }
         public string? Cidade { get; set; }
         public string? CEP { get; set; }
+        public string? Estado { get; set; }
 
-        private string? _estado { get; set; }
-
-        public string? Estado
-        {
-            get => _estado!.ToUpper();
-            set => _estado = value;
-        }
     }
 
  

@@ -14,4 +14,5 @@ public interface IHorarioRepository
     Task<bool> DeleteAsync(Guid id);
     bool Existe(Guid id);
     bool HorarioExiste(TimeSpan hora, bool Agendado);
+    bool ExisteIntervalo(TimeSpan hora);
 }

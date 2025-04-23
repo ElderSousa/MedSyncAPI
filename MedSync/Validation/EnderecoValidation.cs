@@ -27,7 +27,13 @@ public class EnderecoValidation : AbstractValidator<Endereco>
         RuleFor(e => e.Cidade)
             .NotEmpty()
             .WithMessage(MessagesValidation.CampoObrigatorio)
-            .MinimumLength(3).WithMessage(MessagesValidation.NomeInvalido); 
+            .MinimumLength(3).WithMessage(MessagesValidation.NomeInvalido);
+
+        RuleFor(e => e.Estado)
+            .NotEmpty()
+            .WithMessage(MessagesValidation.CampoObrigatorio)
+            .Length(2)
+            .WithMessage(MessagesValidation.SigaInvalida);
 
         RuleFor(e => e.CEP)
            .Matches(@"^\d{5}-?\d{3}$")
