@@ -71,7 +71,6 @@ src/
 ## Próximos Passos
 
 - Implementar autenticação e autorização via JWT
-- Adicionar documentação via Swagger
 - Configurar pipeline de integração contínua
 - Disponibilizar ambiente de homologação
 
