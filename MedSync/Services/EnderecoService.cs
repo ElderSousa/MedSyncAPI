@@ -28,94 +28,53 @@ namespace MedSync.Application.Services
 
         public async Task<Response> CreateAsync(AdicionarEnderecoRequest enderecoRequest)
         {
-            try
-            {
-                var endereco = mapper.Map<Endereco>(enderecoRequest);
-                endereco.AdicionarBaseModel(null, DataHoraAtual(), true);
-                endereco.ValidacaoCadastrar = true;
 
-                _response = await ExecultarValidacaoResponse(_enderecoValidator, endereco);
-                if (_response.Error) 
-                    throw new ArgumentException(_response.Status);
+            var endereco = mapper.Map<Endereco>(enderecoRequest);
+            endereco.AdicionarBaseModel(null, DataHoraAtual(), true);
+            endereco.ValidacaoCadastrar = true;
 
-                if (!await _enderecoRepository.CreateAsync(endereco))
-                    throw new InvalidOperationException("Endereço não adicionado a nossa base de dados.");
+            _response = await ExecultarValidacaoResponse(_enderecoValidator, endereco);
+            if (_response.Error)
+                throw new ArgumentException(_response.Status);
 
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, ex.Message, "CreateAsync");
-                throw;
-            }
+            if (!await _enderecoRepository.CreateAsync(endereco))
+                throw new InvalidOperationException("Endereço não adicionado a nossa base de dados.");
 
             return ReturnResponseSuccess();
         }
 
         public async Task<EnderecoResponse?> GetIdAsync(Guid id)
         {
-            try
-            {
-               return mapper.Map<EnderecoResponse>(await _enderecoRepository.GetIdAsync(id));
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, ex.Message, "GetIdAsync");
-                throw;
-            }
-     
+            return mapper.Map<EnderecoResponse>(await _enderecoRepository.GetIdAsync(id));
         }
 
         public async Task<EnderecoResponse?> GetCEPAsync(string cep)
         {
-            try
-            {
-                return mapper.Map<EnderecoResponse>(await _enderecoRepository.GetCEPAsync(cep));
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, ex.Message, "GetCEPAsync");
-                throw;
-            }
+
+            return mapper.Map<EnderecoResponse>(await _enderecoRepository.GetCEPAsync(cep));
         }
 
         public async Task<Response> UpdateAsync(AtualizarEnderecoRequest enderecoRequest)
         {
-            try
-            {
-                var endereco = mapper.Map<Endereco>(enderecoRequest);
-                endereco.AdicionarBaseModel(null, DataHoraAtual(), false);
-                endereco.ValidacaoCadastrar = false;
+            var endereco = mapper.Map<Endereco>(enderecoRequest);
+            endereco.AdicionarBaseModel(null, DataHoraAtual(), false);
+            endereco.ValidacaoCadastrar = false;
 
-                _response = await ExecultarValidacaoResponse(_enderecoValidator, endereco);
-                if (_response.Error) 
-                    throw new ArgumentException(_response.Status);
+            _response = await ExecultarValidacaoResponse(_enderecoValidator, endereco);
+            if (_response.Error)
+                throw new ArgumentException(_response.Status);
 
-                if (!await _enderecoRepository.UpdateAsync(endereco))
-                    throw new InvalidOperationException("Endereço não atualizado em nossa base de dados.");
-
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, ex.Message, "UpdateAsync");
-                throw;
-            }
+            if (!await _enderecoRepository.UpdateAsync(endereco))
+                throw new InvalidOperationException("Endereço não atualizado em nossa base de dados.");
 
             return ReturnResponseSuccess();
         }
 
         public async Task<Response> DeleteAsync(Guid id)
         {
-            try
-            {
-                if (!await _enderecoRepository.DeleteAsync(id))
-                    throw new ArgumentException("Endereço não excluído da nossa base de dados.");
-                return ReturnResponseSuccess();
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, ex.Message, "DeleteAsync");
-                throw;
-            }
+            if (!await _enderecoRepository.DeleteAsync(id))
+                throw new ArgumentException("Endereço não excluído da nossa base de dados.");
+            return ReturnResponseSuccess();
         }
     }
 }

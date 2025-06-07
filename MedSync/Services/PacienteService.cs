@@ -3,7 +3,6 @@ using FluentValidation;
 using MedSync.Application.Interfaces;
 using MedSync.Application.PaginationModel;
 using MedSync.Application.Responses;
-using MedSync.Application.Validation;
 using MedSync.Domain.Entities;
 using MedSync.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -38,120 +37,77 @@ public class PacienteService : BaseService, IPacienteService
 
     public async Task<Response> CreateAsync(AdicionarPacienteRequest pacienteRequest)
     {
-        try
+        var paciente = mapper.Map<Paciente>(pacienteRequest);
+        paciente.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
+        paciente.ValidacaoCadastrar = true;
+
+        _response = await ExecultarValidacaoResponse(_pacienteValidator, paciente);
+        if (_response.Error)
+            throw new ArgumentException(_response.Status);
+
+        var pessoa = await _pessoaService.GetCPFAsync(pacienteRequest.Pessoa.CPF!);
+        if (pessoa == null || pessoa.Id == Guid.Empty)
         {
-            var paciente = mapper.Map<Paciente>(pacienteRequest);
-            paciente.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
-            paciente.ValidacaoCadastrar = true;
-
-            _response = await ExecultarValidacaoResponse(_pacienteValidator, paciente);
-            if (_response.Error)
-                throw new ArgumentException(_response.Status);
-
-            var pessoa = await _pessoaService.GetCPFAsync(pacienteRequest.Pessoa.CPF!);
-            if (pessoa == null || pessoa.Id == Guid.Empty)
-            {
-                await _pessoaService.CreateAsync(pacienteRequest.Pessoa);
-                pessoa = await _pessoaService.GetCPFAsync(pacienteRequest.Pessoa.CPF!);
-                paciente.PessoaId = pessoa!.Id;
-            }
-
-            paciente.PessoaId = pessoa.Id;
-            if (!await _pacienteRepository.CreateAsync(paciente))
-                throw new InvalidOperationException("Falha ao adicionar paciente em nossa base de dados.");
-
-            pacienteRequest.Endereco.PacienteId = paciente.Id;
-            await _enderecoService.CreateAsync(pacienteRequest.Endereco);
-
-            foreach(var telefone in pacienteRequest.Telefones)
-            {
-                telefone.PacienteId = paciente.Id;
-                await _telefoneService.CreateAsync(telefone);
-                paciente.Telefones.Add(mapper.Map<Telefone>(telefone));
-            }
+            await _pessoaService.CreateAsync(pacienteRequest.Pessoa);
+            pessoa = await _pessoaService.GetCPFAsync(pacienteRequest.Pessoa.CPF!);
+            paciente.PessoaId = pessoa!.Id;
         }
-        catch (Exception ex)
+
+        paciente.PessoaId = pessoa.Id;
+        if (!await _pacienteRepository.CreateAsync(paciente))
+            throw new InvalidOperationException("Falha ao adicionar paciente em nossa base de dados.");
+
+        pacienteRequest.Endereco.PacienteId = paciente.Id;
+        await _enderecoService.CreateAsync(pacienteRequest.Endereco);
+
+        foreach (var telefone in pacienteRequest.Telefones)
         {
-            logger.LogError(ex, ex.Message, "CreateAsync");
-            throw;
+            telefone.PacienteId = paciente.Id;
+            await _telefoneService.CreateAsync(telefone);
+            paciente.Telefones.Add(mapper.Map<Telefone>(telefone));
         }
+
         return ReturnResponseSuccess();
     }
     public async Task<Pagination<PacienteResponse>> GetAllAsync(int page, int pageSize)
     {
-        try
-        {
-            var pacientes = mapper.Map<IEnumerable<PacienteResponse>>(await _pacienteRepository.GetAllAsync());
+        var pacientes = mapper.Map<IEnumerable<PacienteResponse>>(await _pacienteRepository.GetAllAsync());
 
-            return Paginar(pacientes, page, pageSize);
-        }
-        catch (Exception ex)
-        {
-
-            logger.LogError(ex, ex.Message, "GetAllAsync");
-            throw;
-        }
+        return Paginar(pacientes, page, pageSize);
     }
 
     public async Task<PacienteResponse?> GetIdAsync(Guid id)
     {
-        try
-        {
-            return mapper.Map<PacienteResponse>(await _pacienteRepository.GetIdAsync(id));
-        }
-        catch (Exception ex)
-        {
-
-            logger.LogError(ex, ex.Message, "GetIdAsync");
-            throw;
-        }
+        return mapper.Map<PacienteResponse>(await _pacienteRepository.GetIdAsync(id));
     }
 
     public async Task<Response> UpdateAsync(AtualizarPacienteRequest pacienteRequest)
     {
-        try
-        {
-            var paciente = mapper.Map<Paciente>(pacienteRequest);
-            paciente.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), false);
-            paciente.ValidacaoCadastrar = false;
+        var paciente = mapper.Map<Paciente>(pacienteRequest);
+        paciente.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), false);
+        paciente.ValidacaoCadastrar = false;
 
-            _response = await ExecultarValidacaoResponse(_pacienteValidator, paciente);
-            if (_response.Error)
-                throw new ArgumentException(_response.Status);
+        _response = await ExecultarValidacaoResponse(_pacienteValidator, paciente);
+        if (_response.Error)
+            throw new ArgumentException(_response.Status);
 
-            await _pessoaService.UpdateAsync(pacienteRequest.Pessoa);
+        await _pessoaService.UpdateAsync(pacienteRequest.Pessoa);
 
-            await _enderecoService.UpdateAsync(pacienteRequest.Endereco);
+        await _enderecoService.UpdateAsync(pacienteRequest.Endereco);
 
-            foreach(var telefone in pacienteRequest.Telefones)
-                await _telefoneService.UpdateAsync(telefone);
-        }
-        catch (Exception ex)
-        {
-
-            logger.LogError(ex, ex.Message, "UpdateAsync");
-            throw;
-        }
+        foreach (var telefone in pacienteRequest.Telefones)
+            await _telefoneService.UpdateAsync(telefone);
 
         return ReturnResponseSuccess();
     }
 
     public async Task<Response> DeleteAsync(Guid id)
     {
-        try
-        {
-            var deletado = await _pacienteRepository.DeleteAsync(id);
-            if (!deletado)
-                throw new InvalidOperationException("Falha na exclusão da nossa base de dados.");
+        var deletado = await _pacienteRepository.DeleteAsync(id);
+        if (!deletado)
+            throw new InvalidOperationException("Falha na exclusão da nossa base de dados.");
 
-            return ReturnResponseSuccess();
-        }
-        catch (Exception ex)
-        {
-
-            logger.LogError(ex, ex.Message, "DeleteAsync");
-            throw;
-        }
+        return ReturnResponseSuccess();
     }
 }
 

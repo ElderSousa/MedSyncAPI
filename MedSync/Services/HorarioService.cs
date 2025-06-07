@@ -28,141 +28,77 @@ public class HorarioService : BaseService, IHorarioService
 
     public async Task<Response> CreateAsync(AdicionarHorarioRequest horarioRequest)
     {
-        try
-        {
-            var horario = mapper.Map<Horario>(horarioRequest);
-            horario.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
-            horario.ValidacaoCadastrar = true;
+        var horario = mapper.Map<Horario>(horarioRequest);
+        horario.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
+        horario.ValidacaoCadastrar = true;
 
-            _response = await ExecultarValidacaoResponse(_horarioValidator, horario);
-            if (_response.Error)
-                throw new ArgumentException(_response.Status);
+        _response = await ExecultarValidacaoResponse(_horarioValidator, horario);
+        if (_response.Error)
+            throw new ArgumentException(_response.Status);
 
-            if (!await _horarioRepository.CreateAsync(horario))
-                throw new InvalidOperationException("Falha ao criar horário.");
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "CreateAsync");
-            throw;
-        }
+        if (!await _horarioRepository.CreateAsync(horario))
+            throw new InvalidOperationException("Falha ao criar horário.");
 
         return ReturnResponseSuccess();
     }
 
     public async Task<Pagination<HorarioResponse>> GetAllAsync(int page, int pageSize)
     {
-        try
-        {
-            var horarios = mapper.Map<IEnumerable<HorarioResponse>>(await _horarioRepository.GetAllAsync());
+        var horarios = mapper.Map<IEnumerable<HorarioResponse>>(await _horarioRepository.GetAllAsync());
 
-            return Paginar(horarios, page, pageSize);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "GetAllAsync");
-            throw;
-        }
+        return Paginar(horarios, page, pageSize);
     }
     public async Task<HorarioResponse?> GetIdAsync(Guid id)
     {
-        try
-        {
-            return mapper.Map<HorarioResponse>(await _horarioRepository.GetIdAsync(id));
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "GetIdAsync");
-            throw;
-        }
+        return mapper.Map<HorarioResponse>(await _horarioRepository.GetIdAsync(id));
     }
 
     public async Task<Pagination<HorarioResponse>> GetAgendaIdAsync(Guid agendaId, int page, int pageSize)
     {
-        try
-        {
-            var horarios = mapper.Map<IEnumerable<HorarioResponse>>(await _horarioRepository.GetAgendaIdAsync(agendaId));
+        var horarios = mapper.Map<IEnumerable<HorarioResponse>>(await _horarioRepository.GetAgendaIdAsync(agendaId));
 
-            return Paginar(horarios, page, pageSize);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "GetAgendaIdAsync");
-            throw;
-        }
+        return Paginar(horarios, page, pageSize);
     }
 
     public async Task<Response> UpdateAsync(AtualizarHorarioRequest horarioResquest)
     {
-        try
-        {
-            var horario = mapper.Map<Horario>(horarioResquest);
-            horario.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), false);
-            horario.ValidacaoCadastrar = false;
+        var horario = mapper.Map<Horario>(horarioResquest);
+        horario.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), false);
+        horario.ValidacaoCadastrar = false;
 
-            _response = await ExecultarValidacaoResponse(_horarioValidator, horario);
-            if (_response.Error)
-                throw new ArgumentException(_response.Status);
+        _response = await ExecultarValidacaoResponse(_horarioValidator, horario);
+        if (_response.Error)
+            throw new ArgumentException(_response.Status);
 
-            if (!await _horarioRepository.UpdateAsync(horario))
-                throw new InvalidOperationException("Falha ao atualizar horário.");
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "UpdateAsync");
-            throw;
-        }
+        if (!await _horarioRepository.UpdateAsync(horario))
+            throw new InvalidOperationException("Falha ao atualizar horário.");
 
         return ReturnResponseSuccess();
     }
 
     public async Task<Response> DeleteAsync(Guid id)
     {
-        try
-        {
-            if (!await _horarioRepository.DeleteAsync(id))
-                throw new InvalidOperationException("Falha ao excluir horário.");
+        if (!await _horarioRepository.DeleteAsync(id))
+            throw new InvalidOperationException("Falha ao excluir horário.");
 
-            return ReturnResponseSuccess();
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "DeleteAsync");
-            throw;
-        }
+        return ReturnResponseSuccess();
     }
 
     public async Task<Pagination<HorarioResponse>> GetAgendadoFalseAsync(int page, int pageSize)
     {
-        try
-        {
-            var horarios = mapper.Map<IEnumerable<HorarioResponse>>(await _horarioRepository.GetAgendadoFalseAsync());
+        var horarios = mapper.Map<IEnumerable<HorarioResponse>>(await _horarioRepository.GetAgendadoFalseAsync());
 
-            return Paginar(horarios, page, pageSize);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "GetAgendadoFalseAsync");
-            throw;
-        }
+        return Paginar(horarios, page, pageSize);
     }
 
     public async Task<Response> UpdateStatusAsync(Guid id, bool agendado)
     {
-        try
-        {
-            var horario = await GetIdAsync(id);
-            if (horario == null)
-                throw new KeyNotFoundException("Horário não encontrado em nossa base de dados.");
+        var horario = await GetIdAsync(id);
+        if (horario == null)
+            throw new KeyNotFoundException("Horário não encontrado em nossa base de dados.");
 
-            if (!await _horarioRepository.UpdateStatusAsync(id, agendado))
-                throw new InvalidOperationException("Falha ao atualizar status.");
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "UpdateAsync");
-            throw;
-        }
+        if (!await _horarioRepository.UpdateStatusAsync(id, agendado))
+            throw new InvalidOperationException("Falha ao atualizar status.");
 
         return ReturnResponseSuccess();
     }

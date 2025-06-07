@@ -51,16 +51,9 @@ namespace MedSync.Application.Services
 
         protected Guid ObterUsuarioLogadoId()
         {
-            try
-            {
-                var identity = _context?.User.Identity as ClaimsIdentity;
-                var usuarioId = identity?.FindFirst("UserId")?.Value;
-                return usuarioId != null ? Guid.Parse(usuarioId) : Guid.Empty;
-            }
-            catch (Exception)
-            {
-                return Guid.Empty;
-            }
+            var identity = _context?.User.Identity as ClaimsIdentity;
+            var usuarioId = identity?.FindFirst("UserId")?.Value;
+            return usuarioId != null ? Guid.Parse(usuarioId) : Guid.Empty;
         }
 
         protected static DateTime DataHoraAtual() => DateTime.UtcNow.AddHours(-3);
@@ -73,7 +66,6 @@ namespace MedSync.Application.Services
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
-   ;
 
             return new Pagination<T>
             {

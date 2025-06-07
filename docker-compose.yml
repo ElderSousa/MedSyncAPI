@@ -1,6 +1,0 @@
-services:
-  medsync.api:
-    image: medsyncapi
-    build:
-      context: .
-      dockerfile: MedSync.API/Dockerfile

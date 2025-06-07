@@ -35,34 +35,25 @@ public class AgendaService : BaseService, IAgendaSevice
 
     public async Task<Response> CreateAsync(AdicionarAgendaRequest agendaRequest)
     {
-        try
+        var agenda = mapper.Map<Agenda>(agendaRequest);
+        agenda.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
+        agenda.ValidacaoCadastrar = true;
+
+        _response = await ExecultarValidacaoResponse(_agendaValidator, agenda);
+        if (_response.Error)
+            throw new ArgumentException(_response.Status);
+
+        agenda.Medico = mapper.Map<Medico>(await _medicoService.GetIdAsync(agendaRequest.MedicoId)) ??
+             throw new KeyNotFoundException("Medico não encontrado em nossa base de dados.");
+
+        if (!await _agendaRepository.CreateAsync(agenda))
+            throw new InvalidOperationException("Falha ao criar agenda.");
+
+        foreach (var horario in agendaRequest.Horarios)
         {
-            var agenda = mapper.Map<Agenda>(agendaRequest);
-            agenda.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
-            agenda.ValidacaoCadastrar = true;
+            horario.AgendaId = agenda.Id;
 
-            _response = await ExecultarValidacaoResponse(_agendaValidator, agenda);
-            if (_response.Error)
-                throw new ArgumentException(_response.Status);
-
-            agenda.Medico = mapper.Map<Medico>(await _medicoService.GetIdAsync(agendaRequest.MedicoId)) ??
-                 throw new KeyNotFoundException("Medico não encontrado em nossa base de dados.");
-
-            if (!await _agendaRepository.CreateAsync(agenda))
-                throw new InvalidOperationException("Falha ao criar agenda.");
-
-            foreach (var horario in agendaRequest.Horarios)
-            {
-                horario.AgendaId = agenda.Id;
-
-                await _horarioService.CreateAsync(horario);        
-            }
-
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "CreateAsync");
-            throw;
+            await _horarioService.CreateAsync(horario);
         }
 
         return ReturnResponseSuccess();
@@ -70,74 +61,41 @@ public class AgendaService : BaseService, IAgendaSevice
 
     public async Task<Pagination<AgendaResponse>> GetAllAsync(int page, int pageSize)
     {
-        try
-        {
-            var agendas = mapper.Map<IEnumerable<AgendaResponse>>(await _agendaRepository.GetAllAsync());
+        var agendas = mapper.Map<IEnumerable<AgendaResponse>>(await _agendaRepository.GetAllAsync());
 
-            return Paginar(agendas, page, pageSize);
-
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "GetAllAsync");
-            throw;
-        }
+        return Paginar(agendas, page, pageSize);
     }
 
     public async Task<AgendaResponse?> GetIdAsync(Guid id)
     {
-        try
-        {
-            return mapper.Map<AgendaResponse>(await _agendaRepository.GetIdAsync(id));
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "GetIdAsync");
-            throw;
-        }
+        return mapper.Map<AgendaResponse>(await _agendaRepository.GetIdAsync(id));
     }
 
     public async Task<Pagination<AgendaResponse>> GetMedicoIdAsync(Guid medicoId, int page, int pageSize)
     {
-        try
-        {
-            var agendas = mapper.Map<IEnumerable<AgendaResponse>>(await _agendaRepository.GetMedicoIdAsync(medicoId));
+        var agendas = mapper.Map<IEnumerable<AgendaResponse>>(await _agendaRepository.GetMedicoIdAsync(medicoId));
 
-            return Paginar(agendas, page, pageSize);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "GetMedicoIdAsync");
-            throw;
-        }
+        return Paginar(agendas, page, pageSize);
     }
 
     public async Task<Response> UpdateAsync(AtualizarAgendaResquet agendaResquest)
     {
-        try
+
+        var agenda = mapper.Map<Agenda>(agendaResquest);
+        agenda.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), false);
+        agenda.ValidacaoCadastrar = false;
+
+        _response = await ExecultarValidacaoResponse(_agendaValidator, agenda);
+        if (_response.Error)
+            throw new ArgumentException(_response.Status);
+
+        if (!await _agendaRepository.UpdateAsync(agenda))
+            throw new InvalidOperationException("Falha ao atualiza agendamento.");
+
+        foreach (var horario in agendaResquest.Horarios)
         {
-            var agenda = mapper.Map<Agenda>(agendaResquest);
-            agenda.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), false);
-            agenda.ValidacaoCadastrar = false; 
-
-            _response = await ExecultarValidacaoResponse(_agendaValidator, agenda);
-            if (_response.Error)
-                throw new ArgumentException(_response.Status);
-
-            if (!await _agendaRepository.UpdateAsync(agenda))
-                throw new InvalidOperationException("Falha ao atualiza agendamento.");
-
-            foreach (var horario in agendaResquest.Horarios)
-            {
-                horario.AgendaId = agenda.Id;
-                await _horarioService.UpdateAsync(horario);
-            }
-
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "UpdateAsync");
-            throw;
+            horario.AgendaId = agenda.Id;
+            await _horarioService.UpdateAsync(horario);
         }
 
         return ReturnResponseSuccess();
@@ -145,17 +103,9 @@ public class AgendaService : BaseService, IAgendaSevice
 
     public async Task<Response> DeleteAsync(Guid id)
     {
-        try
-        {
-            if (!await _agendaRepository.DeleteAsync(id))
-                throw new InvalidOperationException("Falha ao deletar agendamento de nossa base de dados.");
+        if (!await _agendaRepository.DeleteAsync(id))
+            throw new InvalidOperationException("Falha ao deletar agendamento de nossa base de dados.");
 
-            return ReturnResponseSuccess();
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "DeleteAsync");
-            throw;
-        }
+        return ReturnResponseSuccess();
     }
 }

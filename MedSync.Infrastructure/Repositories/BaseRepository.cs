@@ -14,55 +14,27 @@ public class BaseRepository : IDisposable
 
     protected async Task<bool> GenericExecuteAsync(string sql, object parametros)
     {
-        try
-        {
-            CreateConnection(mySqlConnection);
-            return await mySqlConnection.ExecuteAsync(sql, parametros) > 0;
-        }
-        catch
-        {
-            throw;
-        }
+        CreateConnection(mySqlConnection);
+        return await mySqlConnection.ExecuteAsync(sql, parametros) > 0;
     }
 
     protected async Task<T?> GenericGetOne<T>(string sql, object? parametros)
     {
-        try
-        {
-            CreateConnection(mySqlConnection);
-            return await mySqlConnection.QueryFirstOrDefaultAsync<T>(sql, parametros);
-        }
-        catch
-        {
-            throw;
-        }
+        CreateConnection(mySqlConnection);
+        return await mySqlConnection.QueryFirstOrDefaultAsync<T>(sql, parametros);
     }
 
     protected async Task<IEnumerable<T>> GenericGetList<T>(string sql, object? parametros)
     {
-        try
-        {
-            CreateConnection(mySqlConnection);
-            return await mySqlConnection.QueryAsync<T>(sql, parametros);
-        }
-        catch
-        {
-            throw;
-        }
+        CreateConnection(mySqlConnection);
+        return await mySqlConnection.QueryAsync<T>(sql, parametros);
     }
 
     protected bool JaExiste(string sql, object parametros)
     {
-        try
-        {
-            CreateConnection(mySqlConnection);
-            int count = mySqlConnection.QuerySingle<int>(sql, parametros);
-            return count > 0;
-        }
-        catch
-        {
-            throw;
-        }
+        CreateConnection(mySqlConnection);
+        int count = mySqlConnection.QuerySingle<int>(sql, parametros);
+        return count > 0;
     }
 
     protected static void CreateConnection(MySqlConnection mySqlConnection)

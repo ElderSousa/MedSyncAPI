@@ -183,14 +183,6 @@ public class EnderecoServiceTest
         // Act & Assert
         var ex = await Assert.ThrowsAsync<Exception>(() => _enderecoService.GetIdAsync(enderecoId));
         Assert.Equal("Erro inesperado", ex.Message);
-
-        _mockLogger.Verify(logger => logger.Log(
-            LogLevel.Error,
-            It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("Erro inesperado")),
-            exception,
-            It.IsAny<Func<It.IsAnyType, Exception, string>>()
-        ), Times.Once);
     }
 
     [Fact]
@@ -276,15 +268,6 @@ public class EnderecoServiceTest
         // Act & Assert
         var ex = await Assert.ThrowsAsync<ArgumentException>(() => _enderecoService.UpdateAsync(enderecoRequest));
         Assert.Contains("Id não foi encontrado", ex.Message);
-
-        _mockLogger.Verify(
-            l => l.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("Id não foi encontrado")),
-                It.IsAny<Exception>(),
-                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
-            Times.Once);
     }
 
 
@@ -322,15 +305,6 @@ public class EnderecoServiceTest
         var exception = await Assert.ThrowsAsync<ArgumentException>(() => _enderecoService.DeleteAsync(enderecoId));
         Assert.Equal("Endereço não excluído da nossa base de dados.", exception.Message);
 
-        _mockLogger.Verify(
-            l => l.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString().Contains("Endereço não excluído")),
-                It.IsAny<Exception>(),
-                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
-            Times.Once
-        );
     }
 
 }

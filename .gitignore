@@ -42,10 +42,10 @@ node_modules/
 .local/
 
 # Azure Functions
-local.settings.json      # Ignorar arquivo de configurações locais (geralmente contém segredos)
-appsettings.json         # Ignorar arquivo de configurações do app (geralmente contém strings de conexão)
-appsettings.Development.json  # Ignorar configuração de desenvolvimento com dados sensíveis
-appsettings.Production.json   # Ignorar configuração de produção com dados sensíveis
+local.settings.json      
+appsettings.json         
+appsettings.Development.json 
+appsettings.Production.json   
 
 # Windows Installer files
 *.cab
@@ -60,9 +60,18 @@ appsettings.Production.json   # Ignorar configuração de produção com dados s
 *.DS_Store
 
 # Sensível (Segredos de Banco de Dados, Chaves, Tokens, Certificados)
-secrets.json           # Arquivo de segredos específicos (exemplo)
-*.pfx                  # Arquivos de chave privada
-*.pem                  # Arquivos de certificado
+secrets.json          
+*.pfx                 
+*.pem                 
 
 # Visual Studio
 .vs/
+
+#Docker
+.docker/
+.dockerignore
+Dockerfile
+docker-compose.yml
+docker-compose.override.yml
+docker-compose.dcproj
+

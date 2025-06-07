@@ -27,131 +27,67 @@ public class TelefoneService : BaseService, ITelefoneService
 
     public async Task<Response> CreateAsync(AdicionarTelefoneRequest telefoneRequest)
     {
-        try
-        {
-            var telefone = mapper.Map<Telefone>(telefoneRequest);
-            telefone.AdicionarBaseModel(null, DataHoraAtual(), true);
-            telefone.ValidacaoCadastrar = true;
+        var telefone = mapper.Map<Telefone>(telefoneRequest);
+        telefone.AdicionarBaseModel(null, DataHoraAtual(), true);
+        telefone.ValidacaoCadastrar = true;
 
-            _response = await ExecultarValidacaoResponse(_telefoneValidation, telefone);
-            if (_response.Error) 
-                throw new ArgumentException(_response.Status);
+        _response = await ExecultarValidacaoResponse(_telefoneValidation, telefone);
+        if (_response.Error)
+            throw new ArgumentException(_response.Status);
 
-            if (!await _telefoneRepository.CreateAsync(telefone))
-                throw new InvalidOperationException("Telefone não adicionado em nossa base de dados.");
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "CreateAsync");
-            throw;
-        }
+        if (!await _telefoneRepository.CreateAsync(telefone))
+            throw new InvalidOperationException("Telefone não adicionado em nossa base de dados.");
 
         return ReturnResponseSuccess();
     }
 
     public async Task<TelefoneResponse?> GetIdAsync(Guid id)
     {
-        try
-        {
-            return mapper.Map<TelefoneResponse>(await _telefoneRepository.GetIdAsync(id));
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "GetIdAsync");
-            throw;
-        }
+        return mapper.Map<TelefoneResponse>(await _telefoneRepository.GetIdAsync(id));
     }
 
     public async Task<Pagination<TelefoneResponse>> GetAllAsync(int page, int pageSize)
     {
-        try
-        {
-            var telefones = mapper.Map<IEnumerable<TelefoneResponse>>(await _telefoneRepository.GetAllAsync());
-            return Paginar(telefones, page, pageSize);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "GetIdAsync");
-            throw;
-        }
+        var telefones = mapper.Map<IEnumerable<TelefoneResponse>>(await _telefoneRepository.GetAllAsync());
+        return Paginar(telefones, page, pageSize);
     }
 
     public async Task<Pagination<TelefoneResponse>> GetMedicoIdAsync(Guid medicoId, int page, int pageSize)
     {
-        try
-        {
-            var telefones = mapper.Map<IEnumerable<TelefoneResponse>>(await _telefoneRepository.GetMedicoIdAsync(medicoId));
-            return Paginar(telefones, page, pageSize);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "GetMedicoIdAsync");
-            throw;
-        }
+        var telefones = mapper.Map<IEnumerable<TelefoneResponse>>(await _telefoneRepository.GetMedicoIdAsync(medicoId));
+        return Paginar(telefones, page, pageSize);
     }
 
     public async Task<Pagination<TelefoneResponse>> GetPacienteIdAsync(Guid pacienteId, int page, int pageSize)
     {
-        try
-        {
-            var telefones = mapper.Map<IEnumerable<TelefoneResponse>>(await _telefoneRepository.GetPacienteIdAsync(pacienteId));
-            return Paginar(telefones, page, pageSize);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "GetPacienteIdAsync");
-            throw;
-        }
+        var telefones = mapper.Map<IEnumerable<TelefoneResponse>>(await _telefoneRepository.GetPacienteIdAsync(pacienteId));
+        return Paginar(telefones, page, pageSize);
     }
 
     public async Task<TelefoneResponse?> GetNumeroAsync(string numero)
     {
-        try
-        {
-            return mapper.Map<TelefoneResponse>(await _telefoneRepository.GetNumeroAsync(numero));
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "GetNumeroAsync");
-            throw;
-        }
+        return mapper.Map<TelefoneResponse>(await _telefoneRepository.GetNumeroAsync(numero));
     }
 
     public async Task<Response> UpdateAsync(AtualizarTelefoneRequest telefoneRequest)
     {
-        try
-        {
-            var telefone = mapper.Map<Telefone>(telefoneRequest);
-            telefone.AdicionarBaseModel(null, DataHoraAtual(), false);
-            telefone.ValidacaoCadastrar = false;
+        var telefone = mapper.Map<Telefone>(telefoneRequest);
+        telefone.AdicionarBaseModel(null, DataHoraAtual(), false);
+        telefone.ValidacaoCadastrar = false;
 
-            _response = await ExecultarValidacaoResponse(_telefoneValidation, telefone);
-            if (_response.Error)
-                throw new ArgumentException(_response.Status);
+        _response = await ExecultarValidacaoResponse(_telefoneValidation, telefone);
+        if (_response.Error)
+            throw new ArgumentException(_response.Status);
 
-            if (!await _telefoneRepository.UpdateAsync(telefone))
-                throw new InvalidOperationException("Telefone não atualizado em nossa base de dados.");
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "UpdateAsync");
-            throw;
-        }
+        if (!await _telefoneRepository.UpdateAsync(telefone))
+            throw new InvalidOperationException("Telefone não atualizado em nossa base de dados.");
 
         return ReturnResponseSuccess();
     }
     public async Task<Response> DeleteAsync(Guid id)
     {
-        try
-        {
-            if (!await _telefoneRepository.DeleteAsync(id))
-                throw new InvalidOperationException("Telefone não excluído da nossa base de dados.");
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, ex.Message, "DeleteAsync");
-            throw;
-        }
+        if (!await _telefoneRepository.DeleteAsync(id))
+            throw new InvalidOperationException("Telefone não excluído da nossa base de dados.");
 
         return ReturnResponseSuccess();
     }

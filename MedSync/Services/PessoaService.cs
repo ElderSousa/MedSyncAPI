@@ -2,7 +2,6 @@
 using FluentValidation;
 using MedSync.Application.Interfaces;
 using MedSync.Application.Responses;
-using MedSync.Application.Validation;
 using MedSync.Domain.Entities;
 using MedSync.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -28,93 +27,51 @@ public class PessoaService : BaseService, IPessoaService
 
     public async Task<Response> CreateAsync(AdicionarPessoaRequest pessoaRequest)
     {
-        try
-        {
-            var pessoa = mapper.Map<Pessoa>(pessoaRequest);
-            pessoa.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
-            pessoa.ValidacaoCadastrar = true;
+        var pessoa = mapper.Map<Pessoa>(pessoaRequest);
+        pessoa.AdicionarBaseModel(ObterUsuarioLogadoId(), DataHoraAtual(), true);
+        pessoa.ValidacaoCadastrar = true;
 
-            _response = await ExecultarValidacaoResponse(_pessoaValidation, pessoa);
-            if (_response.Error) 
-                throw new ArgumentException(_response.Status);
+        _response = await ExecultarValidacaoResponse(_pessoaValidation, pessoa);
+        if (_response.Error)
+            throw new ArgumentException(_response.Status);
 
-            if (!await _pessoaRepository.CreateAsync(pessoa)) 
-                throw new InvalidOperationException("Falha ao criar pessoa.");
-
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "CreateAsync");
-            throw;
-        }
-     
+        if (!await _pessoaRepository.CreateAsync(pessoa))
+            throw new InvalidOperationException("Falha ao criar pessoa.");
 
         return ReturnResponseSuccess();
     }
 
     public async Task<PessoaResponse?> GetIdAsync(Guid id)
     {
-        try
-        {
-            return mapper.Map<PessoaResponse>(await _pessoaRepository.GetIdAsync(id));  
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "GetIdAsync");
-            throw;
-        }
+        return mapper.Map<PessoaResponse>(await _pessoaRepository.GetIdAsync(id));
     }
 
     public async Task<PessoaResponse?> GetCPFAsync(string cpf)
     {
-        try
-        {
-            return mapper.Map<PessoaResponse>(await _pessoaRepository.GetCPFAsync(cpf));
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "GetIdAsync");
-            throw;
-        }
+        return mapper.Map<PessoaResponse>(await _pessoaRepository.GetCPFAsync(cpf));
     }
 
     public async Task<Response> UpdateAsync(AtualizarPessoaRequest pessoaRequest)
     {
-        try
-        {
-            var pessoa = mapper.Map<Pessoa>(pessoaRequest);
-            pessoa.AdicionarBaseModel(null, DataHoraAtual(), false);
-            pessoa.ValidacaoCadastrar = false;
+        var pessoa = mapper.Map<Pessoa>(pessoaRequest);
+        pessoa.AdicionarBaseModel(null, DataHoraAtual(), false);
+        pessoa.ValidacaoCadastrar = false;
 
-            _response = await ExecultarValidacaoResponse(_pessoaValidation, pessoa);
-            if (_response.Error)
-                throw new ArgumentException(_response.Status);
+        _response = await ExecultarValidacaoResponse(_pessoaValidation, pessoa);
+        if (_response.Error)
+            throw new ArgumentException(_response.Status);
 
-            if (!await _pessoaRepository.UpdateAsync(pessoa))
-                throw new InvalidOperationException("Falha na atualização em nossa base de dados.");
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "GetIdAsync");
-            throw;
-        }
+        if (!await _pessoaRepository.UpdateAsync(pessoa))
+            throw new InvalidOperationException("Falha na atualização em nossa base de dados.");
 
         return ReturnResponseSuccess();
     }
-    
+
 
     public async Task<Response> DeleteAsync(Guid id)
     {
-        try
-        {
-            if (!await _pessoaRepository.DeleteAsync(id))
-                throw new InvalidOperationException("Falha ao realizar exclusão.");
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "GetIdAsync");
-            throw;
-        }
+        if (!await _pessoaRepository.DeleteAsync(id))
+            throw new InvalidOperationException("Falha ao realizar exclusão.");
 
         return ReturnResponseSuccess();
     }
