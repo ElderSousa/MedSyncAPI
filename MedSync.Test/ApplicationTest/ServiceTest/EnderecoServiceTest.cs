@@ -270,7 +270,6 @@ public class EnderecoServiceTest
         Assert.Contains("Id não foi encontrado", ex.Message);
     }
 
-
     [Fact]
     public async Task DeleteAsync_Deve_Excluir_Endereco_Quando_Dados_Invalidos()
     {
