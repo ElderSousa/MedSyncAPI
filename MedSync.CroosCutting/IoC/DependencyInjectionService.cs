@@ -1,8 +1,8 @@
-﻿using MedSync.Application.Interfaces;
+﻿using Microsoft.Extensions.DependencyInjection;
+using FluentValidation;
+using MedSync.Application.Interfaces;
 using MedSync.Application.Services;
 using MedSync.Application.Validation;
-using Microsoft.Extensions.DependencyInjection;
-using FluentValidation;
 
 
 namespace MedSync.CrossCutting.IoC;
