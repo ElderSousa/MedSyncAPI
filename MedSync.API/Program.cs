@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
 using Asp.Versioning;
+using CroosCutting.MS_AuthenticationAutorization.IoC;
 using MedSync.CrossCutting.Data;
 using MedSync.CrossCutting.IoC;
 using MedSync.CrossCutting.Middlewares;
@@ -51,12 +52,14 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,xmlFilename));
 });
 
+builder.Services.AddCorsPolicy(builder.Environment);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseCors("Development");
     app.UseSwagger();
     app.UseSwaggerUI();
 }
