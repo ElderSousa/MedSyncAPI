@@ -22,7 +22,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\..\..\MedSyncAPI\MedSync.Domain\MedSync.Domain.csproj" />
-		<ProjectReference Include="..\..\..\..\..\MedSyncAPI\MedSync\MedSync.Application.csproj" />
+		<ProjectReference Include="..\..\MedSync\MedSync.Application\MedSync.Application.csproj" />
 		<ProjectReference Include="..\MedSync.Infrastructure\MedSync.Infrastructure.csproj" />
 	</ItemGroup>
 

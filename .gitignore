@@ -1,68 +1,49 @@
-# Build Results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Dd]ist/
-[Dd]ebug-net*/  # Exclude Debug builds for all platforms
-[Dd]ist/
-
-# User-specific files
-.idea/
-.vscode/
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
-
-# User-specific files (Windows)
-*.dbmdl
-*.bak
-*.sql
-*.sqlite
-*.sqlite3
-
-# .NET Core
-project.lock.json
-project.fragment.lock.json
-artifacts/
-
-# ASP.NET Scaffolding
-ScaffoldingReadMe.txt
-
-# Visual Studio for Mac
-.vscode/
-
-# NPM packages
-node_modules/
-
-# .NET Core Build folder
-**/bin/
-**/obj/
-
-# .NET Core - Local tools
-.local/
-
-# Azure Functions
-local.settings.json      # Ignorar arquivo de configurações locais (geralmente contém segredos)
-appsettings.json         # Ignorar arquivo de configurações do app (geralmente contém strings de conexão)
-appsettings.Development.json  # Ignorar configuração de desenvolvimento com dados sensíveis
-appsettings.Production.json   # Ignorar configuração de produção com dados sensíveis
-
-# Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
-
-# JetBrains Rider
-.idea/
-
-# MacOS specific
-*.DS_Store
-
-# Sensível (Segredos de Banco de Dados, Chaves, Tokens, Certificados)
-secrets.json           # Arquivo de segredos específicos (exemplo)
-*.pfx                  # Arquivos de chave privada
-*.pem                  # Arquivos de certificado
-
 # Visual Studio
 .vs/
+*.user
+*.suo
+*.sln.docstates
+
+# Build outputs
+bin/
+obj/
+
+# Docker temporários e arquivos gerados
+docker-compose*.yml
+Dockerfile*
+obj/Docker/
+
+# Logs
+*.log
+
+# Arquivos de debug
+*.pdb
+*.dll
+*.exe
+
+# Copilot temporários
+*.db-shm
+*.db-wal
+
+# Localizações
+bin/**/pt-BR/
+bin/**/de/
+bin/**/es/
+bin/**/fr/
+bin/**/it/
+bin/**/ja/
+bin/**/ko/
+bin/**/pl/
+bin/**/ru/
+bin/**/tr/
+bin/**/zh-Hans/
+bin/**/zh-Hant/
+
+# Ignorar diretórios de build temporários
+**/bin/
+**/obj/
+.vs/
+*.user
+*.suo
+*.cache
+*.log
