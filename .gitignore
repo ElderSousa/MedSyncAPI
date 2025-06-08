@@ -4,6 +4,7 @@
 *.suo
 *.sln.docstates
 
+
 # Build outputs
 bin/
 obj/
@@ -12,6 +13,7 @@ obj/
 docker-compose*.yml
 Dockerfile*
 obj/Docker/
+docker-compose.dcproj
 
 # Logs
 *.log
@@ -47,3 +49,4 @@ bin/**/zh-Hant/
 *.suo
 *.cache
 *.log
+Properties/launchSettings.json
