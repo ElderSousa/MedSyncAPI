@@ -9,11 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedSync.API", "MedSync.API\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedSync.Infrastructure", "MedSync.Infrastructure\MedSync.Infrastructure.csproj", "{E25D84C6-083B-4CD6-BC5C-069DC92FE9D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedSync.CrossCutting", "MedSync.CroosCutting\MedSync.CrossCutting.csproj", "{B0A2A5F5-E9BC-47E3-AD39-7650376373CC}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedSync.Test", "MedSync.Test\MedSync.Test.csproj", "{3D43CCBD-8973-4C1B-858C-E026961297AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedSync.Application", "..\MedSync\MedSync.Application\MedSync.Application.csproj", "{655ED990-047F-4259-A028-6D6E96FCDF80}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedSync.Application", "MedSync.Application\MedSync.Application.csproj", "{92991C63-3DC7-4AB0-37C5-36CAEF08251E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedSync.CrossCutting", "MedSync.CrossCutting\MedSync.CrossCutting.csproj", "{CA91B974-9893-FB9D-372D-CA126596E4B6}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
 EndProject
@@ -35,18 +35,18 @@ Global
 		{E25D84C6-083B-4CD6-BC5C-069DC92FE9D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E25D84C6-083B-4CD6-BC5C-069DC92FE9D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E25D84C6-083B-4CD6-BC5C-069DC92FE9D2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B0A2A5F5-E9BC-47E3-AD39-7650376373CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B0A2A5F5-E9BC-47E3-AD39-7650376373CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B0A2A5F5-E9BC-47E3-AD39-7650376373CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B0A2A5F5-E9BC-47E3-AD39-7650376373CC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3D43CCBD-8973-4C1B-858C-E026961297AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3D43CCBD-8973-4C1B-858C-E026961297AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D43CCBD-8973-4C1B-858C-E026961297AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D43CCBD-8973-4C1B-858C-E026961297AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{655ED990-047F-4259-A028-6D6E96FCDF80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{655ED990-047F-4259-A028-6D6E96FCDF80}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{655ED990-047F-4259-A028-6D6E96FCDF80}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{655ED990-047F-4259-A028-6D6E96FCDF80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92991C63-3DC7-4AB0-37C5-36CAEF08251E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92991C63-3DC7-4AB0-37C5-36CAEF08251E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92991C63-3DC7-4AB0-37C5-36CAEF08251E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92991C63-3DC7-4AB0-37C5-36CAEF08251E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA91B974-9893-FB9D-372D-CA126596E4B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA91B974-9893-FB9D-372D-CA126596E4B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA91B974-9893-FB9D-372D-CA126596E4B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA91B974-9893-FB9D-372D-CA126596E4B6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU

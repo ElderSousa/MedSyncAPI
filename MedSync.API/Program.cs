@@ -22,7 +22,7 @@ builder.Services.AddApiVersioning(v =>
 {
     v.DefaultApiVersion = new ApiVersion(1.0);
     v.AssumeDefaultVersionWhenUnspecified = true;
-    v.ReportApiVersions = true; //Reporta a versão no header
+    v.ReportApiVersions = true; 
     v.ApiVersionReader = ApiVersionReader.Combine(
         new UrlSegmentApiVersionReader(),
         new QueryStringApiVersionReader()

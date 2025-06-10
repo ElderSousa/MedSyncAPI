@@ -10,8 +10,6 @@ bin/
 obj/
 
 # Docker temporários e arquivos gerados
-docker-compose*.yml
-Dockerfile*
 obj/Docker/
 docker-compose.dcproj
 

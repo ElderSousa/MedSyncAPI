@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\MedSyncAPI\MedSync.Domain\MedSync.Domain.csproj" />
+    <ProjectReference Include="..\MedSync.Domain\MedSync.Domain.csproj" />
   </ItemGroup>
 
 </Project>
