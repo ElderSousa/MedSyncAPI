@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+
+  db:
+    build:
+      context: ./db_image
+      dockerfile: Dockerfile
+    container_name: medsync-db-instance
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: medsync_db
+
+      MYSQL_ROOT_AUTHENTICATION_PLUGIN: 'mysql_native_password'
+
+    volumes:
+      - medsync_db_data:/var/lib/mysql
+    restart: unless-stopped
+
+  medsync.api:
+    build:
+      context: .
+      dockerfile: MedSync.Api/Dockerfile
+    container_name: medsync-api-instance
+    ports:
+      - "8080:8080"
+      - "443:443"
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Server=db;Port=3306;Database=medsync_db;Uid=root;Pwd=123456;"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  medsync_db_data:

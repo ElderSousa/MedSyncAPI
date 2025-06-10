@@ -15,8 +15,8 @@ WORKDIR /src
 COPY ["MedSync.API/MedSync.API.csproj", "MedSync.API/"]
 COPY ["MedSync.CrossCutting/MedSync.CrossCutting.csproj", "MedSync.CrossCutting/"]
 COPY ["MedSync.Domain/MedSync.Domain.csproj", "MedSync.Domain/"]
+COPY ["MedSync.Application/MedSync.Application.csproj", "MedSync.Application/"]
 COPY ["MedSync.Infrastructure/MedSync.Infrastructure.csproj", "MedSync.Infrastructure/"]
-COPY ["MedSync/MedSync.Application.csproj", "MedSync/"]
 RUN dotnet restore "./MedSync.API/MedSync.API.csproj"
 COPY . .
 WORKDIR "/src/MedSync.API"

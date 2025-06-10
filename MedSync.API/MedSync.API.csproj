@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MedSync.CroosCutting\MedSync.CrossCutting.csproj" />
+    <ProjectReference Include="..\MedSync.CrossCutting\MedSync.CrossCutting.csproj" />
   </ItemGroup>
 
 </Project>

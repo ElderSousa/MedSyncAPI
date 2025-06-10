@@ -21,9 +21,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\..\..\MedSyncAPI\MedSync.Domain\MedSync.Domain.csproj" />
-		<ProjectReference Include="..\..\MedSync\MedSync.Application\MedSync.Application.csproj" />
-		<ProjectReference Include="..\MedSync.Infrastructure\MedSync.Infrastructure.csproj" />
+	  <ProjectReference Include="..\MedSync.Application\MedSync.Application.csproj" />
+	  <ProjectReference Include="..\MedSync.Domain\MedSync.Domain.csproj" />
+	  <ProjectReference Include="..\MedSync.Infrastructure\MedSync.Infrastructure.csproj" />
 	</ItemGroup>
 
 </Project>
