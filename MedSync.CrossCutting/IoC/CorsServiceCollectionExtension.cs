@@ -1,37 +1,23 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace CroosCutting.MS_AuthenticationAutorization.IoC
 {
     public static class CorsServiceCollectionExtension
     {
-        public static IServiceCollection AddCorsPolicy(this IServiceCollection services, IWebHostEnvironment env)
+        public static IServiceCollection AddCorsPolicy(this IServiceCollection services)
         {
-            if (env.IsDevelopment())
+            services.AddCors(options =>
             {
-                services.AddCors(options =>
+                options.AddDefaultPolicy(policy =>
                 {
-                    options.AddPolicy("Development", builder =>
-                    {
-                        builder.AllowAnyOrigin()
-                               .AllowAnyMethod()
-                               .AllowAnyHeader();
-                    });
+                    policy.AllowCredentials();
+                    policy.AllowAnyMethod();
+                    policy.AllowAnyHeader();
+                    policy.WithOrigins("http://localhost:5000"
+                       
+                    );
                 });
-            }
-            else
-            {
-                services.AddCors(options =>
-                {
-                    options.AddPolicy("Production", builder =>
-                    {
-                        builder.WithOrigins("")
-                               .AllowAnyMethod()
-                               .AllowAnyHeader();
-                    });
-                });
-            }
+            });
 
             return services;
         }

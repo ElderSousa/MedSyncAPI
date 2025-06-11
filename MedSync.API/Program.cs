@@ -35,6 +35,7 @@ builder.Services.AddApiVersioning(v =>
 
 builder.Services.InjectDependency();
 builder.Services.InjectDataBase();
+builder.Services.AddCorsPolicy();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -47,19 +48,17 @@ builder.Services.AddSwaggerGen(c =>
         Title = "MedSyncApi",
         Description = "Agendamento de Consultas médicas"
     });
+
     //Configuração para comentários xml com descrição dos endpoints na controller
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,xmlFilename));
 });
-
-builder.Services.AddCorsPolicy(builder.Environment);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseCors("Development");
     app.UseSwagger();
     app.UseSwaggerUI();
 }
@@ -67,6 +66,8 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 
