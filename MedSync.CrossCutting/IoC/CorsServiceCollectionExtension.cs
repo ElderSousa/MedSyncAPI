@@ -14,13 +14,16 @@ namespace CroosCutting.MS_AuthenticationAutorization.IoC
                 {
                     options.AddPolicy("Development", builder =>
                     {
-                        builder.AllowAnyOrigin()
-                               .AllowAnyMethod()
-                               .AllowAnyHeader();
+                        builder.AllowAnyOrigin();
+                        builder.AllowCredentials();
+                        builder.AllowAnyMethod();
+                        builder.AllowAnyHeader();
+                        builder.WithOrigins("http://localhost:8080"
+                        );
                     });
                 });
             }
-            else
+            /*else
             {
                 services.AddCors(options =>
                 {
@@ -31,7 +34,7 @@ namespace CroosCutting.MS_AuthenticationAutorization.IoC
                                .AllowAnyHeader();
                     });
                 });
-            }
+            }*/
 
             return services;
         }

@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
 
@@ -26,10 +25,9 @@ services:
     container_name: medsync-api-instance
     ports:
       - "8080:8080"
-      - "443:443"
     environment:
-      ASPNETCORE_URLS: http://+:8080
-      ConnectionStrings__DefaultConnection: "Server=db;Port=3306;Database=medsync_db;Uid=root;Pwd=123456;"
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Server=localhost;Port=3306;Database=medsync_db;Uid=root;Pwd=123456;"
     depends_on:
       - db
     restart: unless-stopped

@@ -1,11 +1,13 @@
 
 using System.Reflection;
+using System.Security.Policy;
 using System.Text.Json.Serialization;
 using Asp.Versioning;
 using CroosCutting.MS_AuthenticationAutorization.IoC;
 using MedSync.CrossCutting.Data;
 using MedSync.CrossCutting.IoC;
 using MedSync.CrossCutting.Middlewares;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,6 +49,9 @@ builder.Services.AddSwaggerGen(c =>
         Title = "MedSyncApi",
         Description = "Agendamento de Consultas médicas"
     });
+
+    c.AddServer(new OpenApiServer { Url = "http://localhost:8080" });
+
     //Configuração para comentários xml com descrição dos endpoints na controller
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,xmlFilename));
@@ -55,6 +60,11 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddCorsPolicy(builder.Environment);
 
 var app = builder.Build();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions 
+{ 
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
