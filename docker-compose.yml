@@ -24,10 +24,15 @@ services:
       dockerfile: MedSync.Api/Dockerfile
     container_name: medsync-api-instance
     ports:
-      - "8080:8080"
+      - "5000:5000"
     environment:
+      ASPNETCORE_URLS: http://+:5000
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: "Server=localhost;Port=3306;Database=medsync_db;Uid=root;Pwd=123456;"
+      MYSQL_SERVER_MEDSYNC: db
+      MYSQL_DB_MEDSYNC: medsync_db
+      MYSQL_PORT_MEDSYNC: 3306
+      MYSQL_USER_MEDSYNC: root
+      MYSQL_PASSWORD: 123456
     depends_on:
       - db
     restart: unless-stopped

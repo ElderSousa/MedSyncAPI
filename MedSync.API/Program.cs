@@ -1,13 +1,11 @@
 
 using System.Reflection;
-using System.Security.Policy;
 using System.Text.Json.Serialization;
 using Asp.Versioning;
 using CroosCutting.MS_AuthenticationAutorization.IoC;
 using MedSync.CrossCutting.Data;
 using MedSync.CrossCutting.IoC;
 using MedSync.CrossCutting.Middlewares;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +35,7 @@ builder.Services.AddApiVersioning(v =>
 
 builder.Services.InjectDependency();
 builder.Services.InjectDataBase();
+builder.Services.AddCorsPolicy();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -50,26 +49,16 @@ builder.Services.AddSwaggerGen(c =>
         Description = "Agendamento de Consultas médicas"
     });
 
-    c.AddServer(new OpenApiServer { Url = "http://localhost:8080" });
-
     //Configuração para comentários xml com descrição dos endpoints na controller
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,xmlFilename));
 });
 
-builder.Services.AddCorsPolicy(builder.Environment);
-
 var app = builder.Build();
-
-app.UseForwardedHeaders(new ForwardedHeadersOptions 
-{ 
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseCors("Development");
     app.UseSwagger();
     app.UseSwaggerUI();
 }
@@ -77,6 +66,8 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 
